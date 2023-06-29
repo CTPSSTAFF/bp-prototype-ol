@@ -13,13 +13,8 @@ var bDebug = true; // Debug/diagnostics toggle
 // Data source: count data
 var countsURL = 'data/csv/bp_counts.csv';
 
-// Innitial center and zoom level for map - approx center of MPO area
-var regionCenterLat = 42.38762765728668; 
-var regionCenterLng = -71.14615053347856; 
-var initialZoom = 11; 
-
-// Leaflet 'map' Object
-var map = {};
+// Data source: count locations 
+// TBD
 
 // Array of GeoJSON features for ALL count locations
 var all_countlocs = [];
@@ -27,6 +22,62 @@ var all_countlocs = [];
 // Array of 'all counts' and 'selected counts'
 var all_counts = [],
     selected_counts = [];
+
+// *** FIXME
+// Innitial center and zoom level for map - approx center of MPO area
+// Probable fossie from leaflet implementation
+var regionCenterLat = 42.38762765728668; 
+var regionCenterLng = -71.14615053347856; 
+var initialZoom = 11; 
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Stuff for OpenLayers mapping
+//
+
+// URLs for MassGIS basemap layer services
+var mgis_serviceUrls = { 
+    'topo_features'     :  "https://tiles.arcgis.com/tiles/hGdibHYSPO59RG1h/arcgis/rest/services/MassGIS_Topographic_Features_for_Basemap/MapServer",
+    'basemap_features'  :  "https://tiles.arcgis.com/tiles/hGdibHYSPO59RG1h/arcgis/rest/services/MassGIS_Basemap_Detailed_Features/MapServer",
+    'structures'        :  "https://tiles.arcgis.com/tiles/hGdibHYSPO59RG1h/arcgis/rest/services/MassGIS_Structures/MapServer",
+    'parcels'           :  "https://tiles.arcgis.com/tiles/hGdibHYSPO59RG1h/arcgis/rest/services/MassGIS_Level3_Parcels/MapServer"
+};
+
+// OpenLayers layers for MassGIS basemap layers used in our map
+var mgis_basemap_layers = { 'topo_features'     : null,     // bottom layer
+                            'structures'        : null,     
+                            'basemap_features'  : null,     // on top of 'structures' so labels aren't obscured
+                            'parcels'           : null      // unused; not populated
+};
+
+// OpenLayers layer for OpenStreetMap basesmap layer
+var osm_basemap_layer = null; 
+
+// Varioius things for WMS and WFS layers
+// First, folderol to allow the app to run on appsrvr3 as well as "in the wild"
+var szServerRoot = location.protocol + '//' + location.hostname;
+var nameSpace;
+if (location.hostname.includes('appsrvr3')) {   
+    szServerRoot += ':8080/geoserver/';  
+	nameSpace = 'ctps_pg';
+} else {
+	// Temp hack to allow working from home
+    // szServerRoot += '/maploc/';
+	szServerRoot = 'https://www.ctps.org/maploc/';
+	nameSpace = 'postgis';
+}
+var szWMSserverRoot = szServerRoot + '/wms'; 
+var szWFSserverRoot = szServerRoot + '/wfs'; 
+
+// OpenLayers 'map' object:
+var ol_map = null;
+var initMapCenter = ol.proj.fromLonLat([-71.0589, 42.3601]);
+var initMapZoom = 10;
+var initMapView =  new ol.View({ center: initMapCenter, zoom:  initMapZoom });
+
+// End of stuff for OpenLayers mapping  
+///////////////////////////////////////////////////////////////////////////////
+
 
 
 // For all counts (or count_summaries) in the input array 'c',
@@ -212,14 +263,16 @@ function make_popup_content(feature) {
 
 
 // update_map:
-// 1. set extent of map based on bounding box of bp_loc_ids
-// 2. populate and render vector layer of current set of 'selected' count locations
-function update_map(loc_ids) {
+// 1. clear out vector layer for 'selected' countlocs
+// 2. add selected count locs to vector layer, and render it
+// 3. set extent of map based on bounding box of the selected countlocs
+function update_map(selected_countlocs) {
 
 	// STUB 
 	
 } // update_map
 
+// *** TBD - This function may require changes
 function update_table(countlocs) {
 	var data_array = [];
 	// Populate 'data' array with info about the selected count locations
@@ -272,7 +325,7 @@ function pick_list_handler(e) {
 	// 2. re-calcuate selected_counts
 	// 3. re-populate 'other' select list if needed
 	// 4. calculate selected_countlocs and unselected_countlocs
-	// 5. call 'update_map' to update the leaflet map, accordingly
+	// 5. call 'update_map' to update the map, accordingly
 	
 	if (town !== "Any") {
 		filter_func = function(count) { return count.municipality == town; };
@@ -325,20 +378,17 @@ function pick_list_handler(e) {
 	
 	// HERE: We have an array of the selected counts
 	//       We need to turn this into a set of selected count locations
-	//       and a set of un-selected count locations
 	
-	// Compute 'selection set' and 'un-selection set' of count locations.
+	// Compute the 'selection set' of count locations.
 	// God bless the people who wrote the ES6 language definition - performing these computations is easy now!
-	selected_countloc_ids = counts_to_countloc_ids(selected_counts);
+	var selected_countloc_ids = counts_to_countloc_ids(selected_counts);
 	var countloc_id_set = new Set(selected_countloc_ids);
-	var selected = all_countlocs.filter(rec => countloc_id_set.has(rec.properties.loc_id));
-	var unselected = all_countlocs.filter(rec => !countloc_id_set.has(rec.properties.loc_id));
-	
-	add_countlocs_to_cl_set(selected_countlocs, selected);
-	add_countlocs_to_cl_set(unselected_countlocs, unselected);
+	var selected_countloc_ids = all_countlocs.filter(rec => countloc_id_set.has(rec.properties.loc_id));
+	// var unselected = all_countlocs.filter(rec => !countloc_id_set.has(rec.properties.loc_id));
 	
 	update_map(selected_countloc_ids);
-	update_table(selected_countlocs);
+	// *** TBD - Not yet sure what changes to this function will be required
+	// update_table(selected_countlocs);
 } // pick_list_handler
 
 // reset_handler: on-click event handler for 'reset' button
@@ -391,48 +441,6 @@ function initialize_pick_lists(counts) {
 	});
 } // initialize_pick_lists
 
-
-
-
-// URLs for MassGIS basemap layer services
-var mgis_serviceUrls = { 
-    'topo_features'     :  "https://tiles.arcgis.com/tiles/hGdibHYSPO59RG1h/arcgis/rest/services/MassGIS_Topographic_Features_for_Basemap/MapServer",
-    'basemap_features'  :  "https://tiles.arcgis.com/tiles/hGdibHYSPO59RG1h/arcgis/rest/services/MassGIS_Basemap_Detailed_Features/MapServer",
-    'structures'        :  "https://tiles.arcgis.com/tiles/hGdibHYSPO59RG1h/arcgis/rest/services/MassGIS_Structures/MapServer",
-    'parcels'           :  "https://tiles.arcgis.com/tiles/hGdibHYSPO59RG1h/arcgis/rest/services/MassGIS_Level3_Parcels/MapServer"
-};
-
-// OpenLayers layers for MassGIS basemap layers used in our map
-var mgis_basemap_layers = { 'topo_features'     : null,     // bottom layer
-                            'structures'        : null,     
-                            'basemap_features'  : null,     // on top of 'structures' so labels aren't obscured
-                            'parcels'           : null      // unused; not populated
-};
-
-// OpenLayers layer for OpenStreetMap basesmap layer
-var osm_basemap_layer = null; 
-
-// Varioius things for WMS and WFS layers
-// First, folderol to allow the app to run on appsrvr3 as well as "in the wild"
-var szServerRoot = location.protocol + '//' + location.hostname;
-var nameSpace;
-if (location.hostname.includes('appsrvr3')) {   
-    szServerRoot += ':8080/geoserver/';  
-	nameSpace = 'ctps_pg';
-} else {
-	// Temp hack to allow working from home
-    // szServerRoot += '/maploc/';
-	szServerRoot = 'https://www.ctps.org/maploc/';
-	nameSpace = 'postgis';
-}
-var szWMSserverRoot = szServerRoot + '/wms'; 
-var szWFSserverRoot = szServerRoot + '/wfs'; 
-
-// OpenLayers 'map' object:
-var ol_map = null;
-var initMapCenter = ol.proj.fromLonLat([-71.0589, 42.3601]);
-var initMapZoom = 10;
-var initMapView =  new ol.View({ center: initMapCenter, zoom:  initMapZoom });
 
 function initialize_map() {
 	// Create OpenStreetMap base layer
