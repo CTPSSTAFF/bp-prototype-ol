@@ -477,6 +477,73 @@ var rowConverter = function(d) {
 	};
 } // rowConverter
 
+// URLs for MassGIS basemap layer services
+var mgis_serviceUrls = { 
+    'topo_features'     :  "https://tiles.arcgis.com/tiles/hGdibHYSPO59RG1h/arcgis/rest/services/MassGIS_Topographic_Features_for_Basemap/MapServer",
+    'basemap_features'  :  "https://tiles.arcgis.com/tiles/hGdibHYSPO59RG1h/arcgis/rest/services/MassGIS_Basemap_Detailed_Features/MapServer",
+    'structures'        :  "https://tiles.arcgis.com/tiles/hGdibHYSPO59RG1h/arcgis/rest/services/MassGIS_Structures/MapServer",
+    'parcels'           :  "https://tiles.arcgis.com/tiles/hGdibHYSPO59RG1h/arcgis/rest/services/MassGIS_Level3_Parcels/MapServer"
+};
+
+// OpenLayers layers for MassGIS basemap layers used in our map
+var mgis_basemap_layers = { 'topo_features'     : null,     // bottom layer
+                            'structures'        : null,     
+                            'basemap_features'  : null,     // on top of 'structures' so labels aren't obscured
+                            'parcels'           : null      // unused; not populated
+};
+
+// OpenLayers layer for OpenStreetMap basesmap layer
+var osm_basemap_layer = null; 
+
+// Varioius things for WMS and WFS layers
+// First, folderol to allow the app to run on appsrvr3 as well as "in the wild"
+var szServerRoot = location.protocol + '//' + location.hostname;
+var nameSpace;
+if (location.hostname.includes('appsrvr3')) {   
+    szServerRoot += ':8080/geoserver/';  
+	nameSpace = 'ctps_pg';
+} else {
+	// Temp hack to allow working from home
+    // szServerRoot += '/maploc/';
+	szServerRoot = 'https://www.ctps.org/maploc/';
+	nameSpace = 'postgis';
+}
+var szWMSserverRoot = szServerRoot + '/wms'; 
+var szWFSserverRoot = szServerRoot + '/wfs'; 
+
+// OpenLayers 'map' object:
+var ol_map = null;
+var initMapCenter = ol.proj.fromLonLat([-71.0589, 42.3601]);
+var initMapZoom = 10;
+var initMapView =  new ol.View({ center: initMapCenter, zoom:  initMapZoom });
+
+function initialize_map() {
+	// Create OpenStreetMap base layer
+osm_basemap_layer = new ol.layer.Tile({ source: new ol.source.OSM() });
+	osm_basemap_layer.setVisible(true);
+	
+	// Create WMS layer[s]
+	var bp_countlocs_wms = new ol.layer.Tile({	source: new ol.source.TileWMS({ url		: szWMSserverRoot,
+																				params	: { 'LAYERS': 'postgis:ctps_bp_count_locations_pt', 
+																							// 'STYLES': 'ss4a_brmpo_area',
+																							'TRANSPARENT': 'true'
+																				  }
+																	}),
+										title: 'Bike-Ped Count Locations',	
+										visible: true
+									});	
+	
+	ol_map = new ol.Map({ layers: [	osm_basemap_layer,
+									// mgis_basemap_layers['topo_features'],
+									// mgis_basemap_layers['structures'],
+									// mgis_basemap_layers['basemap_features'],
+									bp_countlocs_wms
+								],
+					   target: 'map',
+					   view:   initMapView
+					   // overlays: [overlay]
+					});
+} // initialize_map
 
 function initialize() {
 	var _DEBUG_HOOK = 0;
@@ -484,8 +551,9 @@ function initialize() {
 	d3.csv(countsURL, rowConverter).then(
 		function(data){
 			all_counts = data;
-			// Code for app continues here...
+			// Code for app continues here
 			_DEBUG_HOOK = 1;
+			initialize_map();
 		});
 	_DEBUG_HOOK = 2;
 } // initialize
