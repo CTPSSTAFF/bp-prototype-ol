@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	
+	 <!-- JS for jQuery library, fetched from CDN -->
+	 <script src="https://code.jquery.com/jquery-3.7.0.min.js" 
+	         integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" 
+			 crossorigin="anonymous">
+		</script>
+	
+	<!-- JS for lodash.js library, fetched from CDN -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.js" 
+	        integrity="sha512-2iwCHjuj+PmdCyvb88rMOch0UcKQxVHi/gsAml1fN3eg82IDaO/cdzzeXX4iF2VzIIes7pODE1/G0ts3QBwslA==" 
+			crossorigin="anonymous" 
+			referrerpolicy="no-referrer">
+	</script>
+		
+	<!-- CSS for OpenLayers --> 
+	<link rel="stylesheet" src="libs/openlayers-6.14.1-ol.css" type="text/css">
+	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css" type="text/css"> -->
+	
+	<!-- OpenLayers library: loaded locally -->
+	<script src="libs/openlayers-6.14.1-ol.js"></script>
+	<!-- OpenLayers library: loaded from CDN -->
+	<!-- <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script> -->
+	
+	<!-- D3 library (minified) loaded from a CDN -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" 
+	        integrity="sha512-M7nHCiNUOwFt6Us3r8alutZLm9qMt4s9951uo8jqO4UwJ1hziseL6O3ndFyigx6+LREfZqnhHxYjKRJ8ZQ69DQ==" 
+			crossorigin="anonymous" 
+			referrerpolicy="no-referrer">
+	</script>
+			
+	<!-- Un-minified D3 library (if needed) loaded from a CDN -->
+	<!-- 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.js" 
+	        integrity="sha512-NmSTfudjn1FCaFMQ+f4xveBmwRJn5ep8Wu+YOeq+CeExhFtKvwhfKVXFX3tGxoGWxu8Fl83qm9nE8/Hkc1dWZg=="  
+			crossorigin="anonymous" 
+			referrerpolicy="no-referrer">
+	</script>
+	-->
+	
+		
+	 <!-- CSS for app -->
+	 <link rel="stylesheet" href="css/prototype2.css">
+	
+	<!-- CSS and JS for jsgrid, fetched from a CDN -->
+	<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
+	<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
+
+	<!-- JS for prototype app -->
+	<script src="js/prototype2.js"></script>
+
+</head>
+<body>
+	<h3>Prototype Next-gen Bike-Ped Counts App - OpenLayers Version</h3>
+	<div id="controls">
+		<span>
+				<label for="select_town">Select town:&nbsp;</label>
+				<select name ="select_town" id="select_town" class="pick_list">
+				</select>
+				<label for="select_year">Select year:&nbsp;</label>
+				<select name="select_year" id="select_year" class="pick_list">
+				</select>
+				<button id="reset">Reset app</button>
+		</span>
+	</div>
+	<div id="map">
+	</div>
+	<div id="output_table">
+	</div>
+	<script>
+	$(document).ready(function() {
+		initialize();	
+	});
+	</script>
+</body>
+</html>
