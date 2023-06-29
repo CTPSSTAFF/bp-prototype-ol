@@ -14,7 +14,7 @@ var bDebug = true; // Debug/diagnostics toggle
 var countsURL = 'data/csv/bp_counts.csv';
 
 // Data source: count locations 
-// TBD
+var countlocsURL = 'data/json/ctps_bp_count_locations_pt.geo.json';
 
 // Array of GeoJSON features for ALL count locations
 var all_countlocs = [];
@@ -59,12 +59,10 @@ var selected_countlocs_style = new ol.style.Style({ image: new ol.style.Circle({
                                                                              fill: new ol.style.Fill({color: 'red'}) })
                                                                              });
 var selected_countlocs_layer = new ol.layer.Vector({ title: 'Selected Count Locations',
-								                     // source: new ol.source.Vector({  url: 'data/geojson/fatal_crashes_brmpo_2016_2020.geojson',
-								                     //                                 format: new ol.format.GeoJSON()
-												     //                              }),
+								                     source	: new ol.source.Vector({ wrapX: false }),
 								                     style: selected_countlocs_style
 								                   });
-
+												   
 
 // Varioius things for WMS and WFS layers
 // First, folderol to allow the app to run on appsrvr3 as well as "in the wild"
@@ -572,6 +570,7 @@ var rowConverter = function(d) {
 	};
 } // rowConverter
 
+var getJson = function(url) { return $.get(url, null, 'json'); };
 
 function initialize() {
 	var _DEBUG_HOOK = 0;
@@ -579,10 +578,19 @@ function initialize() {
 	d3.csv(countsURL, rowConverter).then(
 		function(data){
 			all_counts = data;
-			// Code for app continues here
 			_DEBUG_HOOK = 1;
-			initialize_map();
-			initialize_pick_lists(all_counts);
+			// Load GeoJSON for count locations
+			$.when(getJson(countlocsURL).done(function(bp_countlocs) {
+				var ok = arguments[1] === 'success'; 
+				if (ok === false) {
+					alert("Failed to load GeoJSON for count locations successfully.");
+					return; 
+				} 
+				all_countlocs = bp_countlocs.features;
+				_DEBUG_HOOK = 2
+				initialize_map();
+				initialize_pick_lists(all_counts);
+			}));
 		});
-	_DEBUG_HOOK = 2;
+	_DEBUG_HOOK = 3;
 } // initialize
