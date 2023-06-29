@@ -477,15 +477,6 @@ var rowConverter = function(d) {
 	};
 } // rowConverter
 
-// Fossil - from YouTube video example - to be deleted
-async function getData() {
-	var _DEBUG_HOOK = 0;
-	// Load count data from CSV file
-	const response = await fetch('data/csv/test.csv');
-	const data = await response.text();
-	console.log(data);
-	const rows = data.split('\n').slice(1); // rows of data, w/o column header
-}
 
 function initialize() {
 	var _DEBUG_HOOK = 0;
