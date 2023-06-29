@@ -55,8 +55,9 @@ var osm_basemap_layer = null;
 
 
 // Vector point layer for selected count locations
-var selected_countlocs_style = new ol.style.Style({ image: new ol.style.Circle({ radius: 2.5,
-                                                                             fill: new ol.style.Fill({color: 'red'}) })
+var selected_countlocs_style = new ol.style.Style({ image: new ol.style.Circle({ radius: 10.0, // 2.5,
+                                                                                 fill: new ol.style.Fill({color: 'green'}) }) 
+                                                                                 // fill: new ol.style.Fill({color: 'red'}) })
                                                                              });
 var selected_countlocs_layer = new ol.layer.Vector({ title: 'Selected Count Locations',
 								                     source	: new ol.source.Vector({ wrapX: false }),
@@ -274,12 +275,23 @@ function make_popup_content(feature) {
 
 
 // update_map:
-// 1. clear out vector layer for 'selected' countlocs
-// 2. add selected count locs to vector layer, and render it
-// 3. set extent of map based on bounding box of the selected countlocs
+// 		1. clear out vector layer for 'selected' countlocs
+// 		2. add selected count locs to vector layer, and render it
+// 		3. set extent of map based on bounding box of the selected countlocs
+// parameter 'countlocs' is the array of GeoJSON features for the selected countlocs
 function update_map(selected_countlocs) {
-
-	// STUB 
+	var _DEBUG_HOOK = 0;
+	var vSource = selected_countlocs_layer.getSource();
+	vSource.clear();
+	selected_countlocs.forEach(function(feature) {
+		var attrs, newVectorFeature;
+		attrs = feature.properties;
+	    newVectorFeature = new ol.Feature(attrs);
+		vSource.addFeature(newVectorFeature);
+	});
+	
+	// TBD: get bounds of selected countlocs, and pan/zoom map
+	selected_countlocs_layer.setSource(vSource);
 	
 } // update_map
 
@@ -394,10 +406,11 @@ function pick_list_handler(e) {
 	// God bless the people who wrote the ES6 language definition - performing these computations is easy now!
 	var selected_countloc_ids = counts_to_countloc_ids(selected_counts);
 	var countloc_id_set = new Set(selected_countloc_ids);
-	var selected_countloc_ids = all_countlocs.filter(rec => countloc_id_set.has(rec.properties.loc_id));
-	// var unselected = all_countlocs.filter(rec => !countloc_id_set.has(rec.properties.loc_id));
+	// 
+	var selected_countlocs = all_countlocs.filter(rec => countloc_id_set.has(rec.properties.loc_id));
+	// var unselected_countlocs = all_countlocs.filter(rec => !countloc_id_set.has(rec.properties.loc_id));
 	
-	update_map(selected_countloc_ids);
+	update_map(selected_countlocs);
 	// *** TBD - Not yet sure what changes to this function will be required
 	// update_table(selected_countlocs);
 } // pick_list_handler
@@ -590,6 +603,10 @@ function initialize() {
 				} 
 				all_countlocs = bp_countlocs.features;
 				_DEBUG_HOOK = 2
+				// Bind on-change event handler(s) for pick-list controls
+				$('#select_town,#select_year').on('change', pick_list_handler);
+				// Bind on-change event handler for 'reset' button 
+				$('#reset').on('click', reset_handler);
 				initialize_map();
 				initialize_pick_lists(all_counts);
 			}));
