@@ -53,6 +53,19 @@ var mgis_basemap_layers = { 'topo_features'     : null,     // bottom layer
 // OpenLayers layer for OpenStreetMap basesmap layer
 var osm_basemap_layer = null; 
 
+
+// Vector point layer for selected count locations
+var selected_countlocs_style = new ol.style.Style({ image: new ol.style.Circle({ radius: 2.5,
+                                                                             fill: new ol.style.Fill({color: 'red'}) })
+                                                                             });
+var selected_countlocs_layer = new ol.layer.Vector({ title: 'Selected Count Locations',
+								                     // source: new ol.source.Vector({  url: 'data/geojson/fatal_crashes_brmpo_2016_2020.geojson',
+								                     //                                 format: new ol.format.GeoJSON()
+												     //                              }),
+								                     style: selected_countlocs_style
+								                   });
+
+
 // Varioius things for WMS and WFS layers
 // First, folderol to allow the app to run on appsrvr3 as well as "in the wild"
 var szServerRoot = location.protocol + '//' + location.hostname;
@@ -462,7 +475,8 @@ osm_basemap_layer = new ol.layer.Tile({ source: new ol.source.OSM() });
 									// mgis_basemap_layers['topo_features'],
 									// mgis_basemap_layers['structures'],
 									// mgis_basemap_layers['basemap_features'],
-									bp_countlocs_wms
+									bp_countlocs_wms,
+									selected_countlocs_layer	// this is an OL Vector layer
 								],
 					   target: 'map',
 					   view:   initMapView
