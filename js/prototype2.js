@@ -273,37 +273,19 @@ function make_popup_content(feature) {
 }
 
 
-// *** TEMP FUNCTION FOR USE DURING DEVELOPMENT
-function add_hardwired_marker() {
-	var temp_layer = new ol.layer.Vector({
-     source: new ol.source.Vector({
-         features: [
-             new ol.Feature({
-                 geometry: new ol.geom.Point(ol.proj.fromLonLat([-71.1533, 42.41544]))
-             })
-         ]
-     })
-	});
-	ol_map.addLayer(temp_layer);
-}
-
-
 // update_map:
 // 		1. clear out vector layer for 'selected' countlocs
 // 		2. add selected count locs to vector layer, and render it
 // 		3. set extent of map based on bounding box of the selected countlocs
 // parameter 'countlocs' is the array of GeoJSON features for the selected countlocs
 function update_map(selected_countlocs) {
-	var _DEBUG_HOOK = 0;
 	var vSource, i, cur_countloc, feature, geom, props, extent;
 	
 	vSource = selected_countlocs_layer.getSource();
 	vSource.clear();
 	
 	for (i = 0; i < selected_countlocs.length; i++) {
-		_DEBUG_HOOK = 1;
 		geom = {}, props = {};
-		
 		cur_countloc = selected_countlocs[i];
 		geom =  new ol.geom.Point(ol.proj.fromLonLat([cur_countloc.geometry.coordinates[0], cur_countloc.geometry.coordinates[1]]));
 		props = JSON.parse(JSON.stringify(cur_countloc.properties));
@@ -315,8 +297,6 @@ function update_map(selected_countlocs) {
 	// Get extent of selected countlocs, and pan/zoom map to it
 	extent = vSource.getExtent();
 	ol_map.getView().fit(extent, { size: ol_map.getSize(), duration: 1500 });
-	
-	_DEBUG_HOOK = 2;
 } // update_map
 
 // *** TBD - This function may require changes
@@ -633,7 +613,6 @@ function initialize() {
 				$('#reset').on('click', reset_handler);
 				initialize_map();
 				initialize_pick_lists(all_counts);
-				add_hardwired_marker();
 			}));
 		});
 	_DEBUG_HOOK = 3;
