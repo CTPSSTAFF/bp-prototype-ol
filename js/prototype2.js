@@ -292,12 +292,14 @@ function update_map(selected_countlocs) {
 	ol_map.getView().fit(extent, { size: ol_map.getSize(), duration: 1500 });
 } // update_map
 
-// *** TBD - This function may require changes
+// Update the jsGrid table with info about each selected count location
 function update_table(countlocs) {
+	var _DEBUG_HOOK = 0;
 	var data_array = [];
 	// Populate 'data' array with info about the selected count locations
-	selected_countlocs.countlocs.forEach(function(cl) {
+	countlocs.forEach(function(cl) {
 		// NOTE: cl.properties.loc_id has the B-P count location ID
+		_DEBUG_HOOK =1;
 		data_array.push({'countloc' : cl.properties.description, 'town' : cl.properties.town});
 	});
 		
@@ -313,7 +315,7 @@ function update_table(countlocs) {
 			]
 	});
 	$('#output_table').show();
-	var _DEBUG_HOOK = 0;
+	var _DEBUG_HOOK = 2;
 } // update_table
 
 // Return array of bp_loc_ids (B-P count locations) for a given set of counts
@@ -408,8 +410,7 @@ function pick_list_handler(e) {
 	// var unselected_countlocs = all_countlocs.filter(rec => !countloc_id_set.has(rec.properties.loc_id));
 	
 	update_map(selected_countlocs);
-	// *** TBD - Not yet sure what changes to this function will be required
-	// update_table(selected_countlocs);
+	update_table(selected_countlocs);
 } // pick_list_handler
 
 // reset_handler: on-click event handler for 'reset' button
