@@ -273,6 +273,20 @@ function make_popup_content(feature) {
 }
 
 
+// *** TEMP FUNCTION FOR USE DURING DEVELOPMENT
+function add_hardwired_marker() {
+	var temp_layer = new ol.layer.Vector({
+     source: new ol.source.Vector({
+         features: [
+             new ol.Feature({
+                 geometry: new ol.geom.Point(ol.proj.fromLonLat([-71.1533, 42.41544]))
+             })
+         ]
+     })
+	});
+	ol_map.addLayer(temp_layer);
+}
+
 
 // update_map:
 // 		1. clear out vector layer for 'selected' countlocs
@@ -283,16 +297,22 @@ function update_map(selected_countlocs) {
 	var _DEBUG_HOOK = 0;
 	var vSource = selected_countlocs_layer.getSource();
 	vSource.clear();
-	selected_countlocs.forEach(function(feature) {
-		var attrs, newVectorFeature;
-		attrs = feature.properties;
-	    newVectorFeature = new ol.Feature(attrs);
-		vSource.addFeature(newVectorFeature);
-	});
 	
-	// TBD: get bounds of selected countlocs, and pan/zoom map
+	var i, cur_countloc, feature, geom, props;
+	for (i = 0; i < selected_countlocs.length; i++) {
+		_DEBUG_HOOK = 1;
+		geom = {}, props = {};
+		
+		cur_countloc = selected_countlocs[i];
+		geom =  new ol.geom.Point(ol.proj.fromLonLat([cur_countloc.geometry.coordinates[0], cur_countloc.geometry.coordinates[1]]));
+		// TBD: properties
+		feature = new ol.Feature({geometry: geom});
+		vSource.addFeature(feature);
+	}
 	selected_countlocs_layer.setSource(vSource);
+	// TBD: get bounds of selected countlocs, and pan/zoom map
 	
+	_DEBUG_HOOK = 2;
 } // update_map
 
 // *** TBD - This function may require changes
@@ -609,6 +629,7 @@ function initialize() {
 				$('#reset').on('click', reset_handler);
 				initialize_map();
 				initialize_pick_lists(all_counts);
+				add_hardwired_marker();
 			}));
 		});
 	_DEBUG_HOOK = 3;
