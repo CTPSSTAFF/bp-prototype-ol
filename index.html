@@ -15,10 +15,6 @@
 			crossorigin="anonymous" 
 			referrerpolicy="no-referrer">
 	</script>
-		
-	<!-- CSS for OpenLayers --> 
-	<link rel="stylesheet" src="libs/openlayers-6.14.1-ol.css" type="text/css">
-	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css" type="text/css"> -->
 	
 	<!-- OpenLayers library: loaded locally -->
 	<script src="libs/openlayers-6.14.1-ol.js"></script>
@@ -41,21 +37,21 @@
 	</script>
 	-->
 	
-		
-	 <!-- CSS for app -->
-	 <link rel="stylesheet" href="css/prototype2.css">
-	
 	<!-- CSS and JS for jsgrid, fetched from a CDN -->
 	<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
 	<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
-
-	<!-- JS for prototype app -->
-	<script src="js/prototype2.js"></script>
-
+	
+	<!-- CSS for OpenLayers --> 
+	<link rel="stylesheet" src="libs/openlayers-6.14.1-ol.css" type="text/css">
+	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css" type="text/css"> -->
+	
+	 <!-- CSS for app -->
+	 <link rel="stylesheet" href="css/prototype2.css">
 </head>
 <body>
 	<h3>Prototype Next-gen Bike-Ped Counts App - OpenLayers Version</h3>
+	
 	<div id="controls">
 		<span>
 				<label for="select_town">Select town:&nbsp;</label>
@@ -67,10 +63,20 @@
 				<button id="reset">Reset app</button>
 		</span>
 	</div>
+	
 	<div id="map">
 	</div>
+	
 	<div id="output_table">
 	</div>
+	
+	<div id="popup" class="ol-popup">
+		<a href="#" id="popup-closer" class="ol-popup-closer"></a>
+		<div id="popup-content"></div>
+	</div>
+
+	<!-- JS for prototype app -->
+	<script src="js/prototype2.js"></script>
 	<script>
 	$(document).ready(function() {
 		initialize();	
