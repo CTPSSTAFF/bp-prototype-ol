@@ -295,10 +295,11 @@ function add_hardwired_marker() {
 // parameter 'countlocs' is the array of GeoJSON features for the selected countlocs
 function update_map(selected_countlocs) {
 	var _DEBUG_HOOK = 0;
-	var vSource = selected_countlocs_layer.getSource();
+	var vSource, i, cur_countloc, feature, geom, props, extent;
+	
+	vSource = selected_countlocs_layer.getSource();
 	vSource.clear();
 	
-	var i, cur_countloc, feature, geom, props;
 	for (i = 0; i < selected_countlocs.length; i++) {
 		_DEBUG_HOOK = 1;
 		geom = {}, props = {};
@@ -310,7 +311,10 @@ function update_map(selected_countlocs) {
 		vSource.addFeature(feature);
 	}
 	selected_countlocs_layer.setSource(vSource);
-	// TBD: get bounds of selected countlocs, and pan/zoom map
+	
+	// Get extent of selected countlocs, and pan/zoom map to it
+	extent = vSource.getExtent();
+	ol_map.getView().fit(extent, { size: ol_map.getSize(), duration: 1500 });
 	
 	_DEBUG_HOOK = 2;
 } // update_map
