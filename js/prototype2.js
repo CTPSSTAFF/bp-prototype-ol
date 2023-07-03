@@ -23,14 +23,6 @@ var all_countlocs = [];
 var all_counts = [],
     selected_counts = [];
 
-// *** FIXME
-// Innitial center and zoom level for map - approx center of MPO area
-// Probable fossie from leaflet implementation
-var regionCenterLat = 42.38762765728668; 
-var regionCenterLng = -71.14615053347856; 
-var initialZoom = 11; 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // Stuff for OpenLayers mapping
 //
@@ -86,6 +78,7 @@ var ol_map = null;
 var initMapCenter = ol.proj.fromLonLat([-71.0589, 42.3601]);
 var initMapZoom = 10;
 var initMapView =  new ol.View({ center: initMapCenter, zoom:  initMapZoom });
+var initMapExtent; // populated in initialize_map
 
 // End of stuff for OpenLayers mapping  
 ///////////////////////////////////////////////////////////////////////////////
@@ -420,20 +413,16 @@ function pick_list_handler(e) {
 } // pick_list_handler
 
 // reset_handler: on-click event handler for 'reset' button
-// *** WARNING: leaflet code, needs to be 'translated' to OL
+// 
 function reset_handler(e) {
-	// Re-initialize 'selected' countlocs
-	remove_markers_for_cl_set(selected_countlocs);
-	add_countlocs_to_cl_set(selected_countlocs, []);
-
-	// Re-initialize 'un-selected' countlocs
-	remove_markers_for_cl_set(unselected_countlocs);
-	add_countlocs_to_cl_set(unselected_countlocs, _.filter(all_countlocs));
-	add_markers_for_cl_set(unselected_countlocs);
-	
-	initialize_pick_lists(all_countlocs, all_counts);
-	// map.flyTo([regionCenterLat, regionCenterLng], initialZoom);
-	map.setView([regionCenterLat, regionCenterLng], initialZoom);
+	// Re-initialize 'selected' countlocs layer
+	var vSource;
+	vSource = selected_countlocs_layer.getSource();
+	vSource.clear();
+	selected_counts = [];
+	// Set map extent 
+	ol_map.getView().fit(initMapExtent, { size: ol_map.getSize(), duration: 1500 });
+	initialize_pick_lists(all_counts);
 	$('#output_table').hide();
 } // on-click handler for 'reset'
 
@@ -497,6 +486,10 @@ osm_basemap_layer = new ol.layer.Tile({ source: new ol.source.OSM() });
 					   view:   initMapView
 					   // overlays: [overlay]
 					});
+	
+	// Cache initial map extent for use in 'reset_handler'
+	var v = ol_map.getView();
+	initMapExtent = v.calculateExtent();
 } // initialize_map
 
 
