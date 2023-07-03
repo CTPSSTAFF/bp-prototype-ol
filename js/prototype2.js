@@ -78,7 +78,27 @@ var ol_map = null;
 var initMapCenter = ol.proj.fromLonLat([-71.0589, 42.3601]);
 var initMapZoom = 10;
 var initMapView =  new ol.View({ center: initMapCenter, zoom:  initMapZoom });
-var initMapExtent; // populated in initialize_map
+var initMapExtent = []; // populated in initialize_map
+
+// Elements that make up an OpenLayers popup 'overlay'
+var container = document.getElementById('popup');
+var content = document.getElementById('popup-content');
+var closer = document.getElementById('popup-closer');
+
+// Add a click handler to hide the popup
+closer.onclick = function () { 
+	overlay.setPosition(undefined);
+	closer.blur();
+	return false;
+};
+
+
+// Create an overlay to anchor the popup to the map
+var overlay = new ol.Overlay({ element: container,
+                               autoPan: { animation: { duration: 250 } }
+                             });
+// Sledgehammer to enable/disable creation of popup
+var popup_on = true;
 
 // End of stuff for OpenLayers mapping  
 ///////////////////////////////////////////////////////////////////////////////
@@ -421,8 +441,11 @@ function reset_handler(e) {
 	vSource = selected_countlocs_layer.getSource();
 	vSource.clear();
 	selected_counts = [];
+	// Clear overlay popup - just in case
+	overlay.setPosition(undefined);
+	closer.blur();
 	// Set map extent 
-	ol_map.getView().fit(initMapExtent, { size: ol_map.getSize(), duration: 1500 });
+	ol_map.getView().fit(initMapExtent, { size: ol_map.getSize(), duration: 1000});
 	initialize_pick_lists(all_counts);
 	$('#output_table').hide();
 } // on-click handler for 'reset'
@@ -484,9 +507,20 @@ osm_basemap_layer = new ol.layer.Tile({ source: new ol.source.OSM() });
 									selected_countlocs_layer	// this is an OL Vector layer
 								],
 					   target: 'map',
-					   view:   initMapView
-					   // overlays: [overlay]
+					   view:   initMapView,
+					   overlays: [overlay]
 					});
+					
+	// Proof-of-concept code to display 'popup' overlay:
+	if (popup_on == true) {
+		ol_map.on('singleclick', function(evt) {
+					var coordinate = evt.coordinate;
+					var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
+					var c  = document.getElementById('popup-content');
+					c.innerHTML = '<p>You clicked here:</p><code>' + hdms + '</code>';
+					overlay.setPosition(coordinate);
+				   });
+	}
 	
 	// Cache initial map extent for use in 'reset_handler'
 	var v = ol_map.getView();
