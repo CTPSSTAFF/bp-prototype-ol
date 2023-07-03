@@ -482,10 +482,18 @@ function initialize_pick_lists(counts) {
 	});
 } // initialize_pick_lists
 
+function make_popup_content(coordinate) {
+	var retval;
+	var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
+	retval = '<p>Life is good.</p>';
+	retval += '<p>You clicked here:</p><code>' + hdms + '</code>';
+	return retval;
+}
+
 
 function initialize_map() {
 	// Create OpenStreetMap base layer
-osm_basemap_layer = new ol.layer.Tile({ source: new ol.source.OSM() });
+	const osm_basemap_layer = new ol.layer.Tile({ source: new ol.source.OSM() });
 	osm_basemap_layer.setVisible(true);
 	
 	// Create WMS layer[s]
@@ -514,12 +522,29 @@ osm_basemap_layer = new ol.layer.Tile({ source: new ol.source.OSM() });
 	// Proof-of-concept code to display 'popup' overlay:
 	if (popup_on == true) {
 		ol_map.on('singleclick', function(evt) {
+				var _DEBUG_HOOK = 0;
+				/* 
+				if (ol_map.hasFeatureAtPixel(evt.pixel) === true) {
 					var coordinate = evt.coordinate;
-					var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
-					var c  = document.getElementById('popup-content');
-					c.innerHTML = '<p>You clicked here:</p><code>' + hdms + '</code>';
+					// content.innerHTML = '<b>Hello world!</b><br />I am a popup.';
+					var c = document.getElementById('popup-content');
+					content.innerHTML = '<p>You clicked here:</p><code>' + hdms + '</code>';
 					overlay.setPosition(coordinate);
-				   });
+				} else {
+					overlay.setPosition(undefined);
+					closer.blur();
+				}
+				return;
+				*/ 
+				
+				var coordinate = evt.coordinate;
+				var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
+				var c  = document.getElementById('popup-content');
+				// c.innerHTML = '<p>You clicked here:</p><code>' + hdms + '</code>';
+				c.innerHTML = make_popup_content(coordinate);
+				overlay.setPosition(coordinate);
+				
+			   });
 	}
 	
 	// Cache initial map extent for use in 'reset_handler'
