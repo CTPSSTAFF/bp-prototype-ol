@@ -305,8 +305,8 @@ function update_map(selected_countlocs) {
 		
 		cur_countloc = selected_countlocs[i];
 		geom =  new ol.geom.Point(ol.proj.fromLonLat([cur_countloc.geometry.coordinates[0], cur_countloc.geometry.coordinates[1]]));
-		// TBD: properties
-		feature = new ol.Feature({geometry: geom});
+		props = JSON.parse(JSON.stringify(cur_countloc.properties));
+		feature = new ol.Feature({geometry: geom, properties: props});
 		vSource.addFeature(feature);
 	}
 	selected_countlocs_layer.setSource(vSource);
