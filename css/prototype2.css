@@ -64,3 +64,9 @@
 	/* NOTE: this is actually set in the configuration options for the jsGrid object. */
 	/* width: 80%;*/ 
 }
+
+
+/* CSS for styling D3 bar chart */
+.bar { 
+	fill: steelblue; 
+}
