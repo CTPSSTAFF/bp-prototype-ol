@@ -307,6 +307,7 @@ function make_popup_content(feature) {
 	
 	////////////////////////////////////////////////////////////////////////////////
 	// TEMP - prototype bar chart
+/* 
 	var d = [], i, tmp;
 	for (i = 2013; i <= 2022; i++) {
 		tmp = {};
@@ -315,8 +316,8 @@ function make_popup_content(feature) {
 		d.push(tmp);
 	}
 	bar_chart('viz', d);
+*/
 	////////////////////////////////////////////////////////////////////////////////
-	
 	
 	return content;
 } // make_popup_content
@@ -706,4 +707,14 @@ function initialize() {
 			}));
 		});
 	_DEBUG_HOOK = 3;
+	
+	// *** TEMP - generate prototype bar chart
+	var d = [], i, tmp;
+	for (i = 2013; i <= 2022; i++) {
+		tmp = {};
+		tmp.year = i;
+		tmp.count = randomNumber(1,100);
+		d.push(tmp);
+	}
+	bar_chart('viz', d);
 } // initialize
