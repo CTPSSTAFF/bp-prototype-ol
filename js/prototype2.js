@@ -142,11 +142,11 @@ function calc_pm_peak(c) {
 	return retval;
 }
 
-// summarize_set_of_counts: 
+// summarize_set_of_counts_by_quarter_hour: 
 // Given an input array of 'counts' records, calculate the summary across all
 // records for each 15-minute time period and return it in an object,
 // keyed by of the form 'cnt_<hhmm>'.
-function summarize_set_of_counts(counts) {
+function summarize_set_of_counts_by_quarter_hour(counts) {
 	retval = { 'cnt_0630' : 0, 'cnt_0645' : 0,
                'cnt_0700' : 0, 'cnt_0715' : 0, 'cnt_0730' : 0, 'cnt_0745' : 0,
                'cnt_0800' : 0, 'cnt_0815' : 0, 'cnt_0830' : 0, 'cnt_0845' : 0,
@@ -238,7 +238,7 @@ function summarize_set_of_counts(counts) {
 	retval.cnt_2045 =  _.sum(_.map(counts, function(c) { return c.cnt_2045; }));	
 
 	return retval;
-} // summarize_set_of_counts
+} // summarize_set_of_counts_by_quarter_hour
 
 
 
@@ -267,7 +267,7 @@ function make_popup_content(feature) {
 	// Debug 
 	console.log(loc_id + ' #newest_counts = ' + newest_counts.length);
 	
-	newest_count_summary = summarize_set_of_counts(newest_counts);
+	newest_count_summary = summarize_set_of_counts_by_quarter_hour(newest_counts);
 	// AM and PM peak for newest count
 	am_peak = calc_am_peak(newest_count_summary);
 	pm_peak = calc_pm_peak(newest_count_summary);
