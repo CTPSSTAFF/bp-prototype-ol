@@ -103,6 +103,22 @@ var popup_on = true;
 ///////////////////////////////////////////////////////////////////////////////
 
 
+// summarize_set_of_counts_by_year_range:
+// Given a set of counts, 'c', and a 'start_year' and 'end_year',
+// return an array of (end_year - start_year + 1) elements,
+// the value of each element being the total count for the given year.
+function summarize_set_of_counts_by_year_range(c, start_year, end_year) {
+	var retval = [], year, year_counts, year_sum;
+	
+	for (year = start_year; year <= end_year; year++) {
+		year_counts = _.filter(c, function(rec) { return rec.count_date.substr(0,4) == year; });
+		year_sum = year_counts.length == 0 ? 0
+		                                   : _.sum(_.map(year_counts, function(c) { return c.cnt_total; }));
+		retval.push(year_sum);
+	}
+	return retval;
+}
+
 
 // For all counts (or count_summaries) in the input array 'c',
 // compute the sum of all count values for the AM peak peroid,
@@ -265,7 +281,7 @@ function make_popup_content(feature) {
 	newest_counts = _.filter(counts, function(c) { return c.count_date.substr(0,10) == newest_count_date; });
 	
 	// Debug 
-	console.log(loc_id + ' #newest_counts = ' + newest_counts.length);
+	// console.log(loc_id + ' #newest_counts = ' + newest_counts.length);
 	
 	newest_count_summary = summarize_set_of_counts_by_quarter_hour(newest_counts);
 	// AM and PM peak for newest count
@@ -277,7 +293,11 @@ function make_popup_content(feature) {
 	content += 'Most recent count : ' + newest_count_date + '</br>';
 	content += 'Total volume AM peak : ' + am_peak + '</br>';
 	content += 'Total volume PM peak : ' + pm_peak + '</br>';
-	content += 'Oldest count : ' + oldest_count_date + '</br>';			  
+	content += 'Oldest count : ' + oldest_count_date + '</br>';		
+
+	// Prep for bar-chart viz: sum of count at this countloc
+	// for the past 10 years:
+	var ten_year_summary = summarize_set_of_counts_by_year_range(counts, 2013, 2022);
 	
 	return content;
 } // make_popup_content
