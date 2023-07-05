@@ -47,9 +47,10 @@ var osm_basemap_layer = null;
 
 
 // Vector point layer for selected count locations
-var selected_countlocs_style = new ol.style.Style({ image: new ol.style.Circle({ radius: 5.0,
-                                                                                 fill: new ol.style.Fill({color: 'green'}) }) 
-                                                                                 // fill: new ol.style.Fill({color: 'red'}) })
+var selected_countlocs_style = new ol.style.Style({ image: new ol.style.Circle({ radius: 7.0,
+                                                                                 fill: new ol.style.Fill({color: 'gold'}),
+																				 stroke: new ol.style.Stroke({color: 'black', width: 1.0})
+																				}) 
                                                                              });
 var selected_countlocs_layer = new ol.layer.Vector({ title: 'Selected Count Locations',
 								                     source	: new ol.source.Vector({ wrapX: false }),
@@ -540,7 +541,7 @@ function initialize_map() {
 	// Create WMS layer[s]
 	var bp_countlocs_wms = new ol.layer.Tile({	source: new ol.source.TileWMS({ url		: szWMSserverRoot,
 																				params	: { 'LAYERS': 'postgis:ctps_bp_count_locations_pt', 
-																							// 'STYLES': 'ss4a_brmpo_area',
+																							'STYLES': 'a_point_blue',
 																							'TRANSPARENT': 'true'
 																				  }
 																	}),
