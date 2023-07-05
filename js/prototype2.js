@@ -513,25 +513,6 @@ var onclick_handler = function(evt) {
 		closer.blur();
 	}
 	return; // FOR NOW
-	
-	/* 
-	if (ol_map.hasFeatureAtPixel(evt.pixel) === true) {
-		var coordinate = evt.coordinate;
-		// content.innerHTML = '<b>Hello world!</b><br />I am a popup.';
-		var c = document.getElementById('popup-content');
-		content.innerHTML = '<p>You clicked here:</p><code>' + hdms + '</code>';
-		overlay.setPosition(coordinate);
-
-	return;
-	*/ 
-	
-	var coordinate = evt.coordinate;
-	var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
-	var c  = document.getElementById('popup-content');
-	// c.innerHTML = '<p>You clicked here:</p><code>' + hdms + '</code>';
-	c.innerHTML = make_popup_content(coordinate); // ?? pass in 'evt' ??
-	overlay.setPosition(coordinate);
-	
 } // onclick_handler
 
 function initialize_map() {
