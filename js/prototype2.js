@@ -2,7 +2,7 @@
 //
 // Data: 'all count locations' map data from WMS service
 //       'selected count locations' - OpenLayers vector layer
-//		'counts' data - CSV file
+//		 'counts' data - CSV file
 // Mapping platform: OpenLayers
 // Basemap: Open Street Map
 //
@@ -47,7 +47,7 @@ var osm_basemap_layer = null;
 
 
 // Vector point layer for selected count locations
-var selected_countlocs_style = new ol.style.Style({ image: new ol.style.Circle({ radius: 10.0, // 2.5,
+var selected_countlocs_style = new ol.style.Style({ image: new ol.style.Circle({ radius: 5.0,
                                                                                  fill: new ol.style.Fill({color: 'green'}) }) 
                                                                                  // fill: new ol.style.Fill({color: 'red'}) })
                                                                              });
@@ -91,7 +91,6 @@ closer.onclick = function () {
 	closer.blur();
 	return false;
 };
-
 
 // Create an overlay to anchor the popup to the map
 var overlay = new ol.Overlay({ element: container,
@@ -343,9 +342,14 @@ function counts_to_countloc_ids(counts) {
 	return bp_loc_ids;
 }
 
-// pick_list_handler: On-change event handler for pick-lists of towns and years.
+///////////////////////////////////////////////////////////////////////////////
+// Event handlers for:
+// 	1. 'change' event to pick-lists
+//  2. 'click' event on 'reset' button
+//  3. 'click event on OpenLayers map
 //
-// *** WARNING: MAY CONTATIN leaflet-SPECFIC CODE REQUIRING 'translation'
+
+// pick_list_handler: On-change event handler for pick-lists of towns and years.
 //
 // Aside from purely UI-related tasks, the primary job of this function is 
 // to compute the current 'selection set' and 'un-selection set) of count locations.
@@ -481,15 +485,11 @@ function initialize_pick_lists(counts) {
 } // initialize_pick_lists
 
 
-// *** TBD: Used during development only; to be deleted
-function make_popup_content_vestigial(coordinate) {
-	var retval;
-	var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
-	// retval = '<p>Life is good.</p>';
-	retval = '<p>You clicked here:</p><code>' + hdms + '</code>';
-	return retval;
-}
-
+// onclick_handler: on-click event handler for OpenLayers map
+//
+// If there is a feature at the clicked location, calls
+// make_popup_content to generate content for an OpenLayers
+// popup, and then sets the popup's position on the map.
 var onclick_handler = function(evt) {
 	var _DEBUG_HOOK = 0;
 	var pixel = evt.pixel,
@@ -509,7 +509,7 @@ var onclick_handler = function(evt) {
 		overlay.setPosition(undefined);
 		closer.blur();
 	}
-	return; // FOR NOW
+	return; 
 } // onclick_handler
 
 function initialize_map() {
