@@ -13,6 +13,9 @@
 	margin-bottom: 10px;
 }
 
+/* Hide OpenLayers Attribution on map */
+.ol-attribution { display: none; }
+
 /* Rules for OpenLayers map popup */
 .ol-popup {
         position: absolute;
