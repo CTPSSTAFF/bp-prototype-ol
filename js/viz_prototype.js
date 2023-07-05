@@ -35,7 +35,7 @@ function bar_chart(div_id, data) {
 		  .attr("class", "bar")
 		  .attr("x", function(d) { return x(d.year); })
 		  .attr("width", x.bandwidth())
-		  .attr("y", function(d) { return y(d.year); })
+		  .attr("y", function(d) { return y(d.count); })
 		  .attr("height", function(d) { return height - y(d.year); });
 		  
 	// Add x axis
