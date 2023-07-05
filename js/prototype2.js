@@ -482,16 +482,38 @@ function initialize_pick_lists(counts) {
 	});
 } // initialize_pick_lists
 
+
 function make_popup_content(coordinate) {
 	var retval;
 	var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
-	retval = '<p>Life is good.</p>';
-	retval += '<p>You clicked here:</p><code>' + hdms + '</code>';
+	// retval = '<p>Life is good.</p>';
+	retval = '<p>You clicked here:</p><code>' + hdms + '</code>';
 	return retval;
 }
 
 var onclick_handler = function(evt) {
 	var _DEBUG_HOOK = 0;
+	var pixel = evt.pixel,
+	    features = [], content, coordinate,
+		len;
+ 
+	if (ol_map.hasFeatureAtPixel(pixel) === true) {
+		ol_map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+			features.push(feature);
+		});
+		len = features.length;
+		content = document.getElementById('popup-content');
+		coordinate = evt.coordinate;
+		content.innerHTML = make_popup_content(coordinate)
+		// DEBUG 
+		content.innerHTML += '<p>Num features = ' + len + '</p>';
+		overlay.setPosition(coordinate);
+	} else {
+		overlay.setPosition(undefined);
+		closer.blur();
+	}
+	return; // FOR NOW
+	
 	/* 
 	if (ol_map.hasFeatureAtPixel(evt.pixel) === true) {
 		var coordinate = evt.coordinate;
@@ -499,10 +521,7 @@ var onclick_handler = function(evt) {
 		var c = document.getElementById('popup-content');
 		content.innerHTML = '<p>You clicked here:</p><code>' + hdms + '</code>';
 		overlay.setPosition(coordinate);
-	} else {
-		overlay.setPosition(undefined);
-		closer.blur();
-	}
+
 	return;
 	*/ 
 	
