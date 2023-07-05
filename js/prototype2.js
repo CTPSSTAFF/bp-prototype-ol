@@ -241,49 +241,47 @@ function summarize_set_of_counts(counts) {
 	return retval;
 } // summarize_set_of_counts
 
-// *** WILL REQUIRE REWRITE FOR OPENLAYERS
+
+
 function make_popup_content(feature) {
-	var loc_id, counts, 
+	var props, loc_id, counts, 
 	    oldest_count_date, newest_count_date, 
-	    oldest_counts = [], newest_counts = [],
-		oldest_count_summary = {}, 
+	    newest_counts = [], newest_count_summary = {}, 
 	    am_peak = 0,  pm_peak = 0;
 		
-	loc_id = feature.properties.loc_id;
+	props = feature.getProperties().properties;
+	loc_id = props.loc_id;
 	counts = _.filter(all_counts, function(c) { return c.bp_loc_id == loc_id; });
 	
 	// Defensive programming:
 	// Believe it or not, there are some count locations with no counts!
 	if (counts.length == 0) {
-		var _DEBUG_HOOK = 0;
-		console.log('No counts with count loc_id == ' + loc_id + ' found.');
-		return;
+		content = 'No counts with count loc_id == ' + loc_id + ' found.';
+		return content;
 	}
 	
 	counts = _.sortBy(counts, [function(o) { return o.count_date.substr(0,10); }]);
 	oldest_count_date = counts[0].count_date.substr(0,10);
 	newest_count_date = counts[counts.length-1].count_date.substr(0,10);
-	
-	oldest_counts = _.filter(counts, function(c) { return c.count_date.substr(0,10) == oldest_count_date; });
 	newest_counts = _.filter(counts, function(c) { return c.count_date.substr(0,10) == newest_count_date; });
 	
 	// Debug 
-	console.log(loc_id + ' #oldest_counts = ' + oldest_counts.length + ' #newest_counts = ' + newest_counts.length);
+	console.log(loc_id + ' #newest_counts = ' + newest_counts.length);
 	
 	newest_count_summary = summarize_set_of_counts(newest_counts);
-
+	// AM and PM peak for newest count
 	am_peak = calc_am_peak(newest_count_summary);
 	pm_peak = calc_pm_peak(newest_count_summary);
 		  
 	content = 'Location ID ' + loc_id + '</br>';
-    content += feature.properties.description + '</br>';
+    content += props.description + '</br>';
 	content += 'Most recent count : ' + newest_count_date + '</br>';
 	content += 'Total volume AM peak : ' + am_peak + '</br>';
 	content += 'Total volume PM peak : ' + pm_peak + '</br>';
 	content += 'Oldest count : ' + oldest_count_date + '</br>';			  
 	
 	return content;
-}
+} // make_popup_content
 
 
 // update_map:
@@ -483,7 +481,8 @@ function initialize_pick_lists(counts) {
 } // initialize_pick_lists
 
 
-function make_popup_content(coordinate) {
+// *** TBD: Used during development only; to be deleted
+function make_popup_content_vestigial(coordinate) {
 	var retval;
 	var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
 	// retval = '<p>Life is good.</p>';
@@ -494,19 +493,17 @@ function make_popup_content(coordinate) {
 var onclick_handler = function(evt) {
 	var _DEBUG_HOOK = 0;
 	var pixel = evt.pixel,
-	    features = [], content, coordinate,
-		len;
- 
+	    features = [], feature, content, coordinate;
+		
 	if (ol_map.hasFeatureAtPixel(pixel) === true) {
 		ol_map.forEachFeatureAtPixel(pixel, function(feature, layer) {
 			features.push(feature);
 		});
-		len = features.length;
+		// At least for now, we'll just work with the 1st feature
+		feature = features[0];
 		content = document.getElementById('popup-content');
 		coordinate = evt.coordinate;
-		content.innerHTML = make_popup_content(coordinate)
-		// DEBUG 
-		content.innerHTML += '<p>Num features = ' + len + '</p>';
+		content.innerHTML = make_popup_content(feature);
 		overlay.setPosition(coordinate);
 	} else {
 		overlay.setPosition(undefined);
