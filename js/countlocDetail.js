@@ -32,9 +32,17 @@ var szWFSserverRoot = szServerRoot + '/wfs';
 
 // OpenLayers 'map' object:
 var ol_map = null;
-var initMapCenter = ol.proj.fromLonLat([-71.0589, 42.3601]);
-var initMapZoom = 10;
-var initMapView =  new ol.View({ center: initMapCenter, zoom:  initMapZoom });
+
+// Vector point layer for selected count location
+var selected_countlocs_style = new ol.style.Style({ image: new ol.style.Circle({ radius: 7.0,
+                                                                                 fill: new ol.style.Fill({color: 'gold'}),
+																				 stroke: new ol.style.Stroke({color: 'black', width: 1.0})
+																				}) 
+                                                                             });
+var selected_countlocs_layer = new ol.layer.Vector({ title: 'Selected Count Locations',
+								                     source	: new ol.source.Vector({ wrapX: false }),
+								                     style: selected_countlocs_style
+								                   });
 
 
 // Utility function to return the value of the parameter named 'sParam' from the window's URL
@@ -75,17 +83,42 @@ function initialize_map(loc_lat, loc_lon) {
 	var mapZoom = 17; // Best guess, for now
     var mapView =  new ol.View({ center: mapCenter, zoom:  mapZoom });
 	
+	var vSource, feature, geom, props;
+	
+	vSource = selected_countlocs_layer.getSource();
+	vSource.clear();
+	geom = {};
+	props = {}; // TBD
+	geom =  new ol.geom.Point(ol.proj.fromLonLat([loc_lon, loc_lat]));
+	// props = JSON.parse(JSON.stringify(cur_countloc.properties));
+	feature = new ol.Feature({geometry: geom, properties: props});
+	vSource.addFeature(feature);
+	selected_countlocs_layer.setSource(vSource);
+	
 	ol_map = new ol.Map({ layers: [	osm_basemap_layer,
 									// mgis_basemap_layers['topo_features'],
 									// mgis_basemap_layers['structures'],
 									// mgis_basemap_layers['basemap_features'],
-									bp_countlocs_wms
-									// selected_countlocs_layer	// this is an OL Vector layer
+									bp_countlocs_wms,
+									selected_countlocs_layer	// this is an OL Vector layer
 								],
 					   target: 'map',
 					   view:   mapView
 					});
 } // initialize_map
+
+// Appends a <div> with a report for the given count_id into the report_div
+// Question: Parameterize <div> into which the report is appended?
+function report4countId(count_id) {
+	console.log('Report for ' + count_id);
+	
+	var div_id, html;
+	div_id = 'report_count_' + count_id;
+	html = '<div ' + 'id=' + div_id + '>';
+	html += '<p>Report for count #' + count_id + '.</p>';
+	html += '</div>';
+	$('#report_div').append(html);
+} // report4countId
 
 
 function initialize() {
@@ -102,13 +135,14 @@ function initialize() {
 	// Load count data from CSV file
 	d3.csv(countsURL, rowConverter).then(
 		function(data){
+			initialize_map(loc_lat, loc_lon);
 			// Extract the counts for the current countloc
 			counts4countloc = _.filter(data, function(rec) { return rec.bp_loc_id == loc_id; });
 			// Get count_id's of these counts
 			count_ids = _.map(counts4countloc, function(rec) { return rec.count_id; });
-			// Pan/zoom OpenLayers map to count location
-			// TBD
-			initialize_map(loc_lat, loc_lon);
+			count_ids.forEach(function(count_id) {
+				report4countId(count_id);
+			});
 			_DEBUG_HOOK = 1;
 	});
 	_DEBUG_HOOK = 2;
