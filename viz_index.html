@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	
+	 <!-- JS for jQuery library, fetched from CDN -->
+	 <script src="https://code.jquery.com/jquery-3.7.0.min.js" 
+	         integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" 
+			 crossorigin="anonymous">
+		</script>
+	
+	<!-- JS for lodash.js library, fetched from CDN -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.js" 
+	        integrity="sha512-2iwCHjuj+PmdCyvb88rMOch0UcKQxVHi/gsAml1fN3eg82IDaO/cdzzeXX4iF2VzIIes7pODE1/G0ts3QBwslA==" 
+			crossorigin="anonymous" 
+			referrerpolicy="no-referrer">
+	</script>
+	
+	
+	<!-- D3 library (minified) loaded from a CDN -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" 
+	        integrity="sha512-M7nHCiNUOwFt6Us3r8alutZLm9qMt4s9951uo8jqO4UwJ1hziseL6O3ndFyigx6+LREfZqnhHxYjKRJ8ZQ69DQ==" 
+			crossorigin="anonymous" 
+			referrerpolicy="no-referrer">
+	</script>
+			
+			
+	<!-- Plotly.js library, loaded locally -->
+	<script src="libs/plotly-2.24.1.min.js"></script>
+
+	
+	 <!-- CSS for app -->
+	 <link rel="stylesheet" href="css/prototype2.css">
+</head>
+<body>
+	<h3>Prototype Bar Chart Visualization</h3>
+	
+
+	<!-- div for prototyping bar-chart viz -->
+	<div id="viz">
+	</div>
+
+	<!-- JS for prototyping bar chart -->
+	<script src="js/viz_prototype.js"></script>
+	
+	<script>
+	function randomNumber(min, max) {
+		return Math.floor(Math.random() * (max - min) + min);
+	
+	}
+	
+	var year, years = [], counts = [];
+	for (year = 2013; year <= 2022; year++) {
+		years.push(year);
+		counts.push(randomNumber(1, 100));
+	}	
+	var data = [ { x: years, y: counts, type: 'bar' } ];
+	bar_chart('viz', data);
+	</script>
+</body>
+</html>
