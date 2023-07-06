@@ -300,24 +300,6 @@ function make_popup_content(feature) {
 	content += 'Total volume AM peak : ' + am_peak + '</br>';
 	content += 'Total volume PM peak : ' + pm_peak + '</br>';
 	content += 'Oldest count : ' + oldest_count_date + '</br>';		
-
-	// Prep for bar-chart viz: sum of count at this countloc
-	// for the past 10 years:
-	var ten_year_summary = summarize_set_of_counts_by_year_range(counts, 2013, 2022);
-	
-	////////////////////////////////////////////////////////////////////////////////
-	// TEMP - prototype bar chart
-/* 
-	var d = [], i, tmp;
-	for (i = 2013; i <= 2022; i++) {
-		tmp = {};
-		tmp.year = i;
-		tmp.count = randomNumber(1,100);
-		d.push(tmp);
-	}
-	bar_chart('viz', d);
-*/
-	////////////////////////////////////////////////////////////////////////////////
 	
 	return content;
 } // make_popup_content
@@ -708,13 +690,13 @@ function initialize() {
 		});
 	_DEBUG_HOOK = 3;
 	
-	// *** TEMP - generate prototype bar chart
-	var d = [], i, tmp;
-	for (i = 2013; i <= 2022; i++) {
-		tmp = {};
-		tmp.year = i;
-		tmp.count = randomNumber(1,100);
-		d.push(tmp);
-	}
-	bar_chart('viz', d);
+	// *** TEMP - generate prototype bar chart using plotly
+	var year, years = [], counts = [];
+	for (year = 2013; year <= 2022; year++) {
+		years.push(year);
+		counts.push(randomNumber(1, 100));
+	}	
+	var data = [ { x: years, y: counts, type: 'bar' } ];
+	bar_chart('viz', data);
+	
 } // initialize
