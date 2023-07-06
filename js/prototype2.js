@@ -338,7 +338,7 @@ function update_table(countlocs) {
 	// Populate 'data' array with info about the selected count locations
 	countlocs.forEach(function(cl) {
 		// NOTE: cl.properties.loc_id has the B-P count location ID
-		var a_tag = '<a href=countlocDetail.html?loc_id' + cl.properties.loc_id + ' target="_blank">' + cl.properties.description +'</a>';
+		var a_tag = '<a href=countlocDetail.html?loc_id=' + cl.properties.loc_id + ' target="_blank">' + cl.properties.description +'</a>';
 		_DEBUG_HOOK =1;
 		data_array.push({'countloc' : a_tag, 'town' : cl.properties.town});
 	});
