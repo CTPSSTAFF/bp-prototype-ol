@@ -107,17 +107,63 @@ function initialize_map(loc_lat, loc_lon) {
 					});
 } // initialize_map
 
+// prepare_count_data_for_viz: 
+// given a count_id, return a data structure containing the count's data
+// packaged in a form suitable for input to the Plotly bar-chard visualization engine.
+// This is a JavaScript object of the form:
+// 		{	'am' :  { 'times' : [], 'counts' : [] },
+//			'pm1' : { 'times' : [], 'counts' : [] }, -- covers 12:00 noon to 5:45
+//          'pm2' : { 'times' : [], 'counts' : [] }  -- covers 5:45 to 8:45
+//      }
+function prepare_count_data_for_viz(count_id) {
+	var retval = {	'am' : { 'times' : [' 6:00', '6:15', ' 6:30', ' 6:45', 
+	                                    ' 7:00', ' 7:15', ' 7:30', ' 7:45',
+										' 8:00', ' 8:15', ' 8:30', ' 8:45',
+										' 9:00', ' 9:15', ' 9:30', ' 9:45',
+										'10:00', '10:15', '10:30', '10:45',
+										'10100', '11:15', '11:30', '11:45'],
+							 'counts' 	: [] 
+							},
+					'pm1' : { 'times' 	: ['12:00', '12:15', '12:30', '12:45',
+										   ' 1:00', ' 1:15', ' 1:30', ' 1:45',
+										   ' 2:00', ' 2:15', ' 2:30', ' 2:45',
+										   ' 3:00', ' 3:15', ' 3:30', ' 3:45',
+										   ' 4:00', ' 4:15', ' 4:30', ' 4:45',
+										   ' 5:00', ' 5:15', ' 5:30', ' 5:45'],
+					          'counts'  : [] 
+							},
+					'pm2' : { 'times' 	: [' 6:00', '6:15', ' 6:30', ' 6:45',
+										   ' 7:00', ' 7:15', ' 7:30', ' 7:45',
+										   ' 8:00', ' 8:15', ' 8:30', ' 8:45'],
+							 'counts'   : [] }
+				};
+				
+	// *** TBD: Populate the 'counts' element of the 'am', 'pm1', and 'pm2'
+	//          properties of the 'retval' object
+	return retval;
+}
+
 // Appends a <div> with a report for the given count_id into the report_div
 // Question: Parameterize <div> into which the report is appended?
 function report4countId(count_id) {
 	console.log('Report for ' + count_id);
 	
-	var div_id, html;
-	div_id = 'report_count_' + count_id;
-	html = '<div ' + 'id=' + div_id + '>';
+	var main_div_id    = 'report_count_' + count_id,
+	    am_viz_div_id  = 'viz_' + count_id ' + '_am',
+		pm1_viz_div_id = 'viz' + count_id + '_pm1',
+		pm2_viz_div_id = 'viz' + count_id + '_pm';
+	var html;
+	
+	// Set up the framework - the main container <div> for everything
+	html = '<div ' + 'id=' + main_div_id + '>';
 	html += '<h4>Report for count #' + count_id + '</h4>';
+	// *** TBD: header info - date, location, etc.
 	html += '</div>';
 	$('#report_div').append(html);
+	
+	var o = prepare_count_data_for_viz(count_id);
+	// *** TBD: Generate bar-chart viz'es for the am, pm1, and pm2 periods
+	//          and append them into the approrpiate <div>s.
 } // report4countId
 
 
