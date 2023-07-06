@@ -115,7 +115,7 @@ function report4countId(count_id) {
 	var div_id, html;
 	div_id = 'report_count_' + count_id;
 	html = '<div ' + 'id=' + div_id + '>';
-	html += '<p>Report for count #' + count_id + '.</p>';
+	html += '<h4>Report for count #' + count_id + '</h4>';
 	html += '</div>';
 	$('#report_div').append(html);
 } // report4countId
@@ -129,7 +129,7 @@ function initialize() {
 	var _DEBUG_HOOK = 0;
 	
 	// Temp stuff, for now
-	var s = 'Count location ID is: ' + loc_id + '.';
+	var s = '<h3>Reports for counts at count location # ' + loc_id + '<h3>';
 	$('#report_div').html(s);
 	
 	// Load count data from CSV file
