@@ -108,14 +108,14 @@ function initialize_map(loc_lat, loc_lon) {
 } // initialize_map
 
 // prepare_count_data_for_viz: 
-// given a count_id, return a data structure containing the count's data
-// packaged in a form suitable for input to the Plotly bar-chard visualization engine.
+// given a count record 'count_rec', return a data structure containing the count record's 
+// da apackaged in a form suitable for input to the Plotly bar-chard visualization engine.
 // This is a JavaScript object of the form:
 // 		{	'am' :  { 'times' : [], 'counts' : [] },
 //			'pm1' : { 'times' : [], 'counts' : [] }, -- covers 12:00 noon to 5:45
 //          'pm2' : { 'times' : [], 'counts' : [] }  -- covers 5:45 to 8:45
 //      }
-function prepare_count_data_for_viz(count_id) {
+function prepare_count_data_for_viz(rec) {
 	var retval = {	'am' : { 'times' : [' 6:00', '6:15', ' 6:30', ' 6:45', 
 	                                    ' 7:00', ' 7:15', ' 7:30', ' 7:45',
 										' 8:00', ' 8:15', ' 8:30', ' 8:45',
@@ -138,20 +138,82 @@ function prepare_count_data_for_viz(count_id) {
 							 'counts'   : [] }
 				};
 				
-	// *** TBD: Populate the 'counts' element of the 'am', 'pm1', and 'pm2'
-	//          properties of the 'retval' object
+	// Populate the 'counts' element of the 'am', 'pm1', and 'pm2'
+	// properties of the 'retval' object
+	retval.am.counts.push(null); // at least right now, we never have any data for 0600
+	retval.am.counts.push(null); // at least right now, we never have any data for 0615
+	retval.am.counts.push(rec.cnt_0630);
+	retval.am.counts.push(rec.cnt_0645);
+	retval.am.counts.push(rec.cnt_0700);
+	retval.am.counts.push(rec.cnt_0715);
+	retval.am.counts.push(rec.cnt_0730);
+	retval.am.counts.push(rec.cnt_0745);
+	retval.am.counts.push(rec.cnt_0800);
+	retval.am.counts.push(rec.cnt_0815);
+	retval.am.counts.push(rec.cnt_0830);
+	retval.am.counts.push(rec.cnt_0845);
+	retval.am.counts.push(rec.cnt_0900);
+	retval.am.counts.push(rec.cnt_0915);
+	retval.am.counts.push(rec.cnt_0930);
+	retval.am.counts.push(rec.cnt_0945);
+	retval.am.counts.push(rec.cnt_1000);
+	retval.am.counts.push(rec.cnt_1015);
+	retval.am.counts.push(rec.cnt_1030);
+	retval.am.counts.push(rec.cnt_1045);
+	retval.am.counts.push(rec.cnt_1100);
+	retval.am.counts.push(rec.cnt_1115);
+	retval.am.counts.push(rec.cnt_1130);
+	retval.am.counts.push(rec.cnt_1145);
+	
+	retval.pm1.counts.push(rec.cnt_1200);
+	retval.pm1.counts.push(rec.cnt_1215);
+	retval.pm1.counts.push(rec.cnt_1230);
+	retval.pm1.counts.push(rec.cnt_1245);
+	retval.pm1.counts.push(rec.cnt_1300);
+	retval.pm1.counts.push(rec.cnt_1315);
+	retval.pm1.counts.push(rec.cnt_1330);
+	retval.pm1.counts.push(rec.cnt_1345);
+	retval.pm1.counts.push(rec.cnt_1400);
+	retval.pm1.counts.push(rec.cnt_1415);
+	retval.pm1.counts.push(rec.cnt_1430);
+	retval.pm1.counts.push(rec.cnt_1445);
+	retval.pm1.counts.push(rec.cnt_1500);
+	retval.pm1.counts.push(rec.cnt_1515);
+	retval.pm1.counts.push(rec.cnt_1530);
+	retval.pm1.counts.push(rec.cnt_1545);
+	retval.pm1.counts.push(rec.cnt_1600);
+	retval.pm1.counts.push(rec.cnt_1615);
+	retval.pm1.counts.push(rec.cnt_1630);
+	retval.pm1.counts.push(rec.cnt_1645);
+	retval.pm1.counts.push(rec.cnt_1700);
+	retval.pm1.counts.push(rec.cnt_1715);
+	retval.pm1.counts.push(rec.cnt_1730);
+	retval.pm1.counts.push(rec.cnt_1745);
+	
+	retval.pm2.counts.push(rec.cnt_1800);
+	retval.pm2.counts.push(rec.cnt_1815);
+	retval.pm2.counts.push(rec.cnt_1830);
+	retval.pm2.counts.push(rec.cnt_1845);
+	retval.pm2.counts.push(rec.cnt_1900);
+	retval.pm2.counts.push(rec.cnt_1915);
+	retval.pm2.counts.push(rec.cnt_1930);
+	retval.pm2.counts.push(rec.cnt_1945);
+	retval.pm2.counts.push(rec.cnt_2000);
+	retval.pm2.counts.push(rec.cnt_2015);
+	retval.pm2.counts.push(rec.cnt_2030);
+	retval.pm2.counts.push(rec.cnt_2045);
+	
 	return retval;
-}
+} // prepare_count_data_for_viz
 
-// Appends a <div> with a report for the given count_id into the report_div
-// Question: Parameterize <div> into which the report is appended?
+
+// report4countId:
+// Appends a <div> with a report for the given count_id into the report_div.
+// This function calls report4count to create the report for each 'count'
+// associated with the given count_id.
 function report4countId(count_id) {
 	console.log('Report for ' + count_id);
-	
-	var main_div_id    = 'report_count_' + count_id,
-	    am_viz_div_id  = 'viz_' + count_id  + '_am',
-		pm1_viz_div_id = 'viz' + count_id + '_pm1',
-		pm2_viz_div_id = 'viz' + count_id + '_pm';
+	var main_div_id    = 'report_count_' + count_id;
 	var html;
 	
 	// Set up the framework - the main container <div> for everything
@@ -161,9 +223,31 @@ function report4countId(count_id) {
 	html += '</div>';
 	$('#report_div').append(html);
 	
-	var o = prepare_count_data_for_viz(count_id);
-	// *** TBD: Generate bar-chart viz'es for the am, pm1, and pm2 periods
-	//          and append them into the approrpiate <div>s.
+	// Generate a report for each 'count record' associated with the given count_id
+	var count_recs = _.filter(counts4countloc, function(rec) { return rec.count_id == count_id; });
+	count_recs.forEach(function(rec) {
+		var rec_id, rec_div_id, html, o;
+		rec_id = rec.id;
+		rec_div_id = main_div_id + '_' + rec_id;
+		
+		// Create and append a <div> for the count rec
+		html = '<div ' + 'id=' + rec_div_id + '>';
+		html += '<p>Report for record id # ' + rec.id + '</p>';
+		html += '</div>';
+		$('#report_div').append(html);
+		
+		// *** TBD: Append <div>s for the bar charts for 'am', 'pm1', and 'pm2' periods,
+		//          and insert the bar chart for each
+		var am_viz_div_id  = 'viz_' + count_id + '_' + rec_id + '_am',
+		    pm1_viz_div_id = 'viz_' + count_id + '_' + rec_id + '_pm1',
+		    pm2_viz_div_id = 'viz_' + count_id + '_' + rec_id + '_pm2';
+			
+		o = prepare_count_data_for_viz(rec);
+			
+		// *** TBD
+	}); // forEach count_rec
+	
+	var _DEBUG_HOOK = 0;
 } // report4countId
 
 
