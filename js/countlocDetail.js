@@ -149,7 +149,7 @@ function report4countId(count_id) {
 	console.log('Report for ' + count_id);
 	
 	var main_div_id    = 'report_count_' + count_id,
-	    am_viz_div_id  = 'viz_' + count_id ' + '_am',
+	    am_viz_div_id  = 'viz_' + count_id  + '_am',
 		pm1_viz_div_id = 'viz' + count_id + '_pm1',
 		pm2_viz_div_id = 'viz' + count_id + '_pm';
 	var html;
