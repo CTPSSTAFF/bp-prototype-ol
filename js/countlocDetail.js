@@ -11,8 +11,15 @@
 // Data source: count data
 var countsURL = 'data/csv/bp_counts.csv';
 
+// Data source: count locations 
+var countlocsURL = 'data/json/ctps_bp_count_locations_pt.geo.json';
+
 var counts4countloc = []	// counts for current count location
     count_ids =       [];	// count_id's for these counts
+	
+// *** TBD: Delete this declaration; not needed
+// Data record for 'this countloc', i.e., the countloc passed as a URL parameter to this page
+var this_countloc = {};
 	
 // Varioius things for WMS and WFS layers
 // First, folderol to allow the app to run on appsrvr3 as well as "in the wild"
@@ -61,9 +68,9 @@ function getURLParameter(sParam) {
 } // gtetURLParameter()
 
 // initialize_map
-// parameters: 	loc_lat - latitude of count location
-//              loc_lon - longitude of count location
-function initialize_map(loc_lat, loc_lon) {
+// parameter: this_countloc  - record for count location
+//
+function initialize_map(this_countloc) {
 	// Create OpenStreetMap base layer
 	const osm_basemap_layer = new ol.layer.Tile({ source: new ol.source.OSM() });
 	osm_basemap_layer.setVisible(true);
@@ -79,7 +86,7 @@ function initialize_map(loc_lat, loc_lon) {
 										visible: true
 									});	
 									
-	var mapCenter = ol.proj.fromLonLat([loc_lon, loc_lat]);
+	var mapCenter = ol.proj.fromLonLat([this_countloc.properties.longitude, this_countloc.properties.latitude]);
 	var mapZoom = 17; // Best guess, for now
     var mapView =  new ol.View({ center: mapCenter, zoom:  mapZoom });
 	
@@ -89,7 +96,7 @@ function initialize_map(loc_lat, loc_lon) {
 	vSource.clear();
 	geom = {};
 	props = {}; // TBD
-	geom =  new ol.geom.Point(ol.proj.fromLonLat([loc_lon, loc_lat]));
+	geom =  new ol.geom.Point(ol.proj.fromLonLat([this_countloc.properties.longitude, this_countloc.properties.latitude]));
 	// props = JSON.parse(JSON.stringify(cur_countloc.properties));
 	feature = new ol.Feature({geometry: geom, properties: props});
 	vSource.addFeature(feature);
@@ -250,6 +257,7 @@ function report4countId(count_id) {
 	var _DEBUG_HOOK = 0;
 } // report4countId
 
+var getJson = function(url) { return $.get(url, null, 'json'); };
 
 function initialize() {
 	var loc_id = getURLParameter('loc_id');
@@ -264,16 +272,34 @@ function initialize() {
 	
 	// Load count data from CSV file
 	d3.csv(countsURL, rowConverter).then(
-		function(data){
-			initialize_map(loc_lat, loc_lon);
-			// Extract the counts for the current countloc
-			counts4countloc = _.filter(data, function(rec) { return rec.bp_loc_id == loc_id; });
-			// Get count_id's of these counts
-			count_ids = _.map(counts4countloc, function(rec) { return rec.count_id; });
-			count_ids.forEach(function(count_id) {
-				report4countId(count_id);
-			});
-			_DEBUG_HOOK = 1;
+		function(counts_data){
+			// Load GeoJSON for count locations
+			// Use local file for now, WFS request in production
+			// For WFS request - remember to reproject to EPSG:4326!
+			$.when(getJson(countlocsURL).done(function(bp_countlocs) {
+				var ok = arguments[1] === 'success'; 
+				if (ok === false) {
+					alert("Failed to load GeoJSON for count locations successfully.");
+					return; 
+				} 
+				var temp = _.filter(bp_countlocs.features, function(rec) { return rec.properties.loc_id == loc_id; });
+				var this_countloc = temp[0];
+				_DEBUG_HOOK = 1;
+				
+				// Extract the counts for the current countloc
+				counts4countloc = _.filter(counts_data, function(rec) { return rec.bp_loc_id == loc_id; });
+				// Get count_id's of these counts
+				count_ids = _.map(counts4countloc, function(rec) { return rec.count_id; });
+				_DEBUG_HOOK = 2;
+				
+				initialize_map(this_countloc, loc_lat, loc_lon);
+				_DEBUG_HOOK = 3;
+				
+				count_ids.forEach(function(count_id) {
+					report4countId(count_id);
+				});
+				_DEBUG_HOOK = 4;
+			}));
+	_DEBUG_HOOK = 5;
 	});
-	_DEBUG_HOOK = 2;
-}
+} // initialize
