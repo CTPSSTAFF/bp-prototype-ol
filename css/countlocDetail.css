@@ -1,0 +1,42 @@
+* {
+	font-family:"Trebuchet MS","sans-serif";
+}
+
+.container_top {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	align-items: center;
+}
+
+#map { 
+	height: 600px; 
+	width:  80%;
+	border: 4px solid #B87F32;
+	margin-bottom: 10px;
+}
+
+.container_bottom {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	align-items: right;
+}
+
+#report_div {
+	/* NOTE: this is actually set in the configuration options for the jsGrid object. */
+	/* width: 80%;*/ 
+}
+
+#viz {
+	/* placeholder */
+}
+
+/* Hide OpenLayers Attribution on map */
+.ol-attribution { display: none; }
+
+
+/* CSS for styling D3 bar chart - *** TEMP, FOR NOW */
+.bar { 
+	fill: steelblue; 
+}
