@@ -49,34 +49,36 @@
 	<link rel="stylesheet" src="libs/openlayers-6.14.1-ol.css" type="text/css">
 	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css" type="text/css"> -->
 	
-	 <!-- CSS for app -->
+	 <!-- CSS for main page of app -->
 	 <link rel="stylesheet" href="css/prototype2.css">
 </head>
 <body>
+	<div class="container">
 	<h3>Prototype Next-gen Bike-Ped Counts App - OpenLayers Version</h3>
 	
-	<div id="controls">
-		<span>
-				<label for="select_town">Select town:&nbsp;</label>
-				<select name ="select_town" id="select_town" class="pick_list">
-				</select>
-				<label for="select_year">Select year:&nbsp;</label>
-				<select name="select_year" id="select_year" class="pick_list">
-				</select>
-				<button id="reset">Reset app</button>
-		</span>
-	</div>
-	
-	<div id="map">
-	</div>
-	
-	<div id="output_table">
-	</div>
-	
-	<div id="popup" class="ol-popup">
-		<a href="#" id="popup-closer" class="ol-popup-closer"></a>
-		<div id="popup-content"></div>
-	</div>
+		<div id="controls">
+			<span>
+					<label for="select_town">Select town:&nbsp;</label>
+					<select name ="select_town" id="select_town" class="pick_list">
+					</select>
+					<label for="select_year">Select year:&nbsp;</label>
+					<select name="select_year" id="select_year" class="pick_list">
+					</select>
+					<button id="reset">Reset app</button>
+			</span>
+		</div>
+		
+		<div id="map">
+		</div>
+		
+		<div id="output_table">
+		</div>
+		
+		<div id="popup" class="ol-popup">
+			<a href="#" id="popup-closer" class="ol-popup-closer"></a>
+			<div id="popup-content"></div>
+		</div>
+	</div> <!-- container -->
 	
 	<!-- CSV utilities -->
 	<script src="js/csvutils.js"></script>
