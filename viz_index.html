@@ -39,10 +39,22 @@
 	<!-- div for prototyping bar-chart viz -->
 	<div id="viz">
 	</div>
+	
+	<!-- CSV utilities -->
+	<script src="js/csvutils.js"></script>
 
-	<!-- JS for prototyping bar chart -->
+	<!-- Wrapper around Plotly API - MAY NOT BE NEEDED -->
 	<script src="js/viz_prototype.js"></script>
 	
+	<script src="js/viz_example_1.js"></script>
+	
+	<script> 
+	$(document).ready(function() {
+		generate_viz();	
+	});
+	</script>
+	
+	<!--
 	<script>
 	function randomNumber(min, max) {
 		return Math.floor(Math.random() * (max - min) + min);
@@ -57,5 +69,6 @@
 	var data = [ { x: years, y: counts, type: 'bar' } ];
 	bar_chart('viz', data);
 	</script>
+	-->
 </body>
 </html>
