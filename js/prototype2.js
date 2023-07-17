@@ -691,17 +691,4 @@ function initialize() {
 			}));
 		});
 	_DEBUG_HOOK = 3;
-	
-	// *** WORK-IN-PROGRESS - generate prototype bar chart using plotly
-	// *** TO BE MOVED TO COUNT-LOC "detail" PAGE
-/*
-	var year, years = [], counts = [];
-	for (year = 2013; year <= 2022; year++) {
-		years.push(year);
-		counts.push(randomNumber(1, 100));
-	}	
-	var data = [ { x: years, y: counts, type: 'bar' } ];
-	bar_chart('viz', data);
-*/
-	
 } // initialize
