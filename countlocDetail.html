@@ -49,37 +49,41 @@
 	<link rel="stylesheet" src="libs/openlayers-6.14.1-ol.css" type="text/css">
 	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css" type="text/css"> -->
 	
-	 <!-- CSS for app -->
-	 <!-- For now, we'll use a single CSS file for both the 'main' and 'detail' pages. -->
-	 <link rel="stylesheet" href="css/prototype2.css">
+
+	 <!-- CSS file for the 'detail' page -->
+	 <link rel="stylesheet" href="css/countlocDetail.css">
 </head>
 <body>
-	<h3>Prototype Next-gen Bike-Ped Counts App (OpenLayers Version) Count Location Detail Page</h3>
-	
-	<div id="map">
-	</div>
-	
-	<!-- STyling to be defined in CSS file -->
-	<div id="report_div" style="height:30px;width:500px;">
-	</div>
-	
-	<!-- May not be needed -->
-	<!--
-	<div id="output_table">
-	</div>
-	-->
-	
-	<!-- May not be needed -->
-	<!--
-	<div id="popup" class="ol-popup">
-		<a href="#" id="popup-closer" class="ol-popup-closer"></a>
-		<div id="popup-content"></div>
-	</div>
-	-->
-	
-	<!-- div for prototyping bar-chart viz -->
-	<div id="viz">
-	</div>
+	<div class="container_top">
+		<h3>Prototype Next-gen Bike-Ped Counts App (OpenLayers Version) Count Location Detail Page</h3>
+		
+		<div id="map">
+		</div>
+	</div> <!-- container_top -->
+		
+	<div class="container_bottom">
+		<!-- Styling to be defined in CSS file -->
+		<div id="report_div" style="height:30px;width:500px;">
+		</div>
+		
+		<!-- May not be needed -->
+		<!--
+		<div id="output_table">
+		</div>
+		-->
+		
+		<!-- May not be needed -->
+		<!--
+		<div id="popup" class="ol-popup">
+			<a href="#" id="popup-closer" class="ol-popup-closer"></a>
+			<div id="popup-content"></div>
+		</div>
+		-->
+		
+		<!-- div for prototyping bar-chart viz -->
+		<div id="viz">
+		</div>
+	</div> <!-- container_bottom -->
 	
 	<!-- CSV utilities -->
 	<script src="js/csvutils.js"></script>
