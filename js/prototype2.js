@@ -518,11 +518,13 @@ var onclick_handler = function(evt) {
 	var _DEBUG_HOOK = 0;
 	var pixel = evt.pixel,
 	    features = [], feature, content, coordinate;
+	const hitTolerance = 50;	// hit-test tolerance, in pixels
 		
-	if (ol_map.hasFeatureAtPixel(pixel) === true) {
+	if (ol_map.hasFeatureAtPixel(pixel, { 'hitTolerance': hitTolerance }) === true) {
 		ol_map.forEachFeatureAtPixel(pixel, function(feature, layer) {
 			features.push(feature);
-		});
+		}, { 'hitTolerance': hitTolerance } );
+		
 		// At least for now, we'll just work with the 1st feature
 		feature = features[0];
 		content = document.getElementById('popup-content');
