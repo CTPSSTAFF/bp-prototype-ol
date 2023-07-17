@@ -13,6 +13,11 @@
 	margin-bottom: 10px;
 }
 
+#output_table {
+	/* NOTE: this is actually set in the configuration options for the jsGrid object. */
+	/* width: 80%;*/ 
+}
+
 /* Hide OpenLayers Attribution on map */
 .ol-attribution { display: none; }
 
@@ -57,12 +62,6 @@
 }
 .ol-popup-closer:after {
         content: "✖";
-}
-
-
-#output_table {
-	/* NOTE: this is actually set in the configuration options for the jsGrid object. */
-	/* width: 80%;*/ 
 }
 
 
