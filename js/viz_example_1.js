@@ -14,12 +14,14 @@ function bar_chart(div_id, data) {
 
 function generate_classified_viz(count1, count2) {
 	
+	var x_domain = ['Bicycle', 'Jogger', 'Skater', 'Wheelchair', 'Other', 'Baby Carriage'];
+	
 	// WARNING: HACK HERE - we know that the 2 counts differ in Date
 	var date1 = count1[0].count_date.substr(0,10);
 	var date2 = count2[0].count_date.substr(0,10);
 	
 	var trace1 = {
-	  x: ['Bicycle', 'Jogger', 'Skater', 'Wheelchair', 'Other', 'Baby Carriage'],
+	  x: x_domain,
 	  y: [0, 0 , 0, 0, 0, 0],
 	  name: date1,
 	  type: 'bar'
@@ -48,7 +50,7 @@ function generate_classified_viz(count1, count2) {
 	
 	
 	var trace2 = {
-	  x: ['Jogger', 'Skater', 'Wheelchair', 'Other', 'Baby Carriage'],
+	  x: x_domain,
 	  y: [0, 0 , 0, 0, 0, 0],
 	  name: date2,
 	  type: 'bar'
