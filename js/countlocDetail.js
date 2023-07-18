@@ -257,13 +257,9 @@ function report4countId(count_id) {
 	var _DEBUG_HOOK = 0;
 } // report4countId
 
-var getJson = function(url) { return $.get(url, null, 'json'); };
 
 function initialize() {
-	var loc_id = getURLParameter('loc_id');
-	var loc_lat = getURLParameter('loc_lat');
-	var loc_lon = getURLParameter('loc_lon');
-	
+	var loc_id = getURLParameter('loc_id');	
 	var _DEBUG_HOOK = 0;
 	
 	// Temp stuff, for now
@@ -288,11 +284,12 @@ function initialize() {
 				
 				// Extract the counts for the current countloc
 				counts4countloc = _.filter(counts_data, function(rec) { return rec.bp_loc_id == loc_id; });
-				// Get count_id's of these counts
+				// Get list of unique count_id's of these counts
 				count_ids = _.map(counts4countloc, function(rec) { return rec.count_id; });
+				count_ids = _.uniqBy(count_ids, 'count_id');
 				_DEBUG_HOOK = 2;
 				
-				initialize_map(this_countloc, loc_lat, loc_lon);
+				initialize_map(this_countloc);
 				_DEBUG_HOOK = 3;
 				
 				count_ids.forEach(function(count_id) {
