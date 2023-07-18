@@ -311,7 +311,7 @@ function make_popup_content(feature) {
 // 		3. set extent of map based on bounding box of the selected countlocs
 // parameter 'countlocs' is the array of GeoJSON features for the selected countlocs
 function update_map(selected_countlocs) {
-	var vSource, i, cur_countloc, feature, geom, props, extent;
+	var vSource, i, cur_countloc, feature, geom, props, extent, center, zoom, view;
 	
 	vSource = selected_countlocs_layer.getSource();
 	vSource.clear();
@@ -326,9 +326,18 @@ function update_map(selected_countlocs) {
 	}
 	selected_countlocs_layer.setSource(vSource);
 	
-	// Get extent of selected countlocs, and pan/zoom map to it
-	extent = vSource.getExtent();
-	ol_map.getView().fit(extent, { size: ol_map.getSize(), duration: 1500 });
+	// Pan/zoom map to extent of selected count locations
+	// Handle special case of 1 countloc
+	if (selected_countlocs.length == 1) {
+		center = ol.proj.fromLonLat([selected_countlocs[0].geometry.coordinates[0], selected_countlocs[0].geometry.coordinates[1]]);
+		zoom = 12; // Arbitrary choice, for now
+		view = new ol.View({center: center, zoom: zoom});
+		ol_map.setView(view);
+	} else {
+	    // Get extent of selected countlocs, and pan/zoom map to it
+	    extent = vSource.getExtent();
+	    ol_map.getView().fit(extent, { size: ol_map.getSize(), duration: 1500 });
+	}
 } // update_map
 
 // Update the jsGrid table with info about each selected count location
