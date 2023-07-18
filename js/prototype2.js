@@ -343,15 +343,16 @@ function update_map(selected_countlocs) {
 // Update the jsGrid table with info about each selected count location
 function update_table(countlocs) {
 	var _DEBUG_HOOK = 0;
-	var data_array = [];
+	var i, cl, data_array = [];
 	// Populate 'data' array with info about the selected count locations
-	countlocs.forEach(function(cl) {
+	for (i = 0; i < countlocs.length; i++) {
+		cl = countlocs[i];
 		// NOTE: cl.properties.loc_id has the B-P count location ID
 		var a_tag = '<a href=countlocDetail.html?loc_id=' + cl.properties.loc_id;
 		a_tag += ' target="_blank">' + cl.properties.description +'</a>';
 		_DEBUG_HOOK =1;
 		data_array.push({'countloc' : a_tag, 'town' : cl.properties.town});
-	});
+	}
 		
 	$("#output_table").jsGrid({
 			height: "30%",
