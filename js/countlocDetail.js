@@ -257,7 +257,6 @@ function report4countId(count_id) {
 	var _DEBUG_HOOK = 0;
 } // report4countId
 
-var getJson = function(url) { return $.get(url, null, 'json'); };
 
 function initialize() {
 	var loc_id = getURLParameter('loc_id');	

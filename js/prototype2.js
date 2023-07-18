@@ -587,8 +587,6 @@ function initialize_map() {
 } // initialize_map
 
 
-var getJson = function(url) { return $.get(url, null, 'json'); };
-
 function initialize() {
 	var _DEBUG_HOOK = 0;
 	// Load count data from CSV file
