@@ -379,7 +379,7 @@ function counts_to_countloc_ids(counts) {
 ///////////////////////////////////////////////////////////////////////////////
 // Event handlers for:
 // 	1. 'change' event to pick-lists
-//  2. 'click' event on 'reset' button
+//  2. 'click' event on 'clear filters' button
 //  3. 'click event on OpenLayers map
 //
 
@@ -469,9 +469,9 @@ function pick_list_handler(e) {
 	update_table(selected_countlocs);
 } // pick_list_handler
 
-// reset_handler: on-click event handler for 'reset' button
+// clear_filters_handler: on-click event handler for 'clear filters' button
 // 
-function reset_handler(e) {
+function clear_filters_handler(e) {
 	// Re-initialize 'selected' countlocs layer
 	var vSource;
 	vSource = selected_countlocs_layer.getSource();
@@ -484,7 +484,7 @@ function reset_handler(e) {
 	ol_map.getView().fit(initMapExtent, { size: ol_map.getSize(), duration: 1000});
 	initialize_pick_lists(all_counts);
 	$('#output_table').hide();
-} // on-click handler for 'reset'
+} // on-click handler for 'clear filters'
 
 
 // Populate the pick-lists with their initial values, based on all_counts
@@ -581,7 +581,7 @@ function initialize_map() {
 		ol_map.on('click', function(evt) { onclick_handler(evt); });
 	}
 	
-	// Cache initial map extent for use in 'reset_handler'
+	// Cache initial map extent for use in 'clear_filters_handler'
 	var v = ol_map.getView();
 	initMapExtent = v.calculateExtent();
 } // initialize_map
@@ -607,8 +607,8 @@ function initialize() {
 				_DEBUG_HOOK = 2
 				// Bind on-change event handler(s) for pick-list controls
 				$('#select_town,#select_year').on('change', pick_list_handler);
-				// Bind on-change event handler for 'reset' button 
-				$('#reset').on('click', reset_handler);
+				// Bind on-change event handler for 'clear_filters' button 
+				$('#clear_filters').on('click', clear_filters_handler);
 				initialize_map();
 				initialize_pick_lists(all_counts);
 			}));
