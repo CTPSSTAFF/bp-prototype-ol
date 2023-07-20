@@ -1,6 +1,9 @@
-// csvutils.js
+// utils.js
 //
 // Note: This file REQUIRES that the d3.js library is loaded before it.
+
+// 
+var getJson = function(url) { return $.get(url, null, 'json'); };
 
 // rowConverter function for parsing input CSV file of count records
 var rowConverter = function(d) {

@@ -9,6 +9,10 @@
 	align-items: center;
 }
 
+#controls {
+	margin-bottom: 10px;
+}
+
 #map { 
 	height: 600px; 
 	width:  80%;
