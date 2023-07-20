@@ -29,78 +29,78 @@ function summarize_set_of_counts_by_quarter_hour(counts) {
                'cnt_2000' : 0, 'cnt_2015' : 0, 'cnt_2030' : 0, 'cnt_2045' : 0
 	}
 
-	retval.cnt_0630 =  _.sum(_.map(counts, function(c) { return c.cnt_0630; }));
-	retval.cnt_0645 =  _.sum(_.map(counts, function(c) { return c.cnt_0645; }));
+	retval.cnt_0630 =  _.sum(_.map(counts, 'cnt_0630'));
+	retval.cnt_0645 =  _.sum(_.map(counts, 'cnt_0645'));
 	
-	retval.cnt_0700 =  _.sum(_.map(counts, function(c) { return c.cnt_0700; }));
-	retval.cnt_0715 =  _.sum(_.map(counts, function(c) { return c.cnt_0715; }));	
-	retval.cnt_0730 =  _.sum(_.map(counts, function(c) { return c.cnt_0730; }));	
-	retval.cnt_0745 =  _.sum(_.map(counts, function(c) { return c.cnt_0745; }));	
+	retval.cnt_0700 =  _.sum(_.map(counts, 'cnt_0700'));
+	retval.cnt_0715 =  _.sum(_.map(counts, 'cnt_0715'));	
+	retval.cnt_0730 =  _.sum(_.map(counts, 'cnt_0730'));	
+	retval.cnt_0745 =  _.sum(_.map(counts, 'cnt_0745'));	
 
-	retval.cnt_0800 =  _.sum(_.map(counts, function(c) { return c.cnt_0800; }));	
-	retval.cnt_0815 =  _.sum(_.map(counts, function(c) { return c.cnt_0815; }));	
-	retval.cnt_0830 =  _.sum(_.map(counts, function(c) { return c.cnt_0830; }));	
-	retval.cnt_0845 =  _.sum(_.map(counts, function(c) { return c.cnt_0845; }));
+	retval.cnt_0800 =  _.sum(_.map(counts, 'cnt_0800'));	
+	retval.cnt_0815 =  _.sum(_.map(counts, 'cnt_0815'));	
+	retval.cnt_0830 =  _.sum(_.map(counts, 'cnt_0830'));	
+	retval.cnt_0845 =  _.sum(_.map(counts, 'cnt_0845'));
 	
-	retval.cnt_0900 =  _.sum(_.map(counts, function(c) { return c.cnt_0900; }));	
-	retval.cnt_0915 =  _.sum(_.map(counts, function(c) { return c.cnt_0915; }));	
-	retval.cnt_0930 =  _.sum(_.map(counts, function(c) { return c.cnt_0930; }));	
-	retval.cnt_0945 =  _.sum(_.map(counts, function(c) { return c.cnt_0945; }));	
+	retval.cnt_0900 =  _.sum(_.map(counts, 'cnt_0900'));	
+	retval.cnt_0915 =  _.sum(_.map(counts, 'cnt_0915'));	
+	retval.cnt_0930 =  _.sum(_.map(counts, 'cnt_0930'));	
+	retval.cnt_0945 =  _.sum(_.map(counts, 'cnt_0945'));	
 
-	retval.cnt_1000 =  _.sum(_.map(counts, function(c) { return c.cnt_1000; }));	
-	retval.cnt_1015 =  _.sum(_.map(counts, function(c) { return c.cnt_1015; }));	
-	retval.cnt_1030 =  _.sum(_.map(counts, function(c) { return c.cnt_1030; }));	
-	retval.cnt_1045 =  _.sum(_.map(counts, function(c) { return c.cnt_1045; }));	
+	retval.cnt_1000 =  _.sum(_.map(counts, 'cnt_1000'));	
+	retval.cnt_1015 =  _.sum(_.map(counts, 'cnt_1015'));	
+	retval.cnt_1030 =  _.sum(_.map(counts, 'cnt_1030'));	
+	retval.cnt_1045 =  _.sum(_.map(counts, 'cnt_1045'));	
 
-	retval.cnt_1100 =  _.sum(_.map(counts, function(c) { return c.cnt_1100; }));	
-	retval.cnt_1115 =  _.sum(_.map(counts, function(c) { return c.cnt_1115; }));	
-	retval.cnt_1130 =  _.sum(_.map(counts, function(c) { return c.cnt_1130; }));	
-	retval.cnt_1145 =  _.sum(_.map(counts, function(c) { return c.cnt_1145; }));	
+	retval.cnt_1100 =  _.sum(_.map(counts, 'cnt_1100'));	
+	retval.cnt_1115 =  _.sum(_.map(counts, 'cnt_1115'));	
+	retval.cnt_1130 =  _.sum(_.map(counts, 'cnt_1130'));	
+	retval.cnt_1145 =  _.sum(_.map(counts, 'cnt_1145'));	
 
-	retval.cnt_1200 =  _.sum(_.map(counts, function(c) { return c.cnt_1200; }));	
-	retval.cnt_1215 =  _.sum(_.map(counts, function(c) { return c.cnt_1215; }));	
-	retval.cnt_1230 =  _.sum(_.map(counts, function(c) { return c.cnt_1230; }));	
-	retval.cnt_1245 =  _.sum(_.map(counts, function(c) { return c.cnt_1245; }));	
+	retval.cnt_1200 =  _.sum(_.map(counts, 'cnt_1200'));	
+	retval.cnt_1215 =  _.sum(_.map(counts, 'cnt_1215'));	
+	retval.cnt_1230 =  _.sum(_.map(counts, 'cnt_1230'));	
+	retval.cnt_1245 =  _.sum(_.map(counts, 'cnt_1245'));	
 
-	retval.cnt_1300 =  _.sum(_.map(counts, function(c) { return c.cnt_1300; }));	
-	retval.cnt_1315 =  _.sum(_.map(counts, function(c) { return c.cnt_1315; }));	
-	retval.cnt_1330 =  _.sum(_.map(counts, function(c) { return c.cnt_1330; }));	
-	retval.cnt_1345 =  _.sum(_.map(counts, function(c) { return c.cnt_1345; }));	
+	retval.cnt_1300 =  _.sum(_.map(counts, 'cnt_1300'));	
+	retval.cnt_1315 =  _.sum(_.map(counts, 'cnt_1315'));	
+	retval.cnt_1330 =  _.sum(_.map(counts, 'cnt_1330'));	
+	retval.cnt_1345 =  _.sum(_.map(counts, 'cnt_1345'));	
 
-	retval.cnt_1400 =  _.sum(_.map(counts, function(c) { return c.cnt_1400; }));	
-	retval.cnt_1415 =  _.sum(_.map(counts, function(c) { return c.cnt_1415; }));	
-	retval.cnt_1430 =  _.sum(_.map(counts, function(c) { return c.cnt_1430; }));	
-	retval.cnt_1445 =  _.sum(_.map(counts, function(c) { return c.cnt_1445; }));	
+	retval.cnt_1400 =  _.sum(_.map(counts, 'cnt_1400'));	
+	retval.cnt_1415 =  _.sum(_.map(counts, 'cnt_1415'));	
+	retval.cnt_1430 =  _.sum(_.map(counts, 'cnt_1430'));	
+	retval.cnt_1445 =  _.sum(_.map(counts, 'cnt_1445'));	
 
-	retval.cnt_1500 =  _.sum(_.map(counts, function(c) { return c.cnt_1500; }));	
-	retval.cnt_1515 =  _.sum(_.map(counts, function(c) { return c.cnt_1515; }));	
-	retval.cnt_1530 =  _.sum(_.map(counts, function(c) { return c.cnt_1530; }));	
-	retval.cnt_1545 =  _.sum(_.map(counts, function(c) { return c.cnt_1545; }));	
+	retval.cnt_1500 =  _.sum(_.map(counts, 'cnt_1500'));	
+	retval.cnt_1515 =  _.sum(_.map(counts, 'cnt_1515'));	
+	retval.cnt_1530 =  _.sum(_.map(counts, 'cnt_1530'));	
+	retval.cnt_1545 =  _.sum(_.map(counts, 'cnt_1545'));	
 
-	retval.cnt_1600 =  _.sum(_.map(counts, function(c) { return c.cnt_1600; }));	
-	retval.cnt_1615 =  _.sum(_.map(counts, function(c) { return c.cnt_1615; }));	
-	retval.cnt_1630 =  _.sum(_.map(counts, function(c) { return c.cnt_1630; }));	
-	retval.cnt_1645 =  _.sum(_.map(counts, function(c) { return c.cnt_1645; }));	
+	retval.cnt_1600 =  _.sum(_.map(counts, 'cnt_1600'));	
+	retval.cnt_1615 =  _.sum(_.map(counts, 'cnt_1615'));	
+	retval.cnt_1630 =  _.sum(_.map(counts, 'cnt_1630'));	
+	retval.cnt_1645 =  _.sum(_.map(counts, 'cnt_1645'));	
 
-	retval.cnt_1700 =  _.sum(_.map(counts, function(c) { return c.cnt_1700; }));	
-	retval.cnt_1715 =  _.sum(_.map(counts, function(c) { return c.cnt_1715; }));	
-	retval.cnt_1730 =  _.sum(_.map(counts, function(c) { return c.cnt_1730; }));	
-	retval.cnt_1745 =  _.sum(_.map(counts, function(c) { return c.cnt_1745; }));	
+	retval.cnt_1700 =  _.sum(_.map(counts, 'cnt_1700'));	
+	retval.cnt_1715 =  _.sum(_.map(counts, 'cnt_1715'));	
+	retval.cnt_1730 =  _.sum(_.map(counts, 'cnt_1730'));	
+	retval.cnt_1745 =  _.sum(_.map(counts, 'cnt_1745'));	
 
-	retval.cnt_1800 =  _.sum(_.map(counts, function(c) { return c.cnt_1800; }));	
-	retval.cnt_1815 =  _.sum(_.map(counts, function(c) { return c.cnt_1815; }));	
-	retval.cnt_1830 =  _.sum(_.map(counts, function(c) { return c.cnt_1830; }));	
-	retval.cnt_1845 =  _.sum(_.map(counts, function(c) { return c.cnt_1845; }));	
+	retval.cnt_1800 =  _.sum(_.map(counts, 'cnt_1800'));	
+	retval.cnt_1815 =  _.sum(_.map(counts, 'cnt_1815'));	
+	retval.cnt_1830 =  _.sum(_.map(counts, 'cnt_1830'));	
+	retval.cnt_1845 =  _.sum(_.map(counts, 'cnt_1845'));	
 
-	retval.cnt_1900 =  _.sum(_.map(counts, function(c) { return c.cnt_1900; }));	
-	retval.cnt_1915 =  _.sum(_.map(counts, function(c) { return c.cnt_1915; }));	
-	retval.cnt_1930 =  _.sum(_.map(counts, function(c) { return c.cnt_1930; }));	
-	retval.cnt_1945 =  _.sum(_.map(counts, function(c) { return c.cnt_1945; }));	
+	retval.cnt_1900 =  _.sum(_.map(counts, 'cnt_1900'));	
+	retval.cnt_1915 =  _.sum(_.map(counts, 'cnt_1915'));	
+	retval.cnt_1930 =  _.sum(_.map(counts, 'cnt_1930'));	
+	retval.cnt_1945 =  _.sum(_.map(counts, 'cnt_1945'));	
 	
-	retval.cnt_2000 =  _.sum(_.map(counts, function(c) { return c.cnt_2000; }));	
-	retval.cnt_2015 =  _.sum(_.map(counts, function(c) { return c.cnt_2015; }));	
-	retval.cnt_2030 =  _.sum(_.map(counts, function(c) { return c.cnt_2030; }));	
-	retval.cnt_2045 =  _.sum(_.map(counts, function(c) { return c.cnt_2045; }));	
+	retval.cnt_2000 =  _.sum(_.map(counts, 'cnt_2000'));	
+	retval.cnt_2015 =  _.sum(_.map(counts, 'cnt_2015'));	
+	retval.cnt_2030 =  _.sum(_.map(counts, 'cnt_2030'));	
+	retval.cnt_2045 =  _.sum(_.map(counts, 'cnt_2045'));	
 
 	return retval;
 } // summarize_set_of_counts_by_quarter_hour
