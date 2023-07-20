@@ -226,7 +226,7 @@ function initialize_map(this_countloc) {
 		// Create WMS layers
 		var lrse_bikes_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
 																				params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230719', 
-																							// 'STYLES': 'polygon_gray_for_non_mpo_area',
+																							'STYLES': 'lrse_bikes_style',
 																							'TRANSPARENT': 'true'
 																					  }
 																		}),
