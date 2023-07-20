@@ -680,8 +680,17 @@ function initialize_map() {
 		
 		
 		// Create WMS layers
+		var lrse_bikes_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
+																				params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230719', 
+																							// 'STYLES': 'polygon_gray_for_non_mpo_area',
+																							'TRANSPARENT': 'true'
+																					  }
+																		}),
+											title: 'Bicycle Facilities (MassDOT)',	
+											visible: true
+										});
 		var ma_wo_brmpo_poly_wms = new ol.layer.Tile({	source: new ol.source.TileWMS({ url		: szWMSserverRoot,
-																					params	: { 'LAYERS': 'postgis:ctps_ma_wo_brmpo_poly', 
+																					    params	: { 'LAYERS': 'postgis:ctps_ma_wo_brmpo_poly', 
 																								'STYLES': 'polygon_gray_for_non_mpo_area',
 																								'TRANSPARENT': 'true'
 																					  }
@@ -704,6 +713,7 @@ function initialize_map() {
 										mgis_basemap_layers['basemap_features'],
 										osm_basemap_layer,
 										stamen_basemap_layer,
+										lrse_bikes_wms,
 										ma_wo_brmpo_poly_wms,
 										bp_countlocs_wms,
 										selected_countlocs_layer	// this is an OL Vector layer
