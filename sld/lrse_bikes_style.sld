@@ -21,7 +21,8 @@
           </ogc:Filter>
           <LineSymbolizer>
             <Stroke>
-              <CssParameter name="fill">#000000</CssParameter>
+              <CssParameter name="fill">#A52A2A</CssParameter>
+			  <CssParameter name="width">1.5</CssParameter>
             </Stroke>
           </LineSymbolizer>
         </Rule>
@@ -36,7 +37,8 @@
           </ogc:Filter>
           <LineSymbolizer>
             <Stroke>
-              <CssParameter name="fill">#D2691E</CssParameter>
+              <CssParameter name="fill">#B8860B</CssParameter>
+			  <CssParameter name="width">1</CssParameter>
             </Stroke>
           </LineSymbolizer>
         </Rule>
