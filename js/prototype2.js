@@ -522,7 +522,7 @@ function initialize_map() {
 		// Create WMS layers
 		var lrse_bikes_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
 																				params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230719', 
-																							'STYLES': 'lrse_bikes_style',
+																							'STYLES': 'lrse_bikes_style_3',
 																							'TRANSPARENT': 'true'
 																					  }
 																		}),
