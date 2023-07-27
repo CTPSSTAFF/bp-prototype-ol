@@ -284,153 +284,195 @@ function initialize_map(this_countloc) {
 	}});			
 } // initialize_map
 
-// prepare_count_data_for_viz: 
+
+
+// prepare_data_for_quarter_hour_viz: 
 // given a count record 'count_rec', return a data structure containing the count record's 
-// da apackaged in a form suitable for input to the Plotly bar-chard visualization engine.
-// This is a JavaScript object of the form:
-// 		{	'am' :  { 'times' : [], 'counts' : [] },
-//			'pm1' : { 'times' : [], 'counts' : [] }, -- covers 12:00 noon to 5:45
-//          'pm2' : { 'times' : [], 'counts' : [] }  -- covers 5:45 to 8:45
-//      }
-function prepare_count_data_for_viz(rec) {
-	var retval = {	'am' : { 'times' : [' 6:00', '6:15', ' 6:30', ' 6:45', 
-	                                    ' 7:00', ' 7:15', ' 7:30', ' 7:45',
-										' 8:00', ' 8:15', ' 8:30', ' 8:45',
-										' 9:00', ' 9:15', ' 9:30', ' 9:45',
-										'10:00', '10:15', '10:30', '10:45',
-										'10100', '11:15', '11:30', '11:45'],
-							 'counts' 	: [] 
-							},
-					'pm1' : { 'times' 	: ['12:00', '12:15', '12:30', '12:45',
-										   ' 1:00', ' 1:15', ' 1:30', ' 1:45',
-										   ' 2:00', ' 2:15', ' 2:30', ' 2:45',
-										   ' 3:00', ' 3:15', ' 3:30', ' 3:45',
-										   ' 4:00', ' 4:15', ' 4:30', ' 4:45',
-										   ' 5:00', ' 5:15', ' 5:30', ' 5:45'],
-					          'counts'  : [] 
-							},
-					'pm2' : { 'times' 	: [' 6:00', '6:15', ' 6:30', ' 6:45',
-										   ' 7:00', ' 7:15', ' 7:30', ' 7:45',
-										   ' 8:00', ' 8:15', ' 8:30', ' 8:45'],
-							 'counts'   : [] }
+// data packaged in a form suitable for input to the Plotly bar-chart visualization engine.
+//
+function prepare_data_for_quarter_hour_viz(rec) {
+	var retval = {	'times' : [' 6:00', '6:15', ' 6:30', ' 6:45', 
+	                           ' 7:00', ' 7:15', ' 7:30', ' 7:45',
+							   ' 8:00', ' 8:15', ' 8:30', ' 8:45',
+							   ' 9:00', ' 9:15', ' 9:30', ' 9:45',
+								'10:00', '10:15', '10:30', '10:45',
+								'11:00', '11:15', '11:30', '11:45',
+                                '12:00', '12:15', '12:30', '12:45',
+								' 1:00', ' 1:15', ' 1:30', ' 1:45',
+								' 2:00', ' 2:15', ' 2:30', ' 2:45',
+								' 3:00', ' 3:15', ' 3:30', ' 3:45',
+								' 4:00', ' 4:15', ' 4:30', ' 4:45',
+								' 5:00', ' 5:15', ' 5:30', ' 5:45',
+                                ' 6:00', '6:15', ' 6:30', ' 6:45',
+							    ' 7:00', ' 7:15', ' 7:30', ' 7:45',
+								' 8:00', ' 8:15', ' 8:30', ' 8:45'
+							],
+					'counts' : [] 
 				};
-				
-	// Populate the 'counts' element of the 'am', 'pm1', and 'pm2'
-	// properties of the 'retval' object
-	retval.am.counts.push(null); // at least right now, we never have any data for 0600
-	retval.am.counts.push(null); // at least right now, we never have any data for 0615
-	retval.am.counts.push(rec.cnt_0630);
-	retval.am.counts.push(rec.cnt_0645);
-	retval.am.counts.push(rec.cnt_0700);
-	retval.am.counts.push(rec.cnt_0715);
-	retval.am.counts.push(rec.cnt_0730);
-	retval.am.counts.push(rec.cnt_0745);
-	retval.am.counts.push(rec.cnt_0800);
-	retval.am.counts.push(rec.cnt_0815);
-	retval.am.counts.push(rec.cnt_0830);
-	retval.am.counts.push(rec.cnt_0845);
-	retval.am.counts.push(rec.cnt_0900);
-	retval.am.counts.push(rec.cnt_0915);
-	retval.am.counts.push(rec.cnt_0930);
-	retval.am.counts.push(rec.cnt_0945);
-	retval.am.counts.push(rec.cnt_1000);
-	retval.am.counts.push(rec.cnt_1015);
-	retval.am.counts.push(rec.cnt_1030);
-	retval.am.counts.push(rec.cnt_1045);
-	retval.am.counts.push(rec.cnt_1100);
-	retval.am.counts.push(rec.cnt_1115);
-	retval.am.counts.push(rec.cnt_1130);
-	retval.am.counts.push(rec.cnt_1145);
 	
-	retval.pm1.counts.push(rec.cnt_1200);
-	retval.pm1.counts.push(rec.cnt_1215);
-	retval.pm1.counts.push(rec.cnt_1230);
-	retval.pm1.counts.push(rec.cnt_1245);
-	retval.pm1.counts.push(rec.cnt_1300);
-	retval.pm1.counts.push(rec.cnt_1315);
-	retval.pm1.counts.push(rec.cnt_1330);
-	retval.pm1.counts.push(rec.cnt_1345);
-	retval.pm1.counts.push(rec.cnt_1400);
-	retval.pm1.counts.push(rec.cnt_1415);
-	retval.pm1.counts.push(rec.cnt_1430);
-	retval.pm1.counts.push(rec.cnt_1445);
-	retval.pm1.counts.push(rec.cnt_1500);
-	retval.pm1.counts.push(rec.cnt_1515);
-	retval.pm1.counts.push(rec.cnt_1530);
-	retval.pm1.counts.push(rec.cnt_1545);
-	retval.pm1.counts.push(rec.cnt_1600);
-	retval.pm1.counts.push(rec.cnt_1615);
-	retval.pm1.counts.push(rec.cnt_1630);
-	retval.pm1.counts.push(rec.cnt_1645);
-	retval.pm1.counts.push(rec.cnt_1700);
-	retval.pm1.counts.push(rec.cnt_1715);
-	retval.pm1.counts.push(rec.cnt_1730);
-	retval.pm1.counts.push(rec.cnt_1745);
-	
-	retval.pm2.counts.push(rec.cnt_1800);
-	retval.pm2.counts.push(rec.cnt_1815);
-	retval.pm2.counts.push(rec.cnt_1830);
-	retval.pm2.counts.push(rec.cnt_1845);
-	retval.pm2.counts.push(rec.cnt_1900);
-	retval.pm2.counts.push(rec.cnt_1915);
-	retval.pm2.counts.push(rec.cnt_1930);
-	retval.pm2.counts.push(rec.cnt_1945);
-	retval.pm2.counts.push(rec.cnt_2000);
-	retval.pm2.counts.push(rec.cnt_2015);
-	retval.pm2.counts.push(rec.cnt_2030);
-	retval.pm2.counts.push(rec.cnt_2045);
+	retval.counts.push(0); // at least right now, we never have any data for 0600
+	retval.counts.push(0); // at least right now, we never have any data for 0615
+	retval.counts.push(rec.cnt_0630);
+	retval.counts.push(rec.cnt_0645);
+	retval.counts.push(rec.cnt_0700);
+	retval.counts.push(rec.cnt_0715);
+	retval.counts.push(rec.cnt_0730);
+	retval.counts.push(rec.cnt_0745);
+	retval.counts.push(rec.cnt_0800);
+	retval.counts.push(rec.cnt_0815);
+	retval.counts.push(rec.cnt_0830);
+	retval.counts.push(rec.cnt_0845);
+	retval.counts.push(rec.cnt_0900);
+	retval.counts.push(rec.cnt_0915);
+	retval.counts.push(rec.cnt_0930);
+	retval.counts.push(rec.cnt_0945);
+	retval.counts.push(rec.cnt_1000);
+	retval.counts.push(rec.cnt_1015);
+	retval.counts.push(rec.cnt_1030);
+	retval.counts.push(rec.cnt_1045);
+	retval.counts.push(rec.cnt_1100);
+	retval.counts.push(rec.cnt_1115);
+	retval.counts.push(rec.cnt_1130);
+	retval.counts.push(rec.cnt_1145);
+	retval.counts.push(rec.cnt_1200);
+	retval.counts.push(rec.cnt_1215);
+	retval.counts.push(rec.cnt_1230);
+	retval.counts.push(rec.cnt_1245);
+	retval.counts.push(rec.cnt_1300);
+	retval.counts.push(rec.cnt_1315);
+	retval.counts.push(rec.cnt_1330);
+	retval.counts.push(rec.cnt_1345);
+	retval.counts.push(rec.cnt_1400);
+	retval.counts.push(rec.cnt_1415);
+	retval.counts.push(rec.cnt_1430);
+	retval.counts.push(rec.cnt_1445);
+	retval.counts.push(rec.cnt_1500);
+	retval.counts.push(rec.cnt_1515);
+	retval.counts.push(rec.cnt_1530);
+	retval.counts.push(rec.cnt_1545);
+	retval.counts.push(rec.cnt_1600);
+	retval.counts.push(rec.cnt_1615);
+	retval.counts.push(rec.cnt_1630);
+	retval.counts.push(rec.cnt_1645);
+	retval.counts.push(rec.cnt_1700);
+	retval.counts.push(rec.cnt_1715);
+	retval.counts.push(rec.cnt_1730);
+	retval.counts.push(rec.cnt_1745);
+	retval.counts.push(rec.cnt_1800);
+	retval.counts.push(rec.cnt_1815);
+	retval.counts.push(rec.cnt_1830);
+	retval.counts.push(rec.cnt_1845);
+	retval.counts.push(rec.cnt_1900);
+	retval.counts.push(rec.cnt_1915);
+	retval.counts.push(rec.cnt_1930);
+	retval.counts.push(rec.cnt_1945);
+	retval.counts.push(rec.cnt_2000);
+	retval.counts.push(rec.cnt_2015);
+	retval.counts.push(rec.cnt_2030);
+	retval.counts.push(rec.cnt_2045);
 	
 	return retval;
-} // prepare_count_data_for_viz
+} // prepare_data_for_quarter_hour_viz
 
 
-// report4countId:
+function generate_quarter_hour_viz(target_div_id, count_record) {
+	var o, x_domain, y_values, data, max_count, layout;
+	
+	o = prepare_data_for_quarter_hour_viz(count_record);
+	x_domain = o.times;
+	y_values = o.counts;
+	data = [ { x: x_domain, y: y_values, type: 'bar' } ];
+	
+	// The following folderol was needed in order to get Plotly to render:
+	// 1. the Y-axis with non-negative values when all the Y data values are 0 and
+	// 2. to provide a (somewhat) reasonable scale of integral values for the Y axis.
+	max_count = _.max(o.counts);
+	if (max_count === 0) {
+		layout = { yaxis: { rangemode: 'nonnegative', range: [0, 5] } };
+	} else {
+		layout = { yaxis: { rangemode: 'nonnegative', autorange: true } };
+	}
+
+	Plotly.newPlot(target_div_id, data, layout);
+} // generate_quarter_hour_viz
+
+
+// generate_report_header:
+// Appends a <div> containing 'header' information for the report into the report_div.
+// This is the _first_ <div> appended to the report_div.
+// It includes:  date, town, facility name,etc.
+// The <div>s for the reports for the individual counts are appended to the report_div
+// by generate_report_for_count_id.
+// 
+function generate_report_header(countloc, count_id) {
+	console.log('Generating report header for count location ' + countloc.properties.loc_id);
+	var header_div_id = 'header_countloc_' + countloc.properties.loc_id;
+	var html;
+	
+	html = '<div ' + 'id=' + header_div_id + '>';
+	html += '<span class="countloc_header_caption">Boston Region MPO Bicycle / Pedestrian Traffic Count Report</span>';
+	html += '</br>';
+	html += '<span class="countloc_header_date">Date: ' + 'TBD' + '</span>';
+	html += '</br>';
+	html += '<span class="countloc_header_town_etc">' + countloc.properties.town + ' : ' + countloc.properties.description + '</span>';
+	html += '</br>';
+	html += '<span class="countloc_header_street">' + 'Street info - TBD' + '</span>';
+	html += '</br>';
+	html += '<span class="countloc_header_facility_info">' + 'Facilty info - TBD' + '</span>';
+	html += '</br>';
+	html += '<span class="countloc_header_weather_info">' + 'Weather info - TBD' + '</span>';
+	html += '</div>';
+	$('#report_div').append(html);
+	return;
+} // generate_report_header
+
+
+// generate_report_for_count_id:
 // Appends a <div> with a report for the given count_id into the report_div.
 // This function calls report4count to create the report for each 'count'
 // associated with the given count_id.
-function report4countId(count_id) {
-	console.log('Report for ' + count_id);
-	var main_div_id    = 'report_count_' + count_id;
-	var html;
+//
+function generate_report_for_count_id(count_id, count_recs) {
+	var html, count_div_id;
 	
-	// Set up the framework - the main container <div> for everything
-	html = '<div ' + 'id=' + main_div_id + '>';
-	html += '<h4>Report for count #' + count_id + '</h4>';
-	// *** TBD: header info - date, location, etc.
+	count_div_id = 'count_' + count_id + '_report';
+	html = '<div ' + count_div_id + '</div>';
+	html += '<span>' + 'Report for count ID ' + count_id + '</span>';
 	html += '</div>';
 	$('#report_div').append(html);
 	
 	// Generate a report for each 'count record' associated with the given count_id
-	var count_recs = _.filter(counts4countloc, function(rec) { return rec.count_id == count_id; });
+	console.log('Generating report for count_id ' + count_id);
 	count_recs.forEach(function(rec) {
-		var rec_id, rec_div_id, html, o;
-		rec_id = rec.id;
-		rec_div_id = main_div_id + '_' + rec_id;
 		
-		// Create and append a <div> for the count rec
-		html = '<div ' + 'id=' + rec_div_id + '>';
-		html += '<p>Report for record id # ' + rec.id + '</p>';
+		console.log('    Generating report for record id ' + rec.id);
+		var rec_id, caption_div_id, viz_div_id, html, o;
+		rec_id = rec.id;
+		
+		caption_div_id = 'count_' + count_id + '_rec_' + rec_id + '_caption';
+		viz_div_id = 'count_' + count_id + '_rec_' + rec_id + '_viz';
+		
+		// Create and append a <div> for the caption of the viz for this count record
+		html = '<div ' + 'id=' + caption_div_id + '>';
+		html += '<p>Visualization of data for count record ID # ' + rec.id + '</p>';
 		html += '</div>';
 		$('#report_div').append(html);
 		
-		// *** TBD: Append <div>s for the bar charts for 'am', 'pm1', and 'pm2' periods,
-		//          and insert the bar chart for each
-		var am_viz_div_id  = 'viz_' + count_id + '_' + rec_id + '_am',
-		    pm1_viz_div_id = 'viz_' + count_id + '_' + rec_id + '_pm1',
-		    pm2_viz_div_id = 'viz_' + count_id + '_' + rec_id + '_pm2';
-			
-		o = prepare_count_data_for_viz(rec);
-			
-		// *** TBD
+		// Create and append a <div> for the visualization itself.
+		html = '<div ' + 'id=' + viz_div_id + '>';
+		html += '</div>';
+		$('#report_div').append(html);
+		
+		generate_quarter_hour_viz(viz_div_id, rec);
+		var _DEBUG_HOOK = 0;
 	}); // forEach count_rec
 	
-	var _DEBUG_HOOK = 0;
-} // report4countId
+	var _DEBUG_HOOK = 0; 
+} // generate_report_for_count_id
 
 
 function initialize() {
 	var loc_id = getURLParameter('loc_id');	
-	var _DEBUG_HOOK = 0;
 	
 	// Temp stuff, for now
 	var s = '<h3>Reports for counts at count location # ' + loc_id + '<h3>';
@@ -443,32 +485,39 @@ function initialize() {
 			// Use local file for now, WFS request in production
 			// For WFS request - remember to reproject to EPSG:4326!
 			$.when(getJson(countlocsURL).done(function(bp_countlocs) {
-				var ok = arguments[1] === 'success'; 
+				var ok, temp, this_countloc, count_ids, count_id,
+				    i, this_count_id, countrecs_for_this_count_id;
+					
+				ok = arguments[1] === 'success'; 
 				if (ok === false) {
 					alert("Failed to load GeoJSON for count locations successfully.");
 					return; 
 				} 
-				var temp = _.filter(bp_countlocs.features, function(rec) { return rec.properties.loc_id == loc_id; });
-				var this_countloc = temp[0];
-				_DEBUG_HOOK = 1;
+				temp = _.filter(bp_countlocs.features, function(rec) { return rec.properties.loc_id == loc_id; });
+				this_countloc = temp[0];
 				
 				// Extract the counts for the current countloc
 				counts4countloc = _.filter(counts_data, function(rec) { return rec.bp_loc_id == loc_id; });
 				// Get list of unique count_id's of these counts
 				count_ids = _.map(counts4countloc, function(rec) { return rec.count_id; });
 				count_ids = _.uniqBy(count_ids, 'count_id');
-				_DEBUG_HOOK = 2;
 				
 				initialize_map(this_countloc);
 				// Arm event handler for basemap selection
 				$(".basemap_radio").change(toggle_basemap_handler);
-				_DEBUG_HOOK = 3;
 				
-				count_ids.forEach(function(count_id) {
-					report4countId(count_id);
-				});
-				_DEBUG_HOOK = 4;
+				// Passing in 1st count_id - right now, some countloc-specific data is in the count records
+				// *** THE DATA ITSELF WILL BE CHANGED - THIS IS JUST 'FOR NOW' ***
+				generate_report_header(this_countloc, count_ids[0]);
+				
+				for (i = 0; i < count_ids.length; i++) {
+					// *** TBD: Yes, I know this is excessively verbose (for now)
+					this_count_id = count_ids[i];
+					countrecs_for_this_count_id = _.filter(counts_data, function(rec) { return rec.count_id == this_count_id; });
+					generate_report_for_count_id(this_count_id, countrecs_for_this_count_id);
+				}
+				_DEBUG_HOOK = 1;
 			}));
-	_DEBUG_HOOK = 5;
+	_DEBUG_HOOK = 2;
 	});
 } // initialize
