@@ -1,10 +1,10 @@
 // Prototype # of next-gen bike-ped counts web application
 //
-// Data: 'all count locations' map data from WMS service
+// Data: 'all count locations' map image tiles 'data' from WMS service
 //       'selected count locations' - OpenLayers vector layer
 //		 'counts' data - CSV file
 // Mapping platform: OpenLayers
-// Basemap: Open Street Map
+// Basemaps: MassGIS, Open Street Map, Stamen
 //
 // Author: Ben Krepp, bkrepp@ctps.org
 
@@ -255,87 +255,161 @@ function counts_to_countloc_ids(counts) {
 	return bp_loc_ids;
 }
 
+
+// populate_town_control_from_list:
+//
+// Populate the select_town <select> element with the array of town aTowns
+// If prepend_all_applic is TRUE, prepend the list of towns with 'All Applicable'
+// If prepend_any is TRUE, prepend this list of towns with 'Any'
+//
+function populate_town_control_from_list(aTowns, prepend_all_applic, prepend_any) {
+	// Disable on-change event handler for 'select_town'
+	$('#select_town').off()
+	// Clear-out, and populate pick list
+	$('#select_town').empty();
+	if (prepend_all_applic == true) {
+		$('#select_year').append(new Option('All Applicable', 'All Applicable'));
+	} 
+	if (prepend_any == true) {
+		$('#select_year').append(new Option('Any', 'Any'));	
+	}
+	aTowns.forEach(function(town) {
+		$('#select_town').append(new Option(town, town));
+	});
+	// Re-enable on-change event handler for 'select_year'
+	$('#select_town').on('change', year_pick_list_handler);	
+}
+
+// populate_year_control_from_list:
+//
+// Populate the select_year <select> element with the array of years, aYears
+// If prepend_all_applic is TRUE, prepend the list of years with 'All Applicable'
+// If prepend_any is TRUE, prepend this list of years with 'Any'
+//
+function populate_year_control_from_list(aYears, prepend_all_applic, prepend_any) {
+	// Disable on-change event handler for 'select_year'
+	$('#select_year').off()
+	// Clear-out, and populate pick list
+	$('#select_year').empty();
+	if (prepend_all_applic == true) {
+		$('#select_year').append(new Option('All Applicable', 'All Applicable'));
+	} 
+	if (prepend_any == true) {
+		$('#select_year').append(new Option('Any', 'Any'));	
+	}
+	aYears.forEach(function(year) {
+		$('#select_year').append(new Option(year, year));
+	});
+	// Re-enable on-change event handler for 'select_year'
+	$('#select_year').on('change', year_pick_list_handler);	
+}
+
+// get unique_years_from_counts:
+// 
+// Given the input array of count records, 'counts',
+// return an array of unique years (strings) sorted in _descending_ order
+function get_uniqe_years_from_counts(counts) {
+	var years, years_uniq;
+	years = _.map(counts, function(count) { return count.count_date.substr(0,4); });
+	years_uniq = _.uniq(years);
+	years_uniq = years_uniq.sort().reverse();
+	return years_uniq;
+}
+
+// get unique_towns_from_counts:
+// 
+// Given the input array of count records, 'counts',
+// return an array of unique towns sorted in alphabetical order
+function get_unique_towns_from_counts(counts) {
+	var towns, towns_uniq;
+	towns =  _.map(counts, function(count) { return count.municipality; });
+	towns_uniq = _.uniq(towns);
+	towns_uniq = towns_uniq.sort();	
+	return towns_uniq;
+} 
+
+
+
 ///////////////////////////////////////////////////////////////////////////////
 // Event handlers for:
-// 	1. 'change' event to pick-lists
-//  2. 'click' event on 'clear filters' button
-//  3. 'click event on OpenLayers map
+// 	1. 'change' event on 'town' pick-list
+//  2. 'change' event on 'year' pick-list
+//  3. 'click' event on 'clear filters' button
+//  4. 'click event on OpenLayers map
 //
+// town_pick_list_handler: On-change event handler for pick-lists of towns
+//
+// The job of this function is to:
+//     1. respond appropriately to 'change' events on the 'select_town' <select> element,
+//        by updating the 'select_year' <select> element (UI operations)
+//     2. compute the current 'selection set' (and possibly the current'un-selection set) 
+//        of count locations.
+//     3. call update_map to update the OpenLayers map, and
+//        call update_table to update the jsGrid table
+//
+// Pseudo-code of the algorithm for (1):
+// 
+// IF (town == 'Any') THEN
+//     clear all filters
+// ELSE IF (town == 'All Applicable') THEN
+//     // this choice will be present only if there is a selected
+//     //    value in the 'year' <select> control
+//     filter data, but using the selection in the _other_ <select> control,
+//        i.e., the 'year' <select> control
+// ELSE 
+//     // A specific town has been selected
+//     filter ddata based on selected town
+//     form list of these towns, alphabetized
+//     append 'All Applicable' to the head of this list
+//     update 'town' <select> with these values
+// ENDIF
+// 
+function town_pick_list_handler(e) {
+	var	town, year, years_uniq,
+		filter_func, 
+		selected_counts,
+		selected_countloc_ids, selected_countloc_set,
+		selected_countlocs;
 
-// pick_list_handler: On-change event handler for pick-lists of towns and years.
-//
-// Aside from purely UI-related tasks, the primary job of this function is 
-// to compute the current 'selection set' and 'un-selection set) of count locations.
-// Once these sets have been computed, this function calls 'update_map' to update
-// the leaflfet map accordingly.
-//
-function pick_list_handler(e) {
-	var pick_list,   // ID of pick list that triggered event
-	    town, year,
-		towns = [], towns_uniq = [], years = [], years_uniq = [];
-	
-	pick_list = e.target.id; 
 	town = $("#select_town").val();
 	year = $("#select_year").val();
 	
-	// 1. apply whatever filters have been selected
-	// 2. re-calcuate selected_counts
-	// 3. re-populate 'other' select list if needed
-	// 4. calculate selected_countlocs and unselected_countlocs
-	// 5. call 'update_map' to update the map, accordingly
-	
-	if (town !== "Any") {
-		filter_func = function(count) { return count.municipality == town; };
-	} else {
-		filter_func = function(count) { return true; };
-	}	
-	selected_counts = _.filter(all_counts, filter_func);
-	
-	if (year !== "Any") {
-		filter_func = function(count) { return count.count_date.substr(0,4) == year; };
-	} else {
-		filter_func = function(count) { return true; };
-	}
-    selected_counts = _.filter(selected_counts, filter_func);	
-	
-	
-	if (pick_list == "select_town") {
-		years = _.map(selected_counts, function(count) { return count.count_date.substr(0,4); });
-		years_uniq = _.uniq(years);
-		years_uniq = years_uniq.sort().reverse();
-		// Disable on-change event handler for 'select_year'
-		$('#select_year').off()
-		// Clear-out, and populate pick list
-		$('#select_year').empty();
-		// $('#select_year').append(new Option('Any', 'Any'));
-		years_uniq.forEach(function(year) {
-			$('#select_year').append(new Option(year, year));
-		});
-		// Re-enable on-change event handler for 'select_year'
-		$('#select_year').on('change', pick_list_handler);
-	} else if (pick_list == "select_year") {
-		towns =  _.map(selected_counts, function(count) { return count.municipality; });
-		towns_uniq = _.uniq(towns);
-		towns_uniq = towns_uniq.sort();
-		// Disable on-change event handler for 'select_town'
-		$('#select_town').off()
-		// Clear-out, and populate pick list
-		$('#select_town').empty();	
-		// $('#select_town').append(new Option('Any', 'Any'));
-		towns_uniq.forEach(function(town) {
-			$('#select_town').append(new Option(town, town));
-		});
-		// Re-enable on-change event handler for 'select_town'
-		$('#select_town').on('change', pick_list_handler);
-	} else {
-		// ASSERT
-		console.log('Invalid pick-list ID: ' + pick_list);
+	if (town == 'Any') {
+		// Note that we do NOT continue with the common logic after 
+		// the if-elseif-else block: We are effectively resetting 
+		// the application and need to ensure that _no_ countlocs
+		// are selected.
+		clear_filters_handler(null);
 		return;
+	} else if (town == 'All Applicable') {
+		// This choice will be present only if there is a selected
+		// value in the 'year' <select> control.
+		// Filter data, but using the selection in the _other_ <select> control,
+		// i.e., the 'year' <select> control.
+		filter_func = function(count) { return count.count_date.substr(0,4) == year; };
+		selected_counts = _.filter(selected_counts, filter_func);
+		years_uniq = get_uniqe_years_from_counts(selected_counts);
+		populate_year_control_from_list(year_uniq, true, false);
+	} else {
+		// A specific town has been selected 
+		filter_func = function(count) { return count.municipality == town; };
+		selected_counts = _.filter(all_counts, filter_func);
+		// If a specific year is selected, further filter selected_counts on its value
+		if (year != 'Any' && year != 'All Applicable') {
+			filter_func = function(count) { return count.count_date.substr(0,4) == year; };
+			selected_counts = _.filter(selected_counts, filter_func);
+		} else {
+			// Populate 'year' <select> control
+		    // selected_counts = _.filter(selected_counts, filter_func);
+		    years_uniq = get_uniqe_years_from_counts(selected_counts);
+		    populate_year_control_from_list(years_uniq, true, false);			
+		}
 	}
 	
+	// *** TBD: Factor common code here into a new, separate function ***
+	//
 	// HERE: We have an array of the selected counts
-	//       We need to turn this into a set of selected count locations
-	
+	//       We need to turn this into a set of selected count _locations_
 	// Compute the 'selection set' of count locations.
 	// God bless the people who wrote the ES6 language definition - performing these computations is easy now!
 	var selected_countloc_ids = counts_to_countloc_ids(selected_counts);
@@ -346,7 +420,67 @@ function pick_list_handler(e) {
 	
 	update_map(selected_countlocs);
 	update_table(selected_countlocs);
-} // pick_list_handler
+} // town_pick_list_handler
+
+// year_pick_list_handler: On-change event handler for pick-lists of years
+//
+function year_pick_list_handler(e) {
+	var	town, year, towns_uniq,
+		filter_func, selected_counts,
+		selected_countloc_ids, selected_countloc_set,
+		selected_countlocs;
+
+	town = $("#select_town").val();
+	year = $("#select_year").val();
+	
+	if (year == 'Any') {
+		// Note that we do NOT continue with the common logic after 
+		// the if-elseif-else block: We are effectively resetting 
+		// the application and need to ensure that _no_ countlocs
+		// are selected.
+		clear_filters_handler(null);
+		return;
+	} else if (year == 'All Applicable') {
+		// This choice will be present only if there is a selected
+		// value in the 'town' <select> control.
+		// Filter data, but using the selection in the _other_ <select> control,
+		// i.e., the 'town' <select> control.
+		filter_func = function(count) { return count.municipality == town; };
+		selected_counts = _.filter(all_counts, filter_func);
+		towns_uniq = get_unique_towns_from_counts(selected_counts);
+		populate_town_control_from_list(towns_uniq, true, false);
+	} else {
+		// A specific year has been selected 
+		filter_func = function(count) { return count.count_date.substr(0,4) == year; };
+		selected_counts = _.filter(all_counts, filter_func);
+		// If a specific town is selected, further filter selected_counts on its value
+		if (town != 'Any' && town != 'All Applicable') {
+			filter_func = function(count) { return count.municipality == town; };
+			selected_counts = _.filter(selected_counts, filter_func);
+		} else {
+			// Populate 'town' <select> control
+		    selected_counts = _.filter(selected_counts, filter_func);
+		    towns_unique = get_uniqe_towns_from_counts(selected_counts);
+		    populate_town_control_from_list(towns_uniq, true, false);			
+		}
+	}
+
+	// *** TBD: Factor common code here into a new, separate function ***
+	//	
+	// HERE: We have an array of the selected counts
+	//       We need to turn this into a set of selected count _locations_
+	// Compute the 'selection set' of count locations.
+	// God bless the people who wrote the ES6 language definition - performing these computations is easy now!
+	var selected_countloc_ids = counts_to_countloc_ids(selected_counts);
+	var countloc_id_set = new Set(selected_countloc_ids);
+	// 
+	var selected_countlocs = all_countlocs.filter(rec => countloc_id_set.has(rec.properties.loc_id));
+	// var unselected_countlocs = all_countlocs.filter(rec => !countloc_id_set.has(rec.properties.loc_id));
+	
+	update_map(selected_countlocs);
+	update_table(selected_countlocs);
+	
+} // year_pick_list_handler
 
 // clear_filters_handler: on-click event handler for 'clear filters' button
 // 
@@ -387,7 +521,7 @@ function initialize_pick_lists(counts) {
 	// Year pick-list
 	years = _.map(counts, function(c) { return c.count_date.substr(0,4); });
 	years_uniq = _.uniq(years);
-	// Reverse list of years, latest year appears at top-of-list
+	// Reverse list of years so the latest year appears at the top-of-list
 	years_uniq = years_uniq.sort().reverse();
 	
 	$('#select_year').empty();
@@ -593,8 +727,9 @@ function initialize() {
 				} 
 				all_countlocs = bp_countlocs.features;
 				_DEBUG_HOOK = 2
-				// Bind on-change event handler(s) for pick-list controls
-				$('#select_town,#select_year').on('change', pick_list_handler);
+				// Bind on-change event handlers for pick-list controls
+				$('#select_town').on('change', town_pick_list_handler);
+				$('#select_year').on('change', year_pick_list_handler);
 				// Bind on-change event handler for 'clear_filters' button 
 				$('#clear_filters').on('click', clear_filters_handler);
 				// Arm event handler for basemap selection
