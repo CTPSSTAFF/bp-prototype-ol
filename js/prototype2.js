@@ -220,9 +220,15 @@ function update_map(selected_countlocs) {
 } // update_map
 
 // Update the jsGrid table with info about each selected count location
+// NOTE: It would appear that jsGrid has a bug/feature such that it does
+//       not render the first (i.e., index == 0) element in the data_array
+//       passed to it. This was stumbled upon empirically.
+//
 function update_table(countlocs) {
 	var _DEBUG_HOOK = 0;
 	var i, cl, data_array = [];
+	// Insert dummy 0th element into data_array, per comment above
+	data_array.push({'countloc' : '', 'town' : '' });
 	// Populate 'data' array with info about the selected count locations
 	for (i = 0; i < countlocs.length; i++) {
 		cl = countlocs[i];
@@ -329,7 +335,6 @@ function get_unique_towns_from_counts(counts) {
 } 
 
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // Event handlers for:
 // 	1. 'change' event on 'town' pick-list
@@ -343,7 +348,7 @@ function get_unique_towns_from_counts(counts) {
 //     1. respond appropriately to 'change' events on the 'select_town' <select> element,
 //        by updating the 'select_year' <select> element (UI operations)
 //     2. compute the current 'selection set' (and possibly the current'un-selection set) 
-//        of count locations.
+//        of count locations
 //     3. call update_map to update the OpenLayers map, and
 //        call update_table to update the jsGrid table
 //
@@ -361,7 +366,7 @@ function get_unique_towns_from_counts(counts) {
 //     filter ddata based on selected town
 //     form list of these towns, alphabetized
 //     append 'All Applicable' to the head of this list
-//     update 'town' <select> with these values
+//     update the 'town' <select> control with these values
 // ENDIF
 // 
 function town_pick_list_handler(e) {
@@ -422,8 +427,34 @@ function town_pick_list_handler(e) {
 	update_table(selected_countlocs);
 } // town_pick_list_handler
 
+
 // year_pick_list_handler: On-change event handler for pick-lists of years
 //
+// The job of this function is to:
+//     1. respond appropriately to 'change' events on the 'select_year' <select> element,
+//        by updating the 'select_town' <select> element (UI operations)
+//     2. compute the current 'selection set' (and possibly the current'un-selection set) 
+//        of count locations
+//     3. call update_map to update the OpenLayers map, and
+//        call update_table to update the jsGrid table
+//
+// Pseudo-code of the algorithm for (1):
+// 
+// IF (year == 'Any') THEN
+//     clear all filters
+// ELSE IF (year == 'All Applicable') THEN
+//     // this choice will be present only if there is a selected
+//     //    value in the 'town' <select> control
+//     filter data, but using the selection in the _other_ <select> control,
+//        i.e., the 'town' <select> control
+// ELSE 
+//     // A specific year has been selected
+//     filter data based on selected year
+//     form list of these years, in descending order
+//     append 'All Applicable' to the head of this list
+//     update the 'year' <select> control with these values
+// ENDIF
+// 
 function year_pick_list_handler(e) {
 	var	town, year, towns_uniq,
 		filter_func, selected_counts,
@@ -697,10 +728,8 @@ function initialize_map() {
 						    overlays: [overlay]
 						});
 						
-		// Proof-of-concept code to display 'popup' overlay:
-		if (popup_on == true) {
-			ol_map.on('click', function(evt) { onclick_handler(evt); });
-		}
+		// Bind on-click event handler for OpenLayers map: interrogates selected_countlocs_layer
+		ol_map.on('click', function(evt) { onclick_handler(evt); });
 
 		// Cache initial map extent for use in 'clear_filters_handler'
 		var v = ol_map.getView();
