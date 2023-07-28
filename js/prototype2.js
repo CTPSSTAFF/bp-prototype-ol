@@ -100,8 +100,6 @@ closer.onclick = function () {
 var overlay = new ol.Overlay({ element: container,
                                autoPan: { animation: { duration: 250 } }
                              });
-// Sledgehammer to enable/disable creation of popup
-var popup_on = true;
 
 // Function to toggle basemap
 function toggle_basemap(basemap_name) {
@@ -127,7 +125,6 @@ function toggle_basemap(basemap_name) {
 			osm_basemap_layer.setVisible(false);
 			stamen_basemap_layer.setVisible(true);
 			break;
-
         default:
             break;
     }
@@ -164,9 +161,6 @@ function make_popup_content(feature) {
 	oldest_count_date = counts[0].count_date.substr(0,10);
 	newest_count_date = counts[counts.length-1].count_date.substr(0,10);
 	newest_counts = _.filter(counts, function(c) { return c.count_date.substr(0,10) == newest_count_date; });
-	
-	// Debug 
-	// console.log(loc_id + ' #newest_counts = ' + newest_counts.length);
 	
 	newest_count_summary = summarize_set_of_counts_by_quarter_hour(newest_counts);
 	// AM and PM peak for newest count
@@ -260,7 +254,34 @@ function counts_to_countloc_ids(counts) {
 	bp_loc_ids = _.uniq(bp_loc_ids);
 	return bp_loc_ids;
 }
-
+// counts_to_selected_countlocs:
+//
+// Abstractly, given an array of count records, 'counts' return an array
+// of the count locations for these counts. 
+// In practice, 'counts' is an array of _currently selected_ set of counts records. 
+// This function computes the array of count locations for these counts, i.e.,
+// the 'selected countlocs'. It also computes the array of 'un-selected' count locations.
+// Both of these are properties of an object, which is the return value of this function:
+//
+// var retval = { 'selected' : [], 'unselected' : [] };
+//
+function counts_to_selected_countlocs(counts) {
+	var selected_countloc_ids, countloc_id_set, 
+	    selected_countlocs, unselected_countlocs;
+	var retval = { 'selected' : [], 'unselected' : [] };
+	
+	// HERE: We have an array of the selected counts
+	//       We need to turn this into a set of selected count _locations_
+	// Compute the 'selection set' of count locations.
+	// God bless the people who wrote the ES6 language definition - performing these computations is easy now!
+	selected_countloc_ids = counts_to_countloc_ids(counts);
+	countloc_id_set = new Set(selected_countloc_ids);
+	selected_countlocs = all_countlocs.filter(rec => countloc_id_set.has(rec.properties.loc_id));
+	unselected_countlocs = all_countlocs.filter(rec => !countloc_id_set.has(rec.properties.loc_id));
+	retval.selected = selected_countlocs;
+	retval.unselected = unselected_countlocs;
+	return retval;
+}
 
 // populate_town_control_from_list:
 //
@@ -369,12 +390,14 @@ function get_unique_towns_from_counts(counts) {
 //     update the 'town' <select> control with these values
 // ENDIF
 // 
+// *** TO BE INVESTIGATED ***
+// This function and year_pick_list_handler process a 'town' or 'year' selection
+// in symmetrical ways, which suggests they could be combined into a single function.
+//
 function town_pick_list_handler(e) {
 	var	town, year, years_uniq,
 		filter_func, 
-		selected_counts,
-		selected_countloc_ids, selected_countloc_set,
-		selected_countlocs;
+		selected_counts, otemp, selected_countlocs;
 
 	town = $("#select_town").val();
 	year = $("#select_year").val();
@@ -410,21 +433,10 @@ function town_pick_list_handler(e) {
 		    populate_year_control_from_list(years_uniq, true, false);			
 		}
 	}
-	
-	// *** TBD: Factor common code here into a new, separate function ***
-	//
-	// HERE: We have an array of the selected counts
-	//       We need to turn this into a set of selected count _locations_
-	// Compute the 'selection set' of count locations.
-	// God bless the people who wrote the ES6 language definition - performing these computations is easy now!
-	var selected_countloc_ids = counts_to_countloc_ids(selected_counts);
-	var countloc_id_set = new Set(selected_countloc_ids);
-	// 
-	var selected_countlocs = all_countlocs.filter(rec => countloc_id_set.has(rec.properties.loc_id));
-	// var unselected_countlocs = all_countlocs.filter(rec => !countloc_id_set.has(rec.properties.loc_id));
-	
-	update_map(selected_countlocs);
-	update_table(selected_countlocs);
+		
+	otemp = counts_to_selected_countlocs(selected_counts);
+	update_map(otemp.selected);
+	update_table(otemp.selected);	 
 } // town_pick_list_handler
 
 
@@ -455,11 +467,14 @@ function town_pick_list_handler(e) {
 //     update the 'year' <select> control with these values
 // ENDIF
 // 
+// *** TO BE INVESTIGATED ***
+// This function and town_pick_list_handler process a 'town' or 'year' selection
+// in symmetrical ways, which suggests they could be combined into a single function.
+// 
 function year_pick_list_handler(e) {
 	var	town, year, towns_uniq,
-		filter_func, selected_counts,
-		selected_countloc_ids, selected_countloc_set,
-		selected_countlocs;
+		filter_func, 
+		selected_counts, otemp, selected_countlocs;
 
 	town = $("#select_town").val();
 	year = $("#select_year").val();
@@ -495,22 +510,10 @@ function year_pick_list_handler(e) {
 		    populate_town_control_from_list(towns_uniq, true, false);			
 		}
 	}
-
-	// *** TBD: Factor common code here into a new, separate function ***
-	//	
-	// HERE: We have an array of the selected counts
-	//       We need to turn this into a set of selected count _locations_
-	// Compute the 'selection set' of count locations.
-	// God bless the people who wrote the ES6 language definition - performing these computations is easy now!
-	var selected_countloc_ids = counts_to_countloc_ids(selected_counts);
-	var countloc_id_set = new Set(selected_countloc_ids);
-	// 
-	var selected_countlocs = all_countlocs.filter(rec => countloc_id_set.has(rec.properties.loc_id));
-	// var unselected_countlocs = all_countlocs.filter(rec => !countloc_id_set.has(rec.properties.loc_id));
 	
-	update_map(selected_countlocs);
-	update_table(selected_countlocs);
-	
+	otemp = counts_to_selected_countlocs(selected_counts);
+	update_map(otemp.selected);
+	update_table(otemp.selected);		
 } // year_pick_list_handler
 
 // clear_filters_handler: on-click event handler for 'clear filters' button
