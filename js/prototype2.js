@@ -416,8 +416,11 @@ function town_pick_list_handler(e) {
 		// i.e., the 'year' <select> control.
 		filter_func = function(count) { return count.count_date.substr(0,4) == year; };
 		selected_counts = _.filter(selected_counts, filter_func);
-		years_uniq = get_uniqe_years_from_counts(selected_counts);
-		populate_year_control_from_list(year_uniq, true, false);
+		// years_uniq = get_uniqe_years_from_counts(selected_counts); - only one real year in the list
+		initialize_year_pick_list(all_counts);
+		// Set the 'selected' value in the years <select> list to the 
+		// year that was selected, i.e., the contents of  the 'year' variable.
+		$("#select_year option[value='" + year + "']").attr('selected', 'selected');
 	} else {
 		// A specific town has been selected 
 		filter_func = function(count) { return count.municipality == town; };
@@ -493,8 +496,10 @@ function year_pick_list_handler(e) {
 		// i.e., the 'town' <select> control.
 		filter_func = function(count) { return count.municipality == town; };
 		selected_counts = _.filter(all_counts, filter_func);
-		towns_uniq = get_unique_towns_from_counts(selected_counts);
-		populate_town_control_from_list(towns_uniq, true, false);
+		initialize_town_pick_list(all_counts);
+		// Set the 'selected' value in the towns <select> list to the 
+		// town that was selected, i.e., the contents of  the 'town' variable.
+		$("#select_town option[value='" + town + "']").attr('selected', 'selected');
 	} else {
 		// A specific year has been selected 
 		filter_func = function(count) { return count.count_date.substr(0,4) == year; };
@@ -533,14 +538,9 @@ function clear_filters_handler(e) {
 	$('#output_table').hide();
 } // on-click handler for 'clear filters'
 
-
-// Populate the pick-lists with their initial values, based on all_counts
-// (*not* all count locations, believe it or not)
-// Note on passed-in parm:
-// 		counts parameter == all_counts
-function initialize_pick_lists(counts) {
-	// Towns pick-list
-	var munis, munis_uniq, years, years_uniq;
+// initialize_town_pick_list - helper function for initialize_pick_lists
+function initialize_town_pick_list(counts) {
+	var munis, munis_uniq;
 	
 	munis = _.map(counts, function(c) { return c.municipality; });
 	munis_uniq = _.uniq(munis);
@@ -551,8 +551,12 @@ function initialize_pick_lists(counts) {
 	munis_uniq.forEach(function(muni) {
 		$('#select_town').append(new Option(muni, muni));
 	});
+}
+
+// initialize_year_pick_list -- helper function for initialize_pick_list
+function initialize_year_pick_list(counts) {
+	var years, years_uniq;
 	
-	// Year pick-list
 	years = _.map(counts, function(c) { return c.count_date.substr(0,4); });
 	years_uniq = _.uniq(years);
 	// Reverse list of years so the latest year appears at the top-of-list
@@ -562,7 +566,16 @@ function initialize_pick_lists(counts) {
 	$('#select_year').append(new Option("Any", "Any"));
 	years_uniq.forEach(function(year) {
 		$('#select_year').append(new Option(year, year));
-	});
+	})
+}
+
+// Populate the pick-lists with their initial values, based on all_counts
+// (*not* all count locations, believe it or not)
+// Note on passed-in parm:
+// 		counts parameter == all_counts
+function initialize_pick_lists(counts) {
+	initialize_town_pick_list(counts);
+	initialize_year_pick_list(counts);
 } // initialize_pick_lists
 
 
