@@ -468,6 +468,35 @@ function sky_condition(code) {
 	return retval;
 }
 
+// Return string for encoded value of 'count_type
+function count_type(code) {
+	retval = 'Unknown';
+	switch (code) {
+	case 'B':
+		retval = 'Bicycle';
+		break;
+	case 'P':
+		retval = 'Pedestrian';
+		break;
+	case 'J':
+		retval = 'Jogger';
+		break;
+	case 'S':
+		retval = 'Skateboarder, rollerblader';
+		break;
+	case 'C':
+		retval = 'Baby carriage';
+		break;
+	case 'W':
+		retval = 'Wheelchair';
+		break;
+	case 'O':
+		retval = 'Other';
+		break;
+	}
+	return retval;
+}
+
 // generate_report_for_count_id:
 // Appends a <div> with a report for the given count_id into the report_div.
 //
@@ -489,7 +518,7 @@ function generate_report_for_count_id(count_id, count_recs) {
 	html += '</br>';
 	html += '<span class="report_header_facility_info">' + count1.facility_name + ' ' + count1.facility_type + '</span>';
 	html += '</br>';
-	html += '<span class="countloc_header_weather_info">' + count1.temperature + '&deg;&comma;&nbsp;' + sky_condition(count1.sky) + '</span>';
+	html += '<span class="report_header_weather_info">' + count1.temperature + '&deg;&comma;&nbsp;' + sky_condition(count1.sky) + '</span>';
 	html += '</div>';
 	$('#report_div').append(html);
 	
@@ -507,6 +536,14 @@ function generate_report_for_count_id(count_id, count_recs) {
 		// Create and append a <div> for the caption of the viz for this count record
 		html = '<div ' + 'id=' + caption_div_id + '>';
 		html += '<p>Visualization of data for count record ID # ' + rec.id + '</p>';
+		html += '<span>';
+		html += '<strong>From:</strong> ' + rec.from_st_name + '&nbsp;' + rec.from_st_dir + '&nbsp;&nbsp;';
+		html += '<strong>To: </strong>' + rec.to_st_name + '&nbsp;' + rec.to_st_name + '&nbsp;&nbsp;';
+		html += '</span>';
+		html += '</br>';
+		html += '<span>';
+		html += 'Traffic count type: <strong>&nbsp;' + count_type(rec.count_type) + '</strong>';
+		html += '</span>';
 		html += '</div>';
 		$('#report_div').append(html);
 		
