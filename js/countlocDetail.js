@@ -383,29 +383,24 @@ function generate_quarter_hour_viz(target_div_id, count_record) {
 	y_values = o.counts;
 	
 	// Set bar color based on 'type' of count: 
-	// Color palette from: https://colorbrewer2.org/#type=qualitative&scheme=Paired&n=7
+	// Color palette from: https://colorbrewer2.org/#type=qualitative&scheme=Set2&n=4
+	// ['#66c2a5','#fc8d62','#8da0cb','#e78ac3']
 	switch(count_record.count_type) {
 	case 'B':
-		color = '#1f78b4';
+		color = '#8da0cb';
 		break;
 	case 'P':
-		color = '#fdbf6f';
-		break;
 	case 'J':
-		color = '#a6cee3';
+		color = '#fc8d62';
 		break;
 	case 'S':
-		color = '#b2df8a';
-		break;
 	case 'C':
-		color = '#33a02c';
-		break;
 	case 'W':
-		color = '#fdbf6f';
+		color = '#e78ac3';
 		break;
 	case 'O':
 	default:
-		color = '#fb9a99';
+		color = '#66c2a5';
 		break;
 	}
 	
