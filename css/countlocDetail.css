@@ -27,9 +27,9 @@
 	align-items: right;
 }
 
+/* Rules for the <div> into which the data viz'es will be placed */
 #report_div {
-	/* NOTE: this is actually set in the configuration options for the jsGrid object. */
-	/* width: 80%;*/ 
+	width: 100%;
 }
 
 #viz {
