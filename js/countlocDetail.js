@@ -382,9 +382,10 @@ function generate_quarter_hour_viz(target_div_id, count_record) {
 	x_domain = o.times;
 	y_values = o.counts;
 	
-	// Set bar color based on 'type' of count: 
+	// Set bar color based on 'type' of count:  group similar count 'types'
+	// to avoid having too large a color palette.
+	//
 	// Color palette from: https://colorbrewer2.org/#type=qualitative&scheme=Set2&n=4
-	// ['#66c2a5','#fc8d62','#8da0cb','#e78ac3']
 	switch(count_record.count_type) {
 	case 'B':
 		color = '#8da0cb';
@@ -436,36 +437,59 @@ function generate_report_header(countloc, count_id) {
 	console.log('Generating report header for count location ' + countloc.properties.loc_id);
 	var header_div_id = 'header_countloc_' + countloc.properties.loc_id;
 	var html;
-	
 	html = '<div ' + 'id=' + header_div_id + '>';
 	html += '<span class="countloc_header_caption">Boston Region MPO Bicycle / Pedestrian Traffic Count Report</span>';
-	html += '</br>';
-	html += '<span class="countloc_header_date">Date: ' + 'TBD' + '</span>';
-	html += '</br>';
-	html += '<span class="countloc_header_town_etc">' + countloc.properties.town + ' : ' + countloc.properties.description + '</span>';
-	html += '</br>';
-	html += '<span class="countloc_header_street">' + 'Street info - TBD' + '</span>';
-	html += '</br>';
-	html += '<span class="countloc_header_facility_info">' + 'Facilty info - TBD' + '</span>';
-	html += '</br>';
-	html += '<span class="countloc_header_weather_info">' + 'Weather info - TBD' + '</span>';
 	html += '</div>';
 	$('#report_div').append(html);
 	return;
 } // generate_report_header
 
 
+// Return string for encoded value of 'sky'
+function sky_condition(code) {
+	retval = 'Sky condition not recorded';
+	switch (code) {
+	case 1:
+		retval = 'Sunny';
+		break;
+	case 2:
+		retval = 'Partly cloudy';
+		break;
+	case 3:
+		retval = 'Overcast';
+		break;
+	case 4:
+		retval = 'Precipitation';
+		break;
+	case -99:
+		retval = 'Sky condition not recorded';
+		break;
+	}
+	return retval;
+}
+
 // generate_report_for_count_id:
 // Appends a <div> with a report for the given count_id into the report_div.
-// This function calls report4count to create the report for each 'count'
-// associated with the given count_id.
 //
+// Note that there is some data that is common to ALL count-records for
+// a given count_id; 'hoist' this data and put it in a header for the count.
 function generate_report_for_count_id(count_id, count_recs) {
-	var html, count_div_id;
+	var count1, html, count_div_id;
 	
 	count_div_id = 'count_' + count_id + '_report';
 	html = '<div ' + count_div_id + '</div>';
 	html += '<span>' + 'Report for count ID ' + count_id + '</span>';
+	html += '</br>';
+	
+	// Stuff common to all count records for this count
+	count1 = count_recs[0]; // 1st record should be as good as any one
+	html += '<span class="report_header_date">Date: ' + count1.count_date.substr(0,10) + '</span>';
+	html += '</br>';
+	html += '<span class="report_header_date">Town: ' + count1.municipality + '</span>';
+	html += '</br>';
+	html += '<span class="report_header_facility_info">' + count1.facility_name + ' ' + count1.facility_type + '</span>';
+	html += '</br>';
+	html += '<span class="countloc_header_weather_info">' + count1.temperature + '&deg;&comma;&nbsp;' + sky_condition(count1.sky) + '</span>';
 	html += '</div>';
 	$('#report_div').append(html);
 	
