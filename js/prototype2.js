@@ -295,10 +295,10 @@ function populate_town_control_from_list(aTowns, prepend_all_applic, prepend_any
 	// Clear-out, and populate pick list
 	$('#select_town').empty();
 	if (prepend_all_applic == true) {
-		$('#select_year').append(new Option('All Applicable', 'All Applicable'));
+		$('#select_town').append(new Option('All Applicable', 'All Applicable'));
 	} 
 	if (prepend_any == true) {
-		$('#select_year').append(new Option('Any', 'Any'));	
+		$('#select_town').append(new Option('Any', 'Any'));	
 	}
 	aTowns.forEach(function(town) {
 		$('#select_town').append(new Option(town, town));
@@ -506,8 +506,8 @@ function year_pick_list_handler(e) {
 		} else {
 			// Populate 'town' <select> control
 		    selected_counts = _.filter(selected_counts, filter_func);
-		    towns_unique = get_uniqe_towns_from_counts(selected_counts);
-		    populate_town_control_from_list(towns_uniq, true, false);			
+		    towns_unique = get_unique_towns_from_counts(selected_counts);
+		    populate_town_control_from_list(towns_unique, true, false);			
 		}
 	}
 	
