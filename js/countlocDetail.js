@@ -291,7 +291,7 @@ function initialize_map(this_countloc) {
 // data packaged in a form suitable for input to the Plotly bar-chart visualization engine.
 //
 function prepare_data_for_quarter_hour_viz(rec) {
-	var retval = {	'times' : [' 6:00', '6:15', ' 6:30', ' 6:45', 
+	var retval = {	'times' : [' 6:00',  ' 6:15', ' 6:30', ' 6:45', 
 	                           ' 7:00', ' 7:15', ' 7:30', ' 7:45',
 							   ' 8:00', ' 8:15', ' 8:30', ' 8:45',
 							   ' 9:00', ' 9:15', ' 9:30', ' 9:45',
@@ -303,9 +303,9 @@ function prepare_data_for_quarter_hour_viz(rec) {
 								' 3:00', ' 3:15', ' 3:30', ' 3:45',
 								' 4:00', ' 4:15', ' 4:30', ' 4:45',
 								' 5:00', ' 5:15', ' 5:30', ' 5:45',
-                                ' 6:00', '6:15', ' 6:30', ' 6:45',
-							    ' 7:00', ' 7:15', ' 7:30', ' 7:45',
-								' 8:00', ' 8:15', ' 8:30', ' 8:45'
+                                ' 6:00 PM', ' 6:15 PM', ' 6:30 PM', ' 6:45 PM',
+							    ' 7:00 PM', ' 7:15 PM', ' 7:30 PM', ' 7:45 PM',
+								' 8:00 PM', ' 8:15 PM', ' 8:30 PM', ' 8:45 PM'
 							],
 					'counts' : [] 
 				};
@@ -381,7 +381,40 @@ function generate_quarter_hour_viz(target_div_id, count_record) {
 	o = prepare_data_for_quarter_hour_viz(count_record);
 	x_domain = o.times;
 	y_values = o.counts;
-	data = [ { x: x_domain, y: y_values, type: 'bar' } ];
+	
+	// Set bar color based on 'type' of count: 
+	// Color palette from: https://colorbrewer2.org/#type=qualitative&scheme=Paired&n=7
+	switch(count_record.count_type) {
+	case 'B':
+		color = '#1f78b4';
+		break;
+	case 'P':
+		color = '#fdbf6f';
+		break;
+	case 'J':
+		color = '#a6cee3';
+		break;
+	case 'S':
+		color = '#b2df8a';
+		break;
+	case 'C':
+		color = '#33a02c';
+		break;
+	case 'W':
+		color = '#fdbf6f';
+		break;
+	case 'O':
+	default:
+		color = '#fb9a99';
+		break;
+	}
+	
+	data = [ { x: x_domain, 
+	           y: y_values, 
+			   type: 'bar',
+			   marker: { color: color }
+			 } ];
+	
 	
 	// The following folderol was needed in order to get Plotly to render:
 	// 1. the Y-axis with non-negative values when all the Y data values are 0 and
