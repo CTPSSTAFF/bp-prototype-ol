@@ -538,7 +538,7 @@ function generate_report_for_count_id(count_id, count_recs) {
 		html += '<p>Visualization of data for count record ID # ' + rec.id + '</p>';
 		html += '<span>';
 		html += '<strong>From:</strong> ' + rec.from_st_name + '&nbsp;' + rec.from_st_dir + '&nbsp;&nbsp;';
-		html += '<strong>To: </strong>' + rec.to_st_name + '&nbsp;' + rec.to_st_name + '&nbsp;&nbsp;';
+		html += '<strong>To: </strong>' + rec.to_st_name + '&nbsp;' + rec.to_st_dir + '&nbsp;&nbsp;';
 		html += '</span>';
 		html += '</br>';
 		html += '<span>';
