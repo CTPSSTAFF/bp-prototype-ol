@@ -12,7 +12,6 @@
       <FeatureTypeStyle>
         <Rule>
           <Name>High-grade bicycle facilities</Name>
-          <Title>High-grade bicycle facilities</Title>
           <ogc:Filter>
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>fac_type</ogc:PropertyName>
@@ -21,8 +20,8 @@
           </ogc:Filter>
           <LineSymbolizer>
             <Stroke>
-              <CssParameter name="fill">#A52A2A</CssParameter>
-			  <CssParameter name="width">1.5</CssParameter>
+              <CssParameter name="stroke">#A52A2A</CssParameter>
+              <CssParameter name="stroke-width">2</CssParameter>
             </Stroke>
           </LineSymbolizer>
         </Rule>

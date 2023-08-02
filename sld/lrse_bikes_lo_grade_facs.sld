@@ -11,8 +11,7 @@
       <Title>Lower-grade Bicycle Facilities (MassDOT)</Title>
       <FeatureTypeStyle>
         <Rule>
-          <Name>Lower-grade Bicycle Facilities</Name>
-          <Title>Lower-grade Bicycle Facilities</Title>
+          <Name>Lower-grade bicycle facilities</Name>
           <ogc:Filter>
             <ogc:PropertyIsNotEqualTo>
               <ogc:PropertyName>fac_type</ogc:PropertyName>
@@ -21,8 +20,8 @@
           </ogc:Filter>
           <LineSymbolizer>
             <Stroke>
-              <CssParameter name="fill">#B8860B</CssParameter>
-			  <CssParameter name="width">1</CssParameter>
+              <CssParameter name="stroke">#B8860B</CssParameter>
+              <CssParameter name="stroke-width">1.5</CssParameter>
             </Stroke>
           </LineSymbolizer>
         </Rule>
