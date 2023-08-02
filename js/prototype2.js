@@ -703,7 +703,7 @@ function initialize_map() {
 		// Create WMS layers
 		var lrse_bikes_hi_grade_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
 																				          params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230719', 
-																							            'STYLES': 'lrse_bikes_hi_grade_facs',
+																							            'STYLES': 'lrse_bikes_hi_grade_facs_2',
 																							            'TRANSPARENT': 'true'
 																					  }
 																		}),
@@ -712,7 +712,7 @@ function initialize_map() {
 										});
 		var lrse_bikes_lo_grade_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
 																				          params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230719', 
-																							            'STYLES': 'lrse_bikes_lo_grade_facs',
+																							            'STYLES': 'lrse_bikes_lo_grade_facs_2',
 																							            'TRANSPARENT': 'true'
 																					  }
 																		}),
