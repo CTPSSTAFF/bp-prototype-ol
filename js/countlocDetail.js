@@ -593,10 +593,7 @@ function generate_report_for_count_id(count_id, count_recs) {
 		$('#report_div').append(html);
 		
 		generate_quarter_hour_viz(viz_div_id, rec);
-		var _DEBUG_HOOK = 0;
-	}); // forEach count_rec
-	
-	var _DEBUG_HOOK = 0; 
+	}); // forEach count_rec 
 } // generate_report_for_count_id
 
 
@@ -645,8 +642,6 @@ function initialize() {
 					countrecs_for_this_count_id = _.filter(counts_data, function(rec) { return rec.count_id == this_count_id; });
 					generate_report_for_count_id(this_count_id, countrecs_for_this_count_id);
 				}
-				_DEBUG_HOOK = 1;
 			}));
-	_DEBUG_HOOK = 2;
 	});
 } // initialize

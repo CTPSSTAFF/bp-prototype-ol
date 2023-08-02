@@ -219,7 +219,6 @@ function update_map(selected_countlocs) {
 //       passed to it. This was stumbled upon empirically.
 //
 function update_table(countlocs) {
-	var _DEBUG_HOOK = 0;
 	var i, cl, data_array = [];
 	// Insert dummy 0th element into data_array, per comment above
 	data_array.push({'countloc' : '', 'town' : '' });
@@ -229,7 +228,6 @@ function update_table(countlocs) {
 		// NOTE: cl.properties.loc_id has the B-P count location ID
 		var a_tag = '<a href=countlocDetail.html?loc_id=' + cl.properties.loc_id;
 		a_tag += ' target="_blank">' + cl.properties.description +'</a>';
-		_DEBUG_HOOK =1;
 		data_array.push({'countloc' : a_tag, 'town' : cl.properties.town});
 	}
 		
@@ -245,7 +243,6 @@ function update_table(countlocs) {
 			]
 	});
 	$('#output_table').show();
-	var _DEBUG_HOOK = 2;
 } // update_table
 
 // Return array of bp_loc_ids (B-P count locations) for a given set of counts
@@ -585,7 +582,6 @@ function initialize_pick_lists(counts) {
 // make_popup_content to generate content for an OpenLayers
 // popup, and then sets the popup's position on the map.
 var onclick_handler = function(evt) {
-	var _DEBUG_HOOK = 0;
 	var pixel = evt.pixel,
 	    features = [], feature, content, coordinate;
 	const hitTolerance = 50;	// hit-test tolerance, in pixels
@@ -784,12 +780,10 @@ function initialize_map() {
 
 
 function initialize() {
-	var _DEBUG_HOOK = 0;
 	// Load count data from CSV file
 	d3.csv(countsURL, rowConverter).then(
 		function(data){
-			all_counts = data;
-			_DEBUG_HOOK = 1;
+			all_counts = data;;
 			// Load GeoJSON for count locations
 			// Use local file for now, WFS request in production
 			// For WFS request - remember to reproject to EPSG:4326!
@@ -800,7 +794,6 @@ function initialize() {
 					return; 
 				} 
 				all_countlocs = bp_countlocs.features;
-				_DEBUG_HOOK = 2
 				// Bind on-change event handlers for pick-list controls
 				$('#select_town').on('change', town_pick_list_handler);
 				$('#select_year').on('change', year_pick_list_handler);
@@ -812,5 +805,4 @@ function initialize() {
 				initialize_pick_lists(all_counts);
 			}));
 		});
-	_DEBUG_HOOK = 3;
 } // initialize
