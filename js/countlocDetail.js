@@ -239,7 +239,7 @@ function initialize_map(this_countloc) {
 																								'TRANSPARENT': 'true'
 																					  }
 																		}),
-											title: 'Bike-Ped Count Locations',	
+											title: 'Area Outside Boston Region MPO',	
 											visible: true
 										});		
 		var bp_countlocs_wms = new ol.layer.Tile({	source: new ol.source.TileWMS({ url		: szWMSserverRoot,
@@ -281,6 +281,15 @@ function initialize_map(this_countloc) {
 						   target: 'map',
 						   view:   mapView
 						});
+						
+		// Add layer switcher add-on conrol
+		var layerSwitcher = new ol.control.LayerSwitcher({ tipLabel: 'Legend', // Optional label for button
+                                                           groupSelectStyle: 'children', // Can be 'children' [default], 'group' or 'none'
+														   activationMode: 'click',
+                                                           startActive: true,
+														   reverse: false // List layers in order they were added to the map
+                                                         });						
+		ol_map.addControl(layerSwitcher);
 	}});			
 } // initialize_map
 
