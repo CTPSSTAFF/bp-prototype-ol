@@ -12,7 +12,6 @@
       <FeatureTypeStyle>
         <Rule>
           <Name>High-grade facilities</Name>
-          <Title>High-grade facilities</Title>
           <ogc:Filter>
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>fac_type</ogc:PropertyName>
@@ -21,14 +20,15 @@
           </ogc:Filter>
           <LineSymbolizer>
             <Stroke>
-              <CssParameter name="fill">#A52A2A</CssParameter>
-			  <CssParameter name="width">1.5</CssParameter>
+              <CssParameter name="stroke">#A52A2A</CssParameter>
+              <CssParameter name="stroke-width">2</CssParameter>
             </Stroke>
           </LineSymbolizer>
         </Rule>
+      </FeatureTypeStyle>
+      <FeatureTypeStyle>
         <Rule>
           <Name>Lower-grade Facilities</Name>
-          <Title>Lower-grade Facilities</Title>
           <ogc:Filter>
             <ogc:PropertyIsNotEqualTo>
               <ogc:PropertyName>fac_type</ogc:PropertyName>
@@ -37,8 +37,8 @@
           </ogc:Filter>
           <LineSymbolizer>
             <Stroke>
-              <CssParameter name="fill">#B8860B</CssParameter>
-			  <CssParameter name="width">1</CssParameter>
+              <CssParameter name="stroke">#B8860B</CssParameter>
+              <CssParameter name="stroke-width">1.5</CssParameter>
             </Stroke>
           </LineSymbolizer>
         </Rule>
