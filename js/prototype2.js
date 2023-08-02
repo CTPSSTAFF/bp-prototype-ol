@@ -701,22 +701,31 @@ function initialize_map() {
 		
 		
 		// Create WMS layers
-		var lrse_bikes_hi_grade_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
+		var lrse_bikes_shared_use_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
 																				          params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230719', 
-																							            'STYLES': 'lrse_bikes_hi_grade_facs_2',
+																							            'STYLES': 'lrse_bikes_shared_use_path',
 																							            'TRANSPARENT': 'true'
 																					  }
 																		}),
-											title: 'High-grade Bicycle Facilities (MassDOT)',	
+											title: 'Shared Use Bicycle Paths (MassDOT)',	
 											visible: true
 										});
-		var lrse_bikes_lo_grade_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
-																				          params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230719', 
-																							            'STYLES': 'lrse_bikes_lo_grade_facs_2',
-																							            'TRANSPARENT': 'true'
+		var lrse_bikes_protected_lane_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
+																				               params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230719', 
+																							                'STYLES': 'lrse_bikes_protected_bike_lane',
+																							                'TRANSPARENT': 'true'
 																					  }
 																		}),
-											title: 'Lower-grade Bicycle Facilities (MassDOT)',	
+											title: 'On-road Protected Bicycle Lane (MassDOT)',	
+											visible: true
+										});	
+		var lrse_bikes_on_road_lane_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
+																				               params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230719', 
+																							                'STYLES': 'lrse_bikes_on_road_bike_lane',
+																							                'TRANSPARENT': 'true'
+																					  }
+																		}),
+											title: 'On-road Bicycle Lane (MassDOT)',	
 											visible: true
 										});										
 		var ma_wo_brmpo_poly_wms = new ol.layer.Tile({	source: new ol.source.TileWMS({ url		: szWMSserverRoot,
@@ -743,8 +752,9 @@ function initialize_map() {
 										mgis_basemap_layers['basemap_features'],
 										osm_basemap_layer,
 										stamen_basemap_layer,
-										lrse_bikes_hi_grade_wms,
-										lrse_bikes_lo_grade_wms,
+										lrse_bikes_shared_use_wms,
+										lrse_bikes_protected_lane_wms,
+										lrse_bikes_on_road_lane_wms,
 										ma_wo_brmpo_poly_wms,
 										bp_countlocs_wms,
 										selected_countlocs_layer	// this is an OL Vector layer
