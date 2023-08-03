@@ -4,7 +4,7 @@
 //       'selected count locations' - OpenLayers vector layer
 //		 'counts' data - CSV file
 // Mapping platform: OpenLayers
-// Basemap: Open Street Map
+// Basemaps: MassGIS, Open Street Map, Stamen
 //
 // Author: Ben Krepp, bkrepp@ctps.org
 
@@ -76,41 +76,6 @@ var selected_countlocs_layer = new ol.layer.Vector({ title: 'Selected Count Loca
 								                     source	: new ol.source.Vector({ wrapX: false }),
 								                     style: selected_countlocs_style
 								                   });											   
-// Function to toggle basemap
-function toggle_basemap(basemap_name) {
-    switch(basemap_name) {
-        case 'massgis_basemap':
-			stamen_basemap_layer.setVisible(false);
-            osm_basemap_layer.setVisible(false); 
-            mgis_basemap_layers['topo_features'].setVisible(true);
-            mgis_basemap_layers['structures'].setVisible(true);
-            mgis_basemap_layers['basemap_features'].setVisible(true);
-            break; 
-        case 'osm_basemap':
-            mgis_basemap_layers['topo_features'].setVisible(false);
-            mgis_basemap_layers['structures'].setVisible(false);
-            mgis_basemap_layers['basemap_features'].setVisible(false);
-			stamen_basemap_layer.setVisible(false);
-            osm_basemap_layer.setVisible(true);   
-            break;
-		case 'stamen_basemap':
-            mgis_basemap_layers['topo_features'].setVisible(false);
-            mgis_basemap_layers['structures'].setVisible(false);
-            mgis_basemap_layers['basemap_features'].setVisible(false);
-			osm_basemap_layer.setVisible(false);
-			stamen_basemap_layer.setVisible(true);
-			break;
-
-        default:
-            break;
-    }
-	$('#' + basemap_name).prop("checked", true);
-} 
-// On-change event handler for radio buttons to chose basemap
-function toggle_basemap_handler (e) {
-	var basemap_name = $(this).val();
-	toggle_basemap(basemap_name);
-}
 
 
 // Utility function to return the value of the parameter named 'sParam' from the window's URL
@@ -214,14 +179,30 @@ function initialize_map(this_countloc) {
         mgis_basemap_layers['parcels'].setVisible(true);
 	*/	
 	
+		var mgis_basemap_layer_group = new ol.layer.Group({  title: 'MassGIS Basemap', 
+													         type: 'base',
+															 combine: true,
+													         layers: [mgis_basemap_layers['topo_features'],
+															          mgis_basemap_layers['structures'],
+																	  mgis_basemap_layers['basemap_features'] ] });
+		
 		// Create OpenStreetMap base layer
-		osm_basemap_layer = new ol.layer.Tile({ source: new ol.source.OSM() });
+		var osm_basemap_layer = new ol.layer.Tile({ source: new ol.source.OSM(),
+												    type: 'base',
+												    title: 'Open Street Map' });
 		osm_basemap_layer.setVisible(false);
 		
 		// Create Stamen 'toner-lite' base layer
 	    stamen_basemap_layer = new ol.layer.Tile({ source: new ol.source.Stamen({layer: 'toner-lite',
-		                                                                          url: "https://stamen-tiles.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png" }) });
+		                                                                          url: "https://stamen-tiles.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png" }), 
+												  type: 'base',
+												  title: 'Stamen' });
 		stamen_basemap_layer.setVisible(false);
+		
+		var basemap_layer_group = new ol.layer.Group( { title: 'Basemaps',
+														layers: [ mgis_basemap_layer_group,
+														          osm_basemap_layer,
+																  stamen_basemap_layer ] });
 	
 		// Create WMS layers
 		var lrse_bikes_shared_use_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
@@ -251,7 +232,12 @@ function initialize_map(this_countloc) {
 											title: 'On-road Bicycle Lane (MassDOT)',	
 											visible: true
 										});	
-
+		var bike_layer_group = new ol.layer.Group({ title: 'Bicycle Facilities (MassDOT)', 
+													fold: 'open',
+													layers: [lrse_bikes_shared_use_wms,
+															 lrse_bikes_protected_lane_wms,
+															 lrse_bikes_on_road_lane_wms] });
+		
 		var ma_wo_brmpo_poly_wms = new ol.layer.Tile({	source: new ol.source.TileWMS({ url		: szWMSserverRoot,
 																					params	: { 'LAYERS': 'postgis:ctps_ma_wo_brmpo_poly', 
 																								'STYLES': 'polygon_gray_for_non_mpo_area',
@@ -287,15 +273,9 @@ function initialize_map(this_countloc) {
 		vSource.addFeature(feature);
 		selected_countlocs_layer.setSource(vSource);
 		
-		ol_map = new ol.Map({ layers: [	mgis_basemap_layers['topo_features'],
-										mgis_basemap_layers['structures'],
-										mgis_basemap_layers['basemap_features'],
-										osm_basemap_layer,
-										stamen_basemap_layer,
-										lrse_bikes_shared_use_wms,
-										lrse_bikes_protected_lane_wms,
-										lrse_bikes_on_road_lane_wms,
+		ol_map = new ol.Map({ layers: [	basemap_layer_group,
 										ma_wo_brmpo_poly_wms,
+										bike_layer_group,
 										bp_countlocs_wms,
 										selected_countlocs_layer	// this is an OL Vector layer
 									],
@@ -741,8 +721,6 @@ function initialize() {
 				count_ids = _.uniqBy(count_ids, 'count_id');
 				
 				initialize_map(this_countloc);
-				// Arm event handler for basemap selection
-				$(".basemap_radio").change(toggle_basemap_handler);
 				
 				// Passing in 1st count_id - right now, some countloc-specific data is in the count records
 				// *** THE DATA ITSELF WILL BE CHANGED - THIS IS JUST 'FOR NOW' ***

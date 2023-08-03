@@ -686,15 +686,31 @@ function initialize_map() {
         mgis_basemap_layers['parcels'].setVisible(true);
 	*/
 	
+		var mgis_basemap_layer_group = new ol.layer.Group({  title: 'MassGIS Basemap', 
+													         type: 'base',
+															 combine: true,
+													         layers: [mgis_basemap_layers['topo_features'],
+															          mgis_basemap_layers['structures'],
+																	  mgis_basemap_layers['basemap_features'] ] });
+																	  
 		// Create OpenStreetMap base layer
-		osm_basemap_layer = new ol.layer.Tile({ source: new ol.source.OSM() });
+		osm_basemap_layer = new ol.layer.Tile({ source: new ol.source.OSM(),
+												type: 'base',
+												title: 'Open Street Map' });
 		osm_basemap_layer.setVisible(false);
 		
 		// Create Stamen 'toner-lite' base layer
 	    stamen_basemap_layer = new ol.layer.Tile({ source: new ol.source.Stamen({layer: 'toner-lite',
-		                                                                          url: "https://stamen-tiles.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png" }) });
+		                                                                          url: "https://stamen-tiles.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png" }), 
+												  type: 'base',
+												  title: 'Stamen' });
+		
 		stamen_basemap_layer.setVisible(false);
 		
+		var basemap_layer_group = new ol.layer.Group( { title: 'Basemaps',
+														layers: [ mgis_basemap_layer_group,
+														          osm_basemap_layer,
+																  stamen_basemap_layer ] });
 		
 		// Create WMS layers
 		var lrse_bikes_shared_use_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
@@ -750,13 +766,9 @@ function initialize_map() {
 											visible: true
 										});	
 		
-		ol_map = new ol.Map({ layers: [	mgis_basemap_layers['topo_features'],
-										mgis_basemap_layers['structures'],
-										mgis_basemap_layers['basemap_features'],
-										osm_basemap_layer,
-										stamen_basemap_layer,
-										bike_layer_group,
+		ol_map = new ol.Map({ layers: [ basemap_layer_group,
 										ma_wo_brmpo_poly_wms,
+										bike_layer_group,
 										bp_countlocs_wms,
 										selected_countlocs_layer	// this is an OL Vector layer
 									],
