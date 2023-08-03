@@ -427,15 +427,13 @@ function generate_quarter_hour_viz(target_div_id, count_record) {
 	// 2. to provide a (somewhat) reasonable scale of integral values for the Y axis.
 	max_count = _.max(o.counts);
 	if (max_count === 0) {
-		layout = { xaxis: { title: { text: 'Time' } },
-				   yaxis: { title: { text: 'Traffic Count' },
+		layout = { yaxis: { title: { text: 'Traffic Count' },
 				            rangemode: 'nonnegative', 
 							range: [0, 5] 
 						  } 
 				 };
 	} else {
-		layout = { xaxis: { title: { text: 'Time' } },
-				   yaxis: { title: { text: 'Traffic Count'},
+		layout = { yaxis: { title: { text: 'Traffic Count'},
 				            rangemode: 'nonnegative', 
 							autorange: true 
 						  } 
