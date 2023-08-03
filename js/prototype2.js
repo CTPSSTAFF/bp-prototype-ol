@@ -703,7 +703,7 @@ function initialize_map() {
 																							            'TRANSPARENT': 'true'
 																					  }
 																		}),
-											title: 'Shared Use Bicycle Paths (MassDOT)',	
+											title: 'Shared Use Bicycle Paths',	
 											visible: true
 										});
 		var lrse_bikes_protected_lane_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
@@ -712,7 +712,7 @@ function initialize_map() {
 																							                'TRANSPARENT': 'true'
 																					  }
 																		}),
-											title: 'On-road Protected Bicycle Lane (MassDOT)',	
+											title: 'On-road Protected Bicycle Lanes',	
 											visible: true
 										});	
 		var lrse_bikes_on_road_lane_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
@@ -721,9 +721,15 @@ function initialize_map() {
 																							                'TRANSPARENT': 'true'
 																					  }
 																		}),
-											title: 'On-road Bicycle Lane (MassDOT)',	
+											title: 'On-road Bicycle Lanes',	
 											visible: true
-										});										
+										});
+		var bike_layer_group = new ol.layer.Group({ title: 'Bicycle Facilities (MassDOT)', 
+													fold: 'open',
+													layers: [lrse_bikes_shared_use_wms,
+															 lrse_bikes_protected_lane_wms,
+															 lrse_bikes_on_road_lane_wms] });
+		
 		var ma_wo_brmpo_poly_wms = new ol.layer.Tile({	source: new ol.source.TileWMS({ url		: szWMSserverRoot,
 																					    params	: { 'LAYERS': 'postgis:ctps_ma_wo_brmpo_poly', 
 																								    'STYLES': 'polygon_gray_for_non_mpo_area',
@@ -733,6 +739,7 @@ function initialize_map() {
 											title: 'Area Outside Boston Region MPO',	
 											visible: true
 										});
+										
 		var bp_countlocs_wms = new ol.layer.Tile({	source: new ol.source.TileWMS({ url		: szWMSserverRoot,
 																					params	: { 'LAYERS': 'postgis:ctps_bp_count_locations_pt', 
 																								'STYLES': 'a_point_blue',
@@ -748,9 +755,7 @@ function initialize_map() {
 										mgis_basemap_layers['basemap_features'],
 										osm_basemap_layer,
 										stamen_basemap_layer,
-										lrse_bikes_shared_use_wms,
-										lrse_bikes_protected_lane_wms,
-										lrse_bikes_on_road_lane_wms,
+										bike_layer_group,
 										ma_wo_brmpo_poly_wms,
 										bp_countlocs_wms,
 										selected_countlocs_layer	// this is an OL Vector layer
