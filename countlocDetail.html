@@ -43,6 +43,9 @@
 	<!-- Plotly.js library, loaded locally -->
 	<script src="libs/plotly-2.24.1.min.js"></script>
 	
+	<!-- download.js library, loaded locally -->
+	<script src="libs/download.min.js"></script>
+	
 	<!-- CSS and JS for jsgrid, fetched from a CDN -->
 	<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
 	<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
@@ -71,6 +74,8 @@
 					<label for="osm_basemap">Open Street Map</label>  	
 					<input type="radio" id="stamen_basemap" name="basemap" class="basemap_radio" value="stamen_basemap">
 					<label for="massgis_basemap">Stamen</label>
+					&nbsp;
+					<button id="download_selected">Download this data</button>
 			</span>
 		</div>
 		
@@ -95,9 +100,7 @@
 	<!-- JS for misc utilities -->
 	<script src="js/utils.js"></script>
 
-	<!-- JS for prototyping bar chart -->
-	<script src="js/viz_prototype.js"></script>
-	<!-- JS for prototype app -->
+	<!-- JS for prototype countloc detail page  -->
 	<script src="js/countlocDetail.js"></script>
 	<script>
 	$(document).ready(function() {
