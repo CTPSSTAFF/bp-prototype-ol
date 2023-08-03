@@ -444,25 +444,6 @@ function generate_quarter_hour_viz(target_div_id, count_record) {
 } // generate_quarter_hour_viz
 
 
-// generate_report_header:
-// Appends a <div> containing 'header' information for the report into the report_div.
-// This is the _first_ <div> appended to the report_div.
-// It includes:  date, town, facility name,etc.
-// The <div>s for the reports for the individual counts are appended to the report_div
-// by generate_report_for_count_id.
-// 
-function generate_report_header(countloc, count_id) {
-	console.log('Generating report header for count location ' + countloc.properties.loc_id);
-	var header_div_id = 'header_countloc_' + countloc.properties.loc_id;
-	var html;
-	html = '<div ' + 'id=' + header_div_id + '>';
-	html += '<span class="countloc_header_caption">Boston Region MPO Bicycle / Pedestrian Traffic Count Report</span>';
-	html += '</div>';
-	$('#report_div').append(html);
-	return;
-} // generate_report_header
-
-
 // Return string for encoded value of 'sky'
 function sky_condition(code) {
 	retval = 'Sky condition not recorded';
@@ -577,7 +558,7 @@ function generate_report_for_count_id(count_id, count_recs) {
 
 // Format the array of data in 'counts' as CSV and download it
 function download_data(counts) {
-	var s; // string into which data to be downloaded as CSV will be accumulated
+	var s; // string into which data to be downloaded in CSV format will be accumulated
 	var header = "id,bp_loc_id,count_id,municipality,facility_name,";
 		header += "street_1,street_2,street_3,street_4,street_5,street_6,";
 		header += "description,temperature,sky,facility_type,count_type,";
@@ -591,11 +572,7 @@ function download_data(counts) {
 		header += "\n";
 		
 		s = header;
-		
-		var i, c;
-		for (i = 0; i < 3; i++ ){
-			c = counts[i];
-			
+		counts.forEach(function(c) {
             s += c.id + ',';
             s += c.bp_loc_id + ',';
             s += c.count_id + ',';
@@ -678,12 +655,9 @@ function download_data(counts) {
             s += c.cnt_2045 + ',';
             s += c.cnt_total + ',';
 			s += "\n";
-		};
-		
-		// HERE 's' should be the entire string to download
+		});
+		// HERE: 's' is the entire string to download
 		download(s, 'bike_ped_counts', 'text/csv');
-		
-		var _DEBUG_HOOK = 0;
 } // download_data
 
 
@@ -720,16 +694,11 @@ function initialize() {
 				
 				initialize_map(this_countloc);
 				
-				// Passing in 1st count_id - right now, some countloc-specific data is in the count records
-				// *** THE DATA ITSELF WILL BE CHANGED - THIS IS JUST 'FOR NOW' ***
-				generate_report_header(this_countloc, count_ids[0]);
-				
-				for (i = 0; i < count_ids.length; i++) {
-					// *** TBD: Yes, I know this is excessively verbose (for now)
-					this_count_id = count_ids[i];
+				// Generate a 'report' for each count, by iterating over the selected count_ids
+				count_ids.forEach(function(this_count_id) {
 					countrecs_for_this_count_id = _.filter(counts_data, function(rec) { return rec.count_id == this_count_id; });
 					generate_report_for_count_id(this_count_id, countrecs_for_this_count_id);
-				}
+				});
 			}));
 			// Arm event handler for 'download' button
 			$('#download_selected').on('click', function(e) { download_data(counts4countloc); });
