@@ -721,7 +721,7 @@ function initialize_map() {
 																							                'TRANSPARENT': 'true'
 																					  }
 																		}),
-											title: 'On-road Bicycle Lanes',	
+											title: 'On-road Unprotected Bicycle Lanes',	
 											visible: true
 										});
 		var bike_layer_group = new ol.layer.Group({ title: 'Bicycle Facilities (MassDOT)', 
