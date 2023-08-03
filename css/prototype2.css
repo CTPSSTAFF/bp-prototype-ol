@@ -72,7 +72,14 @@
 }
 
 
-/* CSS for styling D3 bar chart */
-.bar { 
-	fill: steelblue; 
+/* CSS class for anchor tags not to be styled, e.g., <a> tag embedded in 'Download all data' button */
+a.nostyle:link {
+    text-decoration: inherit;
+    color: inherit;
+    cursor: auto;
+}
+a.nostyle:visited {
+    text-decoration: inherit;
+    color: inherit;
+    cursor: auto;
 }
