@@ -43,6 +43,9 @@
 	<!-- Plotly.js library, loaded locally -->
 	<script src="libs/plotly-2.24.1.min.js"></script>
 	
+	<!-- download.js library, loaded locally -->
+	<script src="libs/download.min.js"></script>
+	
 	<!-- CSS and JS for jsgrid, fetched from a CDN -->
 	<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
 	<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
@@ -79,6 +82,10 @@
 					<select name="select_year" id="select_year" class="pick_list">
 					</select>
 					<button id="clear_filters">Clear Filters</button>
+					&nbsp;
+					<button id="download_all">
+						<a href="data/csv/bp_counts.csv" download="bp_counts.csv" target="_blank" class="nostyle">Download all data</a>
+					</button>
 			</span>
 		</div>
 		
