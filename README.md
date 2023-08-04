@@ -31,7 +31,7 @@ Logic common to both pages is found in __js\/common.js__; common 'utility' funct
 Logic for the 'main' page is \(currently\) found in __js\/prototype2.js__; logic for the 'detail' page is found in __js\/countlocDetail.js__.
 
 ## Software Dependencies
-These single-page apps depend upon the following software libraries:
+These single-page apps depend upon the following software libraries:  
 | --- | --- |
 |  Library | Function |
 | jquery | DOM management |
