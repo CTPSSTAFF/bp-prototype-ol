@@ -9,7 +9,7 @@ The data sources for this application are:
 
 ### Bicyle / Pedestrian Traffic Counts
 CTPS's database of bicycle / pedestrian traffic counts resides in a table in a CTPS PostgreSQL database.
-This table was expored in CSV format, and stored locally to the application in __data\/csv\/bp_counts.csv.
+This table was expored in CSV format, and stored locally to the application in __data\/csv\/bp_counts.csv__.
 
 ### Bicyle / Pedestrian Traffic Count Locations
 CTPS's geographic point feature class of bicycle / pedestrian traffic count locations is stored as a table
