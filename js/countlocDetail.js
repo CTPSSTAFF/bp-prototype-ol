@@ -17,9 +17,8 @@ var countlocsURL = 'data/json/ctps_bp_count_locations_pt.geo.json';
 var counts4countloc = []	// counts for current count location
     count_ids =       [];	// count_id's for these counts
 	
-// *** TBD: Delete this declaration; not needed
-// Data record for 'this countloc', i.e., the countloc passed as a URL parameter to this page
-var this_countloc = {};
+// Array of 'all counts' (needed by on-click handler)
+var all_counts = [];
 
 ///////////////////////////////////////////////////////////////////////////////
 // Stuff for OpenLayers mapping
@@ -66,6 +65,23 @@ var szWFSserverRoot = szServerRoot + '/wfs';
 // OpenLayers 'map' object:
 var ol_map = null;
 
+// Elements that make up an OpenLayers popup 'overlay'
+var container = document.getElementById('popup');
+var content = document.getElementById('popup-content');
+var closer = document.getElementById('popup-closer');
+
+// Add a click handler to hide the popup
+closer.onclick = function () { 
+	overlay.setPosition(undefined);
+	closer.blur();
+	return false;
+};
+
+// Create an overlay to anchor the popup to the map
+var overlay = new ol.Overlay({ element: container,
+                               autoPan: { animation: { duration: 250 } }
+                             });
+
 // Vector point layer for selected count location
 var selected_countlocs_style = new ol.style.Style({ image: new ol.style.Circle({ radius: 7.0,
                                                                                  fill: new ol.style.Fill({color: 'gold'}),
@@ -76,6 +92,75 @@ var selected_countlocs_layer = new ol.layer.Vector({ title: 'Selected Count Loca
 								                     source	: new ol.source.Vector({ wrapX: false }),
 								                     style: selected_countlocs_style
 								                   });											   
+
+// End of stuff for OpenLayers mapping  
+///////////////////////////////////////////////////////////////////////////////
+
+
+function make_popup_content(feature) {
+	var props, loc_id, counts, 
+	    oldest_count_date, newest_count_date, 
+	    newest_counts = [], newest_count_summary = {}, 
+	    am_peak = 0,  pm_peak = 0;
+		
+	props = feature.getProperties().properties;
+	loc_id = props.loc_id;
+	counts = _.filter(all_counts, function(c) { return c.bp_loc_id == loc_id; });
+	
+	// Defensive programming:
+	// Believe it or not, there are some count locations with no counts!
+	if (counts.length == 0) {
+		content = 'No counts with count loc_id == ' + loc_id + ' found.';
+		return content;
+	}
+	
+	counts = _.sortBy(counts, [function(o) { return o.count_date.substr(0,10); }]);
+	oldest_count_date = counts[0].count_date.substr(0,10);
+	newest_count_date = counts[counts.length-1].count_date.substr(0,10);
+	newest_counts = _.filter(counts, function(c) { return c.count_date.substr(0,10) == newest_count_date; });
+	
+	newest_count_summary = summarize_set_of_counts_by_quarter_hour(newest_counts);
+	// AM and PM peak for newest count
+	am_peak = calc_am_peak(newest_count_summary);
+	pm_peak = calc_pm_peak(newest_count_summary);
+		  
+	content = 'Location ID ' + loc_id + '</br>';
+    content += props.description + '</br>';
+	content += 'Most recent count : ' + newest_count_date + '</br>';
+	content += 'Total volume AM peak : ' + am_peak + '</br>';
+	content += 'Total volume PM peak : ' + pm_peak + '</br>';
+	content += 'Oldest count : ' + oldest_count_date + '</br>';		
+	
+	return content;
+} // make_popup_content
+
+// onclick_handler: on-click event handler for OpenLayers map
+//
+// If there is a feature at the clicked location, calls
+// make_popup_content to generate content for an OpenLayers
+// popup, and then sets the popup's position on the map.
+var onclick_handler = function(evt) {
+	var pixel = evt.pixel,
+	    features = [], feature, content, coordinate;
+	const hitTolerance = 150;	// hit-test tolerance, in pixels
+		
+	if (ol_map.hasFeatureAtPixel(pixel, { 'hitTolerance': hitTolerance }) === true) {
+		ol_map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+			features.push(feature);
+		}, { 'hitTolerance': hitTolerance } );
+		
+		// At least for now, we'll just work with the 1st feature
+		feature = features[0];
+		content = document.getElementById('popup-content');
+		coordinate = evt.coordinate;
+		content.innerHTML = make_popup_content(feature);
+		overlay.setPosition(coordinate);
+	} else {
+		overlay.setPosition(undefined);
+		closer.blur();
+	}
+	return; 
+} // onclick_handler
 
 
 // Utility function to return the value of the parameter named 'sParam' from the window's URL
@@ -268,7 +353,7 @@ function initialize_map(this_countloc) {
 		geom = {};
 		props = {}; // TBD
 		geom =  new ol.geom.Point(ol.proj.fromLonLat([this_countloc.properties.longitude, this_countloc.properties.latitude]));
-		// props = JSON.parse(JSON.stringify(cur_countloc.properties));
+		props = JSON.parse(JSON.stringify(this_countloc.properties));
 		feature = new ol.Feature({geometry: geom, properties: props});
 		vSource.addFeature(feature);
 		selected_countlocs_layer.setSource(vSource);
@@ -280,7 +365,8 @@ function initialize_map(this_countloc) {
 										selected_countlocs_layer	// this is an OL Vector layer
 									],
 						   target: 'map',
-						   view:   mapView
+						   view:   mapView,
+						   overlays: [overlay]
 						});
 						
 		// Add layer switcher add-on conrol
@@ -291,9 +377,11 @@ function initialize_map(this_countloc) {
 														   reverse: false // List layers in order they were added to the map
                                                          });						
 		ol_map.addControl(layerSwitcher);
+		
+		// Bind on-click event handler for OpenLayers map: interrogates selected_countlocs_layer
+		ol_map.on('click', function(evt) { onclick_handler(evt); });
 	}});			
 } // initialize_map
-
 
 
 // prepare_data_for_quarter_hour_viz: 
@@ -671,6 +759,7 @@ function initialize() {
 	// Load count data from CSV file
 	d3.csv(countsURL, rowConverter).then(
 		function(counts_data){
+			all_counts = counts_data;
 			// Load GeoJSON for count locations
 			// Use local file for now, WFS request in production
 			// For WFS request - remember to reproject to EPSG:4326!
