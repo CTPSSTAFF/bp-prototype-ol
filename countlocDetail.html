@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	
+	<title>Boston Region MPO Bicycle / Pedestrian Traffic Counts Data Detail Page</title>
 	 <!-- JS for jQuery library, fetched from CDN -->
 	 <script src="https://code.jquery.com/jquery-3.7.0.min.js" 
 	         integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" 
@@ -63,7 +63,8 @@
 </head>
 <body>
 	<div class="container_top">
-		<h3>Prototype Next-gen Bike-Ped Counts App (OpenLayers Version) Count Location Detail Page</h3>
+		<!-- To be filled in with "Boston Region MPO Bicycle / Pedestrian Traffic Count Report for Count Location #nnnnn" --> 
+		<h3 id="page_caption"></h3>
 		
 		<div id="controls">
 			<span>
@@ -81,13 +82,10 @@
 		<div id="report_div">
 		</div>
 		
-		<!-- May not be needed -->
-		<!--
 		<div id="popup" class="ol-popup">
 			<a href="#" id="popup-closer" class="ol-popup-closer"></a>
 			<div id="popup-content"></div>
 		</div>
-		-->
 	</div> <!-- container_bottom -->
 	
 	<!-- JS for misc utilities -->

@@ -101,41 +101,6 @@ var overlay = new ol.Overlay({ element: container,
                                autoPan: { animation: { duration: 250 } }
                              });
 
-// Function to toggle basemap
-function toggle_basemap(basemap_name) {
-    switch(basemap_name) {
-        case 'massgis_basemap':
-			stamen_basemap_layer.setVisible(false);
-            osm_basemap_layer.setVisible(false); 
-            mgis_basemap_layers['topo_features'].setVisible(true);
-            mgis_basemap_layers['structures'].setVisible(true);
-            mgis_basemap_layers['basemap_features'].setVisible(true);
-            break; 
-        case 'osm_basemap':
-            mgis_basemap_layers['topo_features'].setVisible(false);
-            mgis_basemap_layers['structures'].setVisible(false);
-            mgis_basemap_layers['basemap_features'].setVisible(false);
-			stamen_basemap_layer.setVisible(false);
-            osm_basemap_layer.setVisible(true);   
-            break;
-		case 'stamen_basemap':
-            mgis_basemap_layers['topo_features'].setVisible(false);
-            mgis_basemap_layers['structures'].setVisible(false);
-            mgis_basemap_layers['basemap_features'].setVisible(false);
-			osm_basemap_layer.setVisible(false);
-			stamen_basemap_layer.setVisible(true);
-			break;
-        default:
-            break;
-    }
-	$('#' + basemap_name).prop("checked", true);
-} 
-// On-change event handler for radio buttons to chose basemap
-function toggle_basemap_handler (e) {
-	var basemap_name = $(this).val();
-	toggle_basemap(basemap_name);
-}
-
 // End of stuff for OpenLayers mapping  
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -799,8 +764,8 @@ function initialize_map() {
 function initialize() {
 	// Load count data from CSV file
 	d3.csv(countsURL, rowConverter).then(
-		function(data){
-			all_counts = data;;
+		function(counts_data){
+			all_counts = counts_data;
 			// Load GeoJSON for count locations
 			// Use local file for now, WFS request in production
 			// For WFS request - remember to reproject to EPSG:4326!
@@ -816,8 +781,6 @@ function initialize() {
 				$('#select_year').on('change', year_pick_list_handler);
 				// Bind on-change event handler for 'clear_filters' button 
 				$('#clear_filters').on('click', clear_filters_handler);
-				// Arm event handler for basemap selection
-				$(".basemap_radio").change(toggle_basemap_handler);
 				initialize_map();
 				initialize_pick_lists(all_counts);
 			}));

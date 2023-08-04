@@ -17,9 +17,8 @@ var countlocsURL = 'data/json/ctps_bp_count_locations_pt.geo.json';
 var counts4countloc = []	// counts for current count location
     count_ids =       [];	// count_id's for these counts
 	
-// *** TBD: Delete this declaration; not needed
-// Data record for 'this countloc', i.e., the countloc passed as a URL parameter to this page
-var this_countloc = {};
+// Array of 'all counts' (needed by on-click handler)
+var all_counts = [];
 
 ///////////////////////////////////////////////////////////////////////////////
 // Stuff for OpenLayers mapping
@@ -66,6 +65,23 @@ var szWFSserverRoot = szServerRoot + '/wfs';
 // OpenLayers 'map' object:
 var ol_map = null;
 
+// Elements that make up an OpenLayers popup 'overlay'
+var container = document.getElementById('popup');
+var content = document.getElementById('popup-content');
+var closer = document.getElementById('popup-closer');
+
+// Add a click handler to hide the popup
+closer.onclick = function () { 
+	overlay.setPosition(undefined);
+	closer.blur();
+	return false;
+};
+
+// Create an overlay to anchor the popup to the map
+var overlay = new ol.Overlay({ element: container,
+                               autoPan: { animation: { duration: 250 } }
+                             });
+
 // Vector point layer for selected count location
 var selected_countlocs_style = new ol.style.Style({ image: new ol.style.Circle({ radius: 7.0,
                                                                                  fill: new ol.style.Fill({color: 'gold'}),
@@ -76,6 +92,75 @@ var selected_countlocs_layer = new ol.layer.Vector({ title: 'Selected Count Loca
 								                     source	: new ol.source.Vector({ wrapX: false }),
 								                     style: selected_countlocs_style
 								                   });											   
+
+// End of stuff for OpenLayers mapping  
+///////////////////////////////////////////////////////////////////////////////
+
+
+function make_popup_content(feature) {
+	var props, loc_id, counts, 
+	    oldest_count_date, newest_count_date, 
+	    newest_counts = [], newest_count_summary = {}, 
+	    am_peak = 0,  pm_peak = 0;
+		
+	props = feature.getProperties().properties;
+	loc_id = props.loc_id;
+	counts = _.filter(all_counts, function(c) { return c.bp_loc_id == loc_id; });
+	
+	// Defensive programming:
+	// Believe it or not, there are some count locations with no counts!
+	if (counts.length == 0) {
+		content = 'No counts with count loc_id == ' + loc_id + ' found.';
+		return content;
+	}
+	
+	counts = _.sortBy(counts, [function(o) { return o.count_date.substr(0,10); }]);
+	oldest_count_date = counts[0].count_date.substr(0,10);
+	newest_count_date = counts[counts.length-1].count_date.substr(0,10);
+	newest_counts = _.filter(counts, function(c) { return c.count_date.substr(0,10) == newest_count_date; });
+	
+	newest_count_summary = summarize_set_of_counts_by_quarter_hour(newest_counts);
+	// AM and PM peak for newest count
+	am_peak = calc_am_peak(newest_count_summary);
+	pm_peak = calc_pm_peak(newest_count_summary);
+		  
+	content = 'Location ID ' + loc_id + '</br>';
+    content += props.description + '</br>';
+	content += 'Most recent count : ' + newest_count_date + '</br>';
+	content += 'Total volume AM peak : ' + am_peak + '</br>';
+	content += 'Total volume PM peak : ' + pm_peak + '</br>';
+	content += 'Oldest count : ' + oldest_count_date + '</br>';		
+	
+	return content;
+} // make_popup_content
+
+// onclick_handler: on-click event handler for OpenLayers map
+//
+// If there is a feature at the clicked location, calls
+// make_popup_content to generate content for an OpenLayers
+// popup, and then sets the popup's position on the map.
+var onclick_handler = function(evt) {
+	var pixel = evt.pixel,
+	    features = [], feature, content, coordinate;
+	const hitTolerance = 150;	// hit-test tolerance, in pixels
+		
+	if (ol_map.hasFeatureAtPixel(pixel, { 'hitTolerance': hitTolerance }) === true) {
+		ol_map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+			features.push(feature);
+		}, { 'hitTolerance': hitTolerance } );
+		
+		// At least for now, we'll just work with the 1st feature
+		feature = features[0];
+		content = document.getElementById('popup-content');
+		coordinate = evt.coordinate;
+		content.innerHTML = make_popup_content(feature);
+		overlay.setPosition(coordinate);
+	} else {
+		overlay.setPosition(undefined);
+		closer.blur();
+	}
+	return; 
+} // onclick_handler
 
 
 // Utility function to return the value of the parameter named 'sParam' from the window's URL
@@ -92,208 +177,6 @@ function getURLParameter(sParam) {
 	// If we get here, parameter not found
 	return('');
 } // gtetURLParameter()
-
-// initialize_map
-// parameter: this_countloc  - record for count location
-//
-function initialize_map(this_countloc) {
-    $.ajax({ url: mgis_serviceUrls['topo_features'], jsonp: 'callback', dataType: 'jsonp', data: { f: 'json' }, 
-             success: function(config) {     
-        // Body of "success" handler starts here.
-        // Get resolutions
-        var tileInfo = config.tileInfo;
-        var resolutions = [];
-        for (var i = 0, ii = tileInfo.lods.length; i < ii; ++i) {
-            resolutions.push(tileInfo.lods[i].resolution);
-        }               
-        // Get projection
-        var epsg = 'EPSG:' + config.spatialReference.wkid;
-        var units = config.units === 'esriMeters' ? 'm' : 'degrees';
-        var projection = ol.proj.get(epsg) ? ol.proj.get(epsg) : new ol.proj.Projection({ code: epsg, units: units });                              
-        // Get attribution
-        var attribution = new ol.control.Attribution({ html: config.copyrightText });               
-        // Get full extent
-        var fullExtent = [config.fullExtent.xmin, config.fullExtent.ymin, config.fullExtent.xmax, config.fullExtent.ymax];
-        
-        var tileInfo = config.tileInfo;
-        var tileSize = [tileInfo.width || tileInfo.cols, tileInfo.height || tileInfo.rows];
-        var tileOrigin = [tileInfo.origin.x, tileInfo.origin.y];
-        var urls;
-        var suffix = '/tile/{z}/{y}/{x}';
-        urls = [mgis_serviceUrls['topo_features'] += suffix];               
-        var width = tileSize[0] * resolutions[0];
-        var height = tileSize[1] * resolutions[0];     
-        var tileUrlFunction, extent, tileGrid;               
-        if (projection.getCode() === 'EPSG:4326') {
-            tileUrlFunction = function tileUrlFunction(tileCoord) {
-                var url = urls.length === 1 ? urls[0] : urls[Math.floor(Math.random() * (urls.length - 0 + 1)) + 0];
-                return url.replace('{z}', (tileCoord[0] - 1).toString()).replace('{x}', tileCoord[1].toString()).replace('{y}', (-tileCoord[2] - 1).toString());
-            };
-        } else {
-            extent = [tileOrigin[0], tileOrigin[1] - height, tileOrigin[0] + width, tileOrigin[1]];
-            tileGrid = new ol.tilegrid.TileGrid({ origin: tileOrigin, extent: extent, resolutions: resolutions });
-        }     
-
-
-        // MassGIS basemap Layer 1 - topographic features
-        var layerSource;
-        layerSource = new ol.source.XYZ({ attributions: [attribution], projection: projection,
-                                          tileSize: tileSize, tileGrid: tileGrid,
-                                          tileUrlFunction: tileUrlFunction, urls: urls });
-                          
-        mgis_basemap_layers['topo_features'] = new ol.layer.Tile();
-        mgis_basemap_layers['topo_features'].setSource(layerSource);
-        mgis_basemap_layers['topo_features'].setVisible(true);
-        
-        // We make the rash assumption that since this set of tiled basemap layers were designed to overlay one another,
-        // their projection, extent, and resolutions are the same.
-        
-         // MassGIS basemap Layer 2 - structures
-        urls = [mgis_serviceUrls['structures'] += suffix];  
-        layerSource = new ol.source.XYZ({ attributions: [attribution], projection: projection,
-                                          tileSize: tileSize, tileGrid: tileGrid,
-                                          tileUrlFunction: tileUrlFunction, urls: urls });;
-        mgis_basemap_layers['structures'] = new ol.layer.Tile();
-        mgis_basemap_layers['structures'].setSource(layerSource); 
-        mgis_basemap_layers['structures'].setVisible(true);
-        
-        // MassGIS basemap Layer 3 - "detailed" features - these include labels
-        urls = [mgis_serviceUrls['basemap_features'] += suffix];  
-        layerSource = new ol.source.XYZ({ attributions: [attribution], projection: projection,
-                                          tileSize: tileSize, tileGrid: tileGrid,
-                                          tileUrlFunction: tileUrlFunction, urls: urls });
-        mgis_basemap_layers['basemap_features'] = new ol.layer.Tile();
-        mgis_basemap_layers['basemap_features'].setSource(layerSource);
-        mgis_basemap_layers['basemap_features'].setVisible(true);
-
-                       
-        // MassGIS basemap Layer 4 - parcels - WE (CURRENTLY) DO NOT USE THIS LAYER
-        // Code retained for reference purposes only
-	/*
-        urls = [mgis_serviceUrls['parcels'] += suffix];
-        layerSource = new ol.source.XYZ({ attributions: [attribution], projection: projection,
-                                          tileSize: tileSize, tileGrid: tileGrid,
-                                          tileUrlFunction: tileUrlFunction, urls: urls });;
-        mgis_basemap_layers['parcels'] = new ol.layer.Tile();
-        mgis_basemap_layers['parcels'].setSource(layerSource);  
-        mgis_basemap_layers['parcels'].setVisible(true);
-	*/	
-	
-		var mgis_basemap_layer_group = new ol.layer.Group({  title: 'MassGIS Basemap', 
-													         type: 'base',
-															 combine: true,
-													         layers: [mgis_basemap_layers['topo_features'],
-															          mgis_basemap_layers['structures'],
-																	  mgis_basemap_layers['basemap_features'] ] });
-		
-		// Create OpenStreetMap base layer
-		var osm_basemap_layer = new ol.layer.Tile({ source: new ol.source.OSM(),
-												    type: 'base',
-												    title: 'Open Street Map' });
-		osm_basemap_layer.setVisible(false);
-		
-		// Create Stamen 'toner-lite' base layer
-	    stamen_basemap_layer = new ol.layer.Tile({ source: new ol.source.Stamen({layer: 'toner-lite',
-		                                                                          url: "https://stamen-tiles.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png" }), 
-												  type: 'base',
-												  title: 'Stamen' });
-		stamen_basemap_layer.setVisible(false);
-		
-		var basemap_layer_group = new ol.layer.Group( { title: 'Basemaps',
-														layers: [ mgis_basemap_layer_group,
-														          osm_basemap_layer,
-																  stamen_basemap_layer ] });
-	
-		// Create WMS layers
-		var lrse_bikes_shared_use_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
-																				          params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230719', 
-																							            'STYLES': 'lrse_bikes_shared_use_path',
-																							            'TRANSPARENT': 'true'
-																					  }
-																		}),
-											title: 'Shared Use Bicycle Paths (MassDOT)',	
-											visible: true
-										});
-		var lrse_bikes_protected_lane_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
-																				               params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230719', 
-																							                'STYLES': 'lrse_bikes_protected_bike_lane',
-																							                'TRANSPARENT': 'true'
-																					  }
-																		}),
-											title: 'On-road Protected Bicycle Lane (MassDOT)',	
-											visible: true
-										});	
-		var lrse_bikes_on_road_lane_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
-																				               params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230719', 
-																							                'STYLES': 'lrse_bikes_on_road_bike_lane',
-																							                'TRANSPARENT': 'true'
-																					  }
-																		}),
-											title: 'On-road Bicycle Lane (MassDOT)',	
-											visible: true
-										});	
-		var bike_layer_group = new ol.layer.Group({ title: 'Bicycle Facilities (MassDOT)', 
-													fold: 'open',
-													layers: [lrse_bikes_shared_use_wms,
-															 lrse_bikes_protected_lane_wms,
-															 lrse_bikes_on_road_lane_wms] });
-		
-		var ma_wo_brmpo_poly_wms = new ol.layer.Tile({	source: new ol.source.TileWMS({ url		: szWMSserverRoot,
-																					params	: { 'LAYERS': 'postgis:ctps_ma_wo_brmpo_poly', 
-																								'STYLES': 'polygon_gray_for_non_mpo_area',
-																								'TRANSPARENT': 'true'
-																					  }
-																		}),
-											title: 'Area Outside Boston Region MPO',	
-											visible: true
-										});		
-		var bp_countlocs_wms = new ol.layer.Tile({	source: new ol.source.TileWMS({ url		: szWMSserverRoot,
-																					params	: { 'LAYERS': 'postgis:ctps_bp_count_locations_pt', 
-																								'STYLES': 'a_point_blue',
-																								'TRANSPARENT': 'true'
-																					  }
-																		}),
-											title: 'Bike-Ped Count Locations',	
-											visible: true
-										});	
-										
-		var mapCenter = ol.proj.fromLonLat([this_countloc.properties.longitude, this_countloc.properties.latitude]);
-		var mapZoom = 17; // Best guess, for now
-		var mapView =  new ol.View({ center: mapCenter, zoom:  mapZoom });
-		
-		var vSource, feature, geom, props;
-		
-		vSource = selected_countlocs_layer.getSource();
-		vSource.clear();
-		geom = {};
-		props = {}; // TBD
-		geom =  new ol.geom.Point(ol.proj.fromLonLat([this_countloc.properties.longitude, this_countloc.properties.latitude]));
-		// props = JSON.parse(JSON.stringify(cur_countloc.properties));
-		feature = new ol.Feature({geometry: geom, properties: props});
-		vSource.addFeature(feature);
-		selected_countlocs_layer.setSource(vSource);
-		
-		ol_map = new ol.Map({ layers: [	basemap_layer_group,
-										ma_wo_brmpo_poly_wms,
-										bike_layer_group,
-										bp_countlocs_wms,
-										selected_countlocs_layer	// this is an OL Vector layer
-									],
-						   target: 'map',
-						   view:   mapView
-						});
-						
-		// Add layer switcher add-on conrol
-		var layerSwitcher = new ol.control.LayerSwitcher({ tipLabel: 'Legend', // Optional label for button
-                                                           groupSelectStyle: 'children', // Can be 'children' [default], 'group' or 'none'
-														   activationMode: 'click',
-                                                           startActive: true,
-														   reverse: false // List layers in order they were added to the map
-                                                         });						
-		ol_map.addControl(layerSwitcher);
-	}});			
-} // initialize_map
-
 
 
 // prepare_data_for_quarter_hour_viz: 
@@ -505,11 +388,11 @@ function generate_report_for_count_id(count_id, count_recs) {
 	var count1, html, count_div_id;
 	
 	count_div_id = 'count_' + count_id + '_report';
-	html = '<div ' + count_div_id + '</div>';
-	html += '<span>' + 'Report for count ID ' + count_id + '</span>';
+	html = '<div ' + count_div_id + '>';
+	html += '<span>' + 'Report for count ID #' + count_id + '</span>';
 	html += '</br>';
 	
-	// Stuff common to all count records for this count
+	// Stuff common to all count records for this count ID
 	count1 = count_recs[0]; // 1st record should be as good as any one
 	html += '<span class="report_header_date">Date: ' + count1.count_date.substr(0,10) + '</span>';
 	html += '</br>';
@@ -534,7 +417,9 @@ function generate_report_for_count_id(count_id, count_recs) {
 		
 		// Create and append a <div> for the caption of the viz for this count record
 		html = '<div ' + 'id=' + caption_div_id + '>';
-		html += '<p>Visualization of data for count record ID # ' + rec.id + '</p>';
+		html += '</br>';
+		html += '<span>Data for count record ID #' + rec.id + '</span>';
+		html += '</br>';
 		html += '<span>';
 		html += '<strong>From:</strong> ' + rec.from_st_name + '&nbsp;' + rec.from_st_dir + '&nbsp;&nbsp;';
 		html += '<strong>To: </strong>' + rec.to_st_name + '&nbsp;' + rec.to_st_dir + '&nbsp;&nbsp;';
@@ -661,16 +546,221 @@ function download_data(counts) {
 } // download_data
 
 
+// initialize_map
+// parameter: this_countloc  - record for count location
+//
+function initialize_map(this_countloc) {
+    $.ajax({ url: mgis_serviceUrls['topo_features'], jsonp: 'callback', dataType: 'jsonp', data: { f: 'json' }, 
+             success: function(config) {     
+        // Body of "success" handler starts here.
+        // Get resolutions
+        var tileInfo = config.tileInfo;
+        var resolutions = [];
+        for (var i = 0, ii = tileInfo.lods.length; i < ii; ++i) {
+            resolutions.push(tileInfo.lods[i].resolution);
+        }               
+        // Get projection
+        var epsg = 'EPSG:' + config.spatialReference.wkid;
+        var units = config.units === 'esriMeters' ? 'm' : 'degrees';
+        var projection = ol.proj.get(epsg) ? ol.proj.get(epsg) : new ol.proj.Projection({ code: epsg, units: units });                              
+        // Get attribution
+        var attribution = new ol.control.Attribution({ html: config.copyrightText });               
+        // Get full extent
+        var fullExtent = [config.fullExtent.xmin, config.fullExtent.ymin, config.fullExtent.xmax, config.fullExtent.ymax];
+        
+        var tileInfo = config.tileInfo;
+        var tileSize = [tileInfo.width || tileInfo.cols, tileInfo.height || tileInfo.rows];
+        var tileOrigin = [tileInfo.origin.x, tileInfo.origin.y];
+        var urls;
+        var suffix = '/tile/{z}/{y}/{x}';
+        urls = [mgis_serviceUrls['topo_features'] += suffix];               
+        var width = tileSize[0] * resolutions[0];
+        var height = tileSize[1] * resolutions[0];     
+        var tileUrlFunction, extent, tileGrid;               
+        if (projection.getCode() === 'EPSG:4326') {
+            tileUrlFunction = function tileUrlFunction(tileCoord) {
+                var url = urls.length === 1 ? urls[0] : urls[Math.floor(Math.random() * (urls.length - 0 + 1)) + 0];
+                return url.replace('{z}', (tileCoord[0] - 1).toString()).replace('{x}', tileCoord[1].toString()).replace('{y}', (-tileCoord[2] - 1).toString());
+            };
+        } else {
+            extent = [tileOrigin[0], tileOrigin[1] - height, tileOrigin[0] + width, tileOrigin[1]];
+            tileGrid = new ol.tilegrid.TileGrid({ origin: tileOrigin, extent: extent, resolutions: resolutions });
+        }     
+
+
+        // MassGIS basemap Layer 1 - topographic features
+        var layerSource;
+        layerSource = new ol.source.XYZ({ attributions: [attribution], projection: projection,
+                                          tileSize: tileSize, tileGrid: tileGrid,
+                                          tileUrlFunction: tileUrlFunction, urls: urls });
+                          
+        mgis_basemap_layers['topo_features'] = new ol.layer.Tile();
+        mgis_basemap_layers['topo_features'].setSource(layerSource);
+        mgis_basemap_layers['topo_features'].setVisible(true);
+        
+        // We make the rash assumption that since this set of tiled basemap layers were designed to overlay one another,
+        // their projection, extent, and resolutions are the same.
+        
+         // MassGIS basemap Layer 2 - structures
+        urls = [mgis_serviceUrls['structures'] += suffix];  
+        layerSource = new ol.source.XYZ({ attributions: [attribution], projection: projection,
+                                          tileSize: tileSize, tileGrid: tileGrid,
+                                          tileUrlFunction: tileUrlFunction, urls: urls });;
+        mgis_basemap_layers['structures'] = new ol.layer.Tile();
+        mgis_basemap_layers['structures'].setSource(layerSource); 
+        mgis_basemap_layers['structures'].setVisible(true);
+        
+        // MassGIS basemap Layer 3 - "detailed" features - these include labels
+        urls = [mgis_serviceUrls['basemap_features'] += suffix];  
+        layerSource = new ol.source.XYZ({ attributions: [attribution], projection: projection,
+                                          tileSize: tileSize, tileGrid: tileGrid,
+                                          tileUrlFunction: tileUrlFunction, urls: urls });
+        mgis_basemap_layers['basemap_features'] = new ol.layer.Tile();
+        mgis_basemap_layers['basemap_features'].setSource(layerSource);
+        mgis_basemap_layers['basemap_features'].setVisible(true);
+
+                       
+        // MassGIS basemap Layer 4 - parcels - WE (CURRENTLY) DO NOT USE THIS LAYER
+        // Code retained for reference purposes only
+	/*
+        urls = [mgis_serviceUrls['parcels'] += suffix];
+        layerSource = new ol.source.XYZ({ attributions: [attribution], projection: projection,
+                                          tileSize: tileSize, tileGrid: tileGrid,
+                                          tileUrlFunction: tileUrlFunction, urls: urls });;
+        mgis_basemap_layers['parcels'] = new ol.layer.Tile();
+        mgis_basemap_layers['parcels'].setSource(layerSource);  
+        mgis_basemap_layers['parcels'].setVisible(true);
+	*/	
+	
+		var mgis_basemap_layer_group = new ol.layer.Group({  title: 'MassGIS Basemap', 
+													         type: 'base',
+															 combine: true,
+													         layers: [mgis_basemap_layers['topo_features'],
+															          mgis_basemap_layers['structures'],
+																	  mgis_basemap_layers['basemap_features'] ] });
+		
+		// Create OpenStreetMap base layer
+		var osm_basemap_layer = new ol.layer.Tile({ source: new ol.source.OSM(),
+												    type: 'base',
+												    title: 'Open Street Map' });
+		osm_basemap_layer.setVisible(false);
+		
+		// Create Stamen 'toner-lite' base layer
+	    stamen_basemap_layer = new ol.layer.Tile({ source: new ol.source.Stamen({layer: 'toner-lite',
+		                                                                          url: "https://stamen-tiles.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png" }), 
+												  type: 'base',
+												  title: 'Stamen' });
+		stamen_basemap_layer.setVisible(false);
+		
+		var basemap_layer_group = new ol.layer.Group( { title: 'Basemaps',
+														layers: [ mgis_basemap_layer_group,
+														          osm_basemap_layer,
+																  stamen_basemap_layer ] });
+	
+		// Create WMS layers
+		var lrse_bikes_shared_use_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
+																				          params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230719', 
+																							            'STYLES': 'lrse_bikes_shared_use_path',
+																							            'TRANSPARENT': 'true'
+																					  }
+																		}),
+											title: 'Shared Use Bicycle Paths (MassDOT)',	
+											visible: true
+										});
+		var lrse_bikes_protected_lane_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
+																				               params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230719', 
+																							                'STYLES': 'lrse_bikes_protected_bike_lane',
+																							                'TRANSPARENT': 'true'
+																					  }
+																		}),
+											title: 'On-road Protected Bicycle Lane (MassDOT)',	
+											visible: true
+										});	
+		var lrse_bikes_on_road_lane_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
+																				               params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230719', 
+																							                'STYLES': 'lrse_bikes_on_road_bike_lane',
+																							                'TRANSPARENT': 'true'
+																					  }
+																		}),
+											title: 'On-road Bicycle Lane (MassDOT)',	
+											visible: true
+										});	
+		var bike_layer_group = new ol.layer.Group({ title: 'Bicycle Facilities (MassDOT)', 
+													fold: 'open',
+													layers: [lrse_bikes_shared_use_wms,
+															 lrse_bikes_protected_lane_wms,
+															 lrse_bikes_on_road_lane_wms] });
+		
+		var ma_wo_brmpo_poly_wms = new ol.layer.Tile({	source: new ol.source.TileWMS({ url		: szWMSserverRoot,
+																					params	: { 'LAYERS': 'postgis:ctps_ma_wo_brmpo_poly', 
+																								'STYLES': 'polygon_gray_for_non_mpo_area',
+																								'TRANSPARENT': 'true'
+																					  }
+																		}),
+											title: 'Area Outside Boston Region MPO',	
+											visible: true
+										});		
+		var bp_countlocs_wms = new ol.layer.Tile({	source: new ol.source.TileWMS({ url		: szWMSserverRoot,
+																					params	: { 'LAYERS': 'postgis:ctps_bp_count_locations_pt', 
+																								'STYLES': 'a_point_blue',
+																								'TRANSPARENT': 'true'
+																					  }
+																		}),
+											title: 'Bike-Ped Count Locations',	
+											visible: true
+										});	
+										
+		var mapCenter = ol.proj.fromLonLat([this_countloc.properties.longitude, this_countloc.properties.latitude]);
+		var mapZoom = 17; // Best guess, for now
+		var mapView =  new ol.View({ center: mapCenter, zoom:  mapZoom });
+		
+		var vSource, feature, geom, props;
+		
+		vSource = selected_countlocs_layer.getSource();
+		vSource.clear();
+		geom = {};
+		props = {}; // TBD
+		geom =  new ol.geom.Point(ol.proj.fromLonLat([this_countloc.properties.longitude, this_countloc.properties.latitude]));
+		props = JSON.parse(JSON.stringify(this_countloc.properties));
+		feature = new ol.Feature({geometry: geom, properties: props});
+		vSource.addFeature(feature);
+		selected_countlocs_layer.setSource(vSource);
+		
+		ol_map = new ol.Map({ layers: [	basemap_layer_group,
+										ma_wo_brmpo_poly_wms,
+										bike_layer_group,
+										bp_countlocs_wms,
+										selected_countlocs_layer	// this is an OL Vector layer
+									],
+						   target: 'map',
+						   view:   mapView,
+						   overlays: [overlay]
+						});
+						
+		// Add layer switcher add-on conrol
+		var layerSwitcher = new ol.control.LayerSwitcher({ tipLabel: 'Legend', // Optional label for button
+                                                           groupSelectStyle: 'children', // Can be 'children' [default], 'group' or 'none'
+														   activationMode: 'click',
+                                                           startActive: true,
+														   reverse: false // List layers in order they were added to the map
+                                                         });						
+		ol_map.addControl(layerSwitcher);
+		
+		// Bind on-click event handler for OpenLayers map: interrogates selected_countlocs_layer
+		ol_map.on('click', function(evt) { onclick_handler(evt); });
+	}});			
+} // initialize_map
+
+
 function initialize() {
 	var loc_id = getURLParameter('loc_id');	
-	
-	// Temp stuff, for now
-	var s = '<h3>Reports for counts at count location # ' + loc_id + '<h3>';
-	$('#report_div').html(s);
+	var s = 'Boston Region MPO Bicycle / Pedestrian Traffic Count Report for Count Location #' + loc_id;
+	$('#page_caption').html(s);
 	
 	// Load count data from CSV file
 	d3.csv(countsURL, rowConverter).then(
 		function(counts_data){
+			all_counts = counts_data;
 			// Load GeoJSON for count locations
 			// Use local file for now, WFS request in production
 			// For WFS request - remember to reproject to EPSG:4326!
