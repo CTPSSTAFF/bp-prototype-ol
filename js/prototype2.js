@@ -101,7 +101,6 @@ var overlay = new ol.Overlay({ element: container,
                                autoPan: { animation: { duration: 250 } }
                              });
 
-
 // End of stuff for OpenLayers mapping  
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -765,8 +764,8 @@ function initialize_map() {
 function initialize() {
 	// Load count data from CSV file
 	d3.csv(countsURL, rowConverter).then(
-		function(data){
-			all_counts = data;;
+		function(counts_data){
+			all_counts = counts_data;
 			// Load GeoJSON for count locations
 			// Use local file for now, WFS request in production
 			// For WFS request - remember to reproject to EPSG:4326!
@@ -782,8 +781,6 @@ function initialize() {
 				$('#select_year').on('change', year_pick_list_handler);
 				// Bind on-change event handler for 'clear_filters' button 
 				$('#clear_filters').on('click', clear_filters_handler);
-				// Arm event handler for basemap selection
-				$(".basemap_radio").change(toggle_basemap_handler);
 				initialize_map();
 				initialize_pick_lists(all_counts);
 			}));
