@@ -752,10 +752,8 @@ function initialize_map(this_countloc) {
 
 function initialize() {
 	var loc_id = getURLParameter('loc_id');	
-	
-	// Temp stuff, for now
-	var s = '<h3>Reports for counts at count location # ' + loc_id + '<h3>';
-	$('#report_div').html(s);
+	var s = 'Boston Region MPO Bicycle / Pedestrian Traffic Count Report for Count Location #' + loc_id;
+	$('#page_caption').html(s);
 	
 	// Load count data from CSV file
 	d3.csv(countsURL, rowConverter).then(
