@@ -32,8 +32,9 @@ Logic for the 'main' page is \(currently\) found in __js\/prototype2.js__; logic
 
 ## Software Dependencies
 These single-page apps depend upon the following software libraries:  
-| --- | --- |
-|  Library | Function |
+
+| Library | Function |
+| --------| -------- |
 | jquery | DOM management |
 | lodash | functional programming library |
 | Open Layers | web mapping |
