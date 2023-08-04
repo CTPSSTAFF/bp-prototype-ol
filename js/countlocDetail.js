@@ -388,11 +388,11 @@ function generate_report_for_count_id(count_id, count_recs) {
 	var count1, html, count_div_id;
 	
 	count_div_id = 'count_' + count_id + '_report';
-	html = '<div ' + count_div_id + '</div>';
-	html += '<span>' + 'Report for count ID ' + count_id + '</span>';
+	html = '<div ' + count_div_id + '>';
+	html += '<span>' + 'Report for count ID #' + count_id + '</span>';
 	html += '</br>';
 	
-	// Stuff common to all count records for this count
+	// Stuff common to all count records for this count ID
 	count1 = count_recs[0]; // 1st record should be as good as any one
 	html += '<span class="report_header_date">Date: ' + count1.count_date.substr(0,10) + '</span>';
 	html += '</br>';
@@ -417,7 +417,9 @@ function generate_report_for_count_id(count_id, count_recs) {
 		
 		// Create and append a <div> for the caption of the viz for this count record
 		html = '<div ' + 'id=' + caption_div_id + '>';
-		html += '<p>Visualization of data for count record ID # ' + rec.id + '</p>';
+		html += '</br>';
+		html += '<span>Data for count record ID #' + rec.id + '</span>';
+		html += '</br>';
 		html += '<span>';
 		html += '<strong>From:</strong> ' + rec.from_st_name + '&nbsp;' + rec.from_st_dir + '&nbsp;&nbsp;';
 		html += '<strong>To: </strong>' + rec.to_st_name + '&nbsp;' + rec.to_st_dir + '&nbsp;&nbsp;';
