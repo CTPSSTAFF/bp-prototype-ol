@@ -1,5 +1,5 @@
 # bp-prototype-ol
-B-P prototype app using OpenLayers library
+Next-gen bicycle / pedestrian traffic count web application.
 
 ## Data Sources
 
@@ -23,10 +23,27 @@ arcpy.management.Append(
 ```
 
 ## Application Structure
+The application consists of two 'single-page apps':
+* a 'main' or 'search' page, __index.html__
+* a 'count-location' detail page, __countlocDetail.html__
+
+Logic common to both pages is found in __js\/common.js__; common 'utility' functions are found in __js\/utils.js__.  
+Logic for the 'main' page is \(currently\) found in __js\/prototype2.js__; logic for the 'detail' page is found in __js\/countlocDetail.js__.
 
 ## Software Dependencies
+These single-page apps depend upon the following software libraries:
+| --- | --- |
+|  Library | Function |
+| jquery | DOM management |
+| lodash | functional programming library |
+| Open Layers | web mapping |
+| Open Layers layer switcher | extension to Open Layers |
+| D3 | CSV loader |
+| Plotly | data visualization |
+| download | data download functionality |
+| jsGrid | tabular data display |
 
 ## Colophon
-Author: B. Krepp
-Date: 4 August 2023
-Place: cyberspace
+Author: B. Krepp  
+Date: 4 August 2023  
+Place: cyberspace  
