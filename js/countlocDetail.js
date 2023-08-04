@@ -163,21 +163,6 @@ var onclick_handler = function(evt) {
 } // onclick_handler
 
 
-// Utility function to return the value of the parameter named 'sParam' from the window's URL
-function getURLParameter(sParam) {
-	var sPageURL = window.location.search.substring(1);
-	var sURLVariables = sPageURL.split('&');
-	var i;
-	for (i = 0; i < sURLVariables.length; i++ ) {
-		var sParameterName = sURLVariables[i].split('=');
-		if (sParameterName[0] == sParam) {
-			return sParameterName[1];
-		}
-	}
-	// If we get here, parameter not found
-	return('');
-} // gtetURLParameter()
-
 
 // prepare_data_for_quarter_hour_viz: 
 // given a count record 'count_rec', return a data structure containing the count record's 
