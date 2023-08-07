@@ -274,8 +274,15 @@ function town_pick_list_handler(e) {
 	}
 		
 	otemp = counts_to_selected_countlocs(selected_counts);
-	update_map(otemp.selected);
-	update_table(otemp.selected);	 
+	// Sanity check to handle the fact that currently, there are some (non-) towns 
+	// with no associated count locations, e.g., 'Auburndale'.
+	if (otemp.selected.length != 0) {
+		update_map(otemp.selected);
+		update_table(otemp.selected);	 
+	} else {
+		alert('No counts found for town = ' + town);
+		return;
+	}
 } // town_pick_list_handler
 
 
