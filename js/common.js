@@ -231,7 +231,7 @@ function make_popup_content(feature) {
 var onclick_handler = function(evt) {
 	var pixel = evt.pixel,
 	    features = [], feature, content, coordinate;
-	const hitTolerance = 50;	// hit-test tolerance, in pixels
+	const hitTolerance = 100;	// hit-test tolerance, in pixels
 		
 	if (ol_map.hasFeatureAtPixel(pixel, { 'hitTolerance': hitTolerance }) === true) {
 		ol_map.forEachFeatureAtPixel(pixel, function(feature, layer) {
