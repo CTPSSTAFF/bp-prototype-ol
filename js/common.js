@@ -47,10 +47,26 @@ var stamen_basemap_layer = new ol.layer.Tile({ source: new ol.source.Stamen({lay
 											   type: 'base',
 											   title: 'Stamen',
 											   visible: false });
+											   
+// Varioius things for WMS and WFS layers
+// First, folderol to allow the app to run on appsrvr3 as well as "in the wild"
+var szServerRoot = location.protocol + '//' + location.hostname;
+var nameSpace;
+if (location.hostname.includes('appsrvr3')) {   
+    szServerRoot += ':8080/geoserver/';  
+	nameSpace = 'ctps_pg';
+} else {
+	// Temp hack to allow working from home
+    // szServerRoot += '/maploc/';
+	szServerRoot = 'https://www.ctps.org/maploc/';
+	nameSpace = 'postgis';
+}
+var szWMSserverRoot = szServerRoot + '/wms'; 
+var szWFSserverRoot = szServerRoot + '/wfs'; 
 
 // Create WMS layers
 var lrse_bikes_shared_use_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
-																					params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230719', 
+																					params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230804', 
 																								'STYLES': 'lrse_bikes_shared_use_path',
 																								'TRANSPARENT': 'true'
 																			  }
@@ -60,7 +76,7 @@ var lrse_bikes_shared_use_wms = new ol.layer.Tile({ source: new ol.source.TileWM
 												});
 
 var lrse_bikes_protected_lane_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
-																					    params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230719', 
+																					    params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_202300804', 
 																									'STYLES': 'lrse_bikes_protected_bike_lane',
 																									'TRANSPARENT': 'true'
 																			  }
@@ -70,7 +86,7 @@ var lrse_bikes_protected_lane_wms = new ol.layer.Tile({ source: new ol.source.Ti
 												});	
 
 var lrse_bikes_on_road_lane_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
-																					  params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230719', 
+																					  params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_202300804', 
 																									'STYLES': 'lrse_bikes_on_road_bike_lane',
 																									'TRANSPARENT': 'true'
 																			  }
@@ -78,12 +94,24 @@ var lrse_bikes_on_road_lane_wms = new ol.layer.Tile({ source: new ol.source.Tile
 													title: 'On-road Unprotected Bicycle Lanes',	
 													visible: true
 												});
+												
+var lrse_bikes_bp_priority_roadway_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
+																					  params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230804', 
+																									'STYLES': 'lrse_bikes_bp_priority_roadway',
+																									'TRANSPARENT': 'true'
+																			  }
+																}),
+													title: 'Bicycle/Pedestrian Priority Roadway',	
+													visible: true
+												});
 
 var bike_layer_group = new ol.layer.Group({ title: 'Bicycle Facilities (MassDOT)', 
 											fold: 'open',
 											layers: [lrse_bikes_shared_use_wms,
 													 lrse_bikes_protected_lane_wms,
-													 lrse_bikes_on_road_lane_wms] 
+													 lrse_bikes_on_road_lane_wms,
+													 lrse_bikes_bp_priority_roadway_wms
+													 ] 
 										});
 
 var ma_wo_brmpo_poly_wms = new ol.layer.Tile({	source: new ol.source.TileWMS({ url		: szWMSserverRoot,
