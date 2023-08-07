@@ -222,7 +222,7 @@ function generate_report_for_count_id(count_id, count_recs) {
 	var count1, html, count_div_id;
 	
 	count_div_id = 'count_' + count_id + '_report';
-	html = '<div ' + count_div_id + '>';
+	html = '<div ' + count_div_id + ' class="countloc_report_header">';
 	html += '<span>' + 'Report for count ID #' + count_id + '</span>';
 	html += '</br>';
 	
@@ -257,9 +257,6 @@ function generate_report_for_count_id(count_id, count_recs) {
 		html += '<span>';
 		html += '<strong>From:</strong> ' + rec.from_st_name + '&nbsp;' + rec.from_st_dir + '&nbsp;&nbsp;';
 		html += '<strong>To: </strong>' + rec.to_st_name + '&nbsp;' + rec.to_st_dir + '&nbsp;&nbsp;';
-		html += '</span>';
-		html += '</br>';
-		html += '<span>';
 		html += 'Traffic count type: <strong>&nbsp;' + count_type(rec.count_type) + '</strong>';
 		html += '</span>';
 		html += '</div>';
