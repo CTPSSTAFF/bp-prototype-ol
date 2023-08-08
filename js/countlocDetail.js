@@ -234,7 +234,15 @@ function generate_report_for_count_id(count_id, count_recs) {
 	html += '</br>';
 	html += '<span class="report_header_facility_info">' + count1.facility_name + ' ' + count1.facility_type + '</span>';
 	html += '</br>';
-	html += '<span class="report_header_weather_info">' + count1.temperature + '&deg;&comma;&nbsp;' + sky_condition(count1.sky) + '</span>';
+	html += '<span class="report_header_weather_info">';
+	// Handle special case of no temperature data in record; CSV reader will set null value here to 0
+	if (count1.temperature != 0) {
+		html += count1.temperature + '&deg;';
+	} else {
+		html += 'Temperature not recorded';
+	}
+	html += '&comma;&nbsp;';
+	html += sky_condition(count1.sky) + '</span>';
 	html += '</div>';
 	$('#report_div').append(html);
 	
