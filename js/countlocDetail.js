@@ -102,18 +102,17 @@ function prepare_data_for_quarter_hour_viz(rec) {
 } // prepare_data_for_quarter_hour_viz
 
 
-function generate_quarter_hour_viz(target_div_id, count_record) {
-	var o, x_domain, y_values, data, max_count, layout;
+function generate_quarter_hour_viz(target_div_id, plot_title, count_type, count_xy_values) {
+	var x_domain, y_values, data4plotly, layout;
 	
-	o = prepare_data_for_quarter_hour_viz(count_record);
-	x_domain = o.times;
-	y_values = o.counts;
+	x_domain = count_xy_values.times;
+	y_values = count_xy_values.counts;
 	
 	// Set bar color based on 'type' of count:  group similar count 'types'
 	// to avoid having too large a color palette.
 	//
 	// Color palette from: https://colorbrewer2.org/#type=qualitative&scheme=Set2&n=4
-	switch(count_record.count_type) {
+	switch(count_type) {
 	case 'B':
 		color = '#8da0cb';
 		break;
@@ -132,32 +131,33 @@ function generate_quarter_hour_viz(target_div_id, count_record) {
 		break;
 	}
 	
-	data = [ { x: x_domain, 
-	           y: y_values, 
-			   type: 'bar',
-			   marker: { color: color }
-			 } ];
+	data4plotly = [ { x: x_domain, 
+	                  y: y_values, 
+			          type: 'bar',
+			          marker: { color: color }
+			        } ];
 	
-	
-	// The following folderol was needed in order to get Plotly to render:
-	// 1. the Y-axis with non-negative values when all the Y data values are 0 and
-	// 2. to provide a (somewhat) reasonable scale of integral values for the Y axis.
-	max_count = _.max(o.counts);
+	// The commented-out folderol below should no longer be necessary,
+	// because we no longer generate reports for counts with all 0 values.
+/*
+	max_count = _.max(count_xy_values.counts);
 	if (max_count === 0) {
-		layout = { yaxis: { title: { text: 'Traffic Count' },
+		layout = {  title: { text: plot_title },
+					yaxis: { title: { text: 'Traffic Count' },
 				            rangemode: 'nonnegative', 
 							range: [0, 5] 
 						  } 
 				 };
 	} else {
-		layout = { yaxis: { title: { text: 'Traffic Count'},
-				            rangemode: 'nonnegative', 
-							autorange: true 
-						  } 
-			     };
-	}
+*/
+	layout = { 	title: { text: plot_title },
+				yaxis: { title: { text: 'Traffic Count' },
+						rangemode: 'nonnegative', 
+						autorange: true 
+					  } 
+	 };
 
-	Plotly.newPlot(target_div_id, data, layout);
+	Plotly.newPlot(target_div_id, data4plotly, layout);
 } // generate_quarter_hour_viz
 
 
@@ -241,15 +241,22 @@ function generate_report_for_count_id(count_id, count_recs) {
 	// Generate a report for each 'count record' associated with the given count_id
 	console.log('Generating report for count_id ' + count_id);
 	count_recs.forEach(function(rec) {
+		var rec_id, count_xy_values, caption_div_id, viz_div_id, html;
 		
-		console.log('    Generating report for record id ' + rec.id);
-		var rec_id, caption_div_id, viz_div_id, html, o;
 		rec_id = rec.id;
+		count_xy_values = prepare_data_for_quarter_hour_viz(rec);
+		// If all values in the count record are zero, do not generate report.
+		if (count_xy_values.counts.every(item => item === 0)) {
+			console.log('	No report for ' + rec.id + ' generated: all values are 0.');
+			return;
+		}
+		console.log('    Generating report for record id ' + rec.id);
 		
 		caption_div_id = 'count_' + count_id + '_rec_' + rec_id + '_caption';
 		viz_div_id = 'count_' + count_id + '_rec_' + rec_id + '_viz';
 		
 		// Create and append a <div> for the caption of the viz for this count record
+	/*
 		html = '<div ' + 'id=' + caption_div_id + '>';
 		html += '</br>';
 		html += '<span>Data for count record ID #' + rec.id + '</span>';
@@ -261,13 +268,19 @@ function generate_report_for_count_id(count_id, count_recs) {
 		html += '</span>';
 		html += '</div>';
 		$('#report_div').append(html);
+	*/
+		
+		var plot_title = 'Record ID #' + rec.id + '&nbsp;&nbsp;';
+		plot_title += 'From:&nbsp;' + rec.from_st_name + '&nbsp;' + rec.from_st_dir + '&nbsp;&nbsp;';
+		plot_title += 'To:&nbsp;' + rec.to_st_name + '&nbsp;' + rec.to_st_dir + '&nbsp;&nbsp;';
+		plot_title +=  'Traffic count type:&nbsp;' + count_type(rec.count_type);
 		
 		// Create and append a <div> for the visualization itself.
 		html = '<div ' + 'id=' + viz_div_id + '>';
 		html += '</div>';
 		$('#report_div').append(html);
 		
-		generate_quarter_hour_viz(viz_div_id, rec);
+		generate_quarter_hour_viz(viz_div_id, plot_title, rec.count_type, count_xy_values);
 	}); // forEach count_rec 
 } // generate_report_for_count_id
 
