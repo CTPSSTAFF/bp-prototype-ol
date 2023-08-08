@@ -41,12 +41,39 @@ The __fac\_type__ attribute in the LRSE_Bikes feature class indicates the 'type'
 | 5 | shared-use path |
 | 7 | bicycle\/pedestrian priority roadway |
 
+### Area Outside the Boston Region MPO Area
+The polygon from the MassGIS layer TOWNSSURVEY_POLYM for the towns outside
+of the Boston Region MPO area were dissolved on 'all fields'; the resulting
+table was named 'ctps_ma_wo_brmpo_poly'. This \(geographic\) table was
+exported to the PostGIS-enabled PostgreSQL database on the MPO's external
+webserver, and published by the GeoServer running there as the 
+layer named 'postgis:ctps_ma_wo_brmpo_poly'.
+
+## WMS Layers and Their Symbolization
+This application uses 3 WMS layers published by the CTPS GeoServer:
+| Layer | Contents |
+| postgis:ctps_ma_wo_brmpo_poly | Area outside the Boston Reion MPO area |
+| postgis:ctps_bp_count_locations_pt | CTPS bike-ped traffic count locations |
+| postgis:massdot_lrse_bikes_20230804 | MassDOT bike facilities layer |
+
+The 'area outside the MPO region' layer is symbolized by the SLD __polygon\_gray\_for\_non\_mpo.sld__.
+The 'bike-ped count locations' layer is symbolized by the SLD __a\_point\_blue.sld__.
+
+The 'lrse_bikes' layer is rendered by __four__ OpenLayers layers, each symbolizing only those
+features of 'lrse_bikes' with a particular facility type, i.e., __fac\_type__:
+| fac_type | SLD |
+| 1 | lrse_bikes_on_road_bike_lane.sld |
+| 2 | lrse_bikes_protected_bike_lane.sld |
+| 5 | lrse_bikes_shared_use_path.sld |
+| 7 | lrse_bikes_bp_priority_roadway.sld |
+
 ## Application Structure
 The application consists of two 'single-page apps':
 * a 'main' or 'search' page, __index.html__
 * a 'count-location' detail page, __countlocDetail.html__
 
-Logic common to both pages is found in __js\/common.js__; common 'utility' functions are found in __js\/utils.js__.  
+Logic common to both pages is found in __js\/common.js__. 
+A  variety of'utility' functions are found in __js\/utils.js__.  
 Logic for the 'main' page is \(currently\) found in __js\/prototype2.js__; logic for the 'detail' page is found in __js\/countlocDetail.js__.
 
 ## Software Dependencies
