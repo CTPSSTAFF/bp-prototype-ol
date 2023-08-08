@@ -145,23 +145,6 @@ var selected_countlocs_layer = new ol.layer.Vector({ title: 'Selected Count Loca
 								                     style: selected_countlocs_style
 								                   });
 
-// Varioius things for WMS and WFS layers
-// First, folderol to allow the app to run on appsrvr3 as well as "in the wild"
-var szServerRoot = location.protocol + '//' + location.hostname;
-var nameSpace;
-if (location.hostname.includes('appsrvr3')) {   
-    szServerRoot += ':8080/geoserver/';  
-	nameSpace = 'ctps_pg';
-} else {
-	// Temp hack to allow working from home
-    // szServerRoot += '/maploc/';
-	szServerRoot = 'https://www.ctps.org/maploc/';
-	nameSpace = 'postgis';
-}
-var szWMSserverRoot = szServerRoot + '/wms'; 
-var szWFSserverRoot = szServerRoot + '/wfs'; 
-
-
 // OpenLayers 'map' object:
 var ol_map = null;
 
