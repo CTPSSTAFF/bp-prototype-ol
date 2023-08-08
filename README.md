@@ -62,6 +62,7 @@ The 'bike-ped count locations' layer is symbolized by the SLD __a\_point\_blue.s
 The 'lrse_bikes' layer is rendered by __four__ OpenLayers layers, each symbolizing only those
 features of 'lrse_bikes' with a particular facility type, i.e., __fac\_type__:
 | fac_type | SLD |
+|----------|-----|
 | 1 | lrse_bikes_on_road_bike_lane.sld |
 | 2 | lrse_bikes_protected_bike_lane.sld |
 | 5 | lrse_bikes_shared_use_path.sld |
