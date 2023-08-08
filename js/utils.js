@@ -1,16 +1,33 @@
 // utils.js
-//
-// Note: This file REQUIRES that the d3.js library is loaded before it.
+// Miscellaneous utilities used in either or both pages of the bike-ped count app
 
-// TEMP - the following function is for use during development only
+// randomNumber: - this function is for use during development only
 function randomNumber(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
-// 
 var getJson = function(url) { return $.get(url, null, 'json'); };
 
-// rowConverter function for parsing input CSV file of count records
+// getURLParameter:
+// Utility function to return the value of the parameter named 'sParam' from the window's URL
+function getURLParameter(sParam) {
+	var sPageURL = window.location.search.substring(1);
+	var sURLVariables = sPageURL.split('&');
+	var i;
+	for (i = 0; i < sURLVariables.length; i++ ) {
+		var sParameterName = sURLVariables[i].split('=');
+		if (sParameterName[0] == sParam) {
+			return sParameterName[1];
+		}
+	}
+	// If we get here, parameter not found
+	return('');
+} // gtetURLParameter()
+
+
+// rowConverter:
+// Utility function for parsing records of the input CSV file of count records,
+// and returning an object contaiing the parsed data
 var rowConverter = function(d) {
 	return {
 		id:				+d.id,
