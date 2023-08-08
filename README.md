@@ -32,6 +32,15 @@ arcpy.management.Append(
     update_geometry="NOT_UPDATE_GEOMETRY"
 )
 ```
+#### Facility Type Attribute
+The __fac\_type__ attribute in the LRSE_Bikes feature class indicates the 'type' of each bicycle facility:
+| fac_type | Meaning |
+|----------|---------|
+| 1 | on-road bicycle lane (unprotected) |
+| 2 | on-road protected bicycle lane |
+| 5 | shared-use path |
+| 7 | bicycle\/pedestrian priority roadway |
+
 ## Application Structure
 The application consists of two 'single-page apps':
 * a 'main' or 'search' page, __index.html__
