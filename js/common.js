@@ -125,7 +125,7 @@ var ma_wo_brmpo_poly_wms = new ol.layer.Tile({	source: new ol.source.TileWMS({ u
 											});
 
 var bp_countlocs_wms = new ol.layer.Tile({	source: new ol.source.TileWMS({ url		: szWMSserverRoot,
-																			params	: { 'LAYERS': 'postgis:ctps_bp_count_locations_pt', 
+																			params	: { 'LAYERS': 'postgis:ctps_bp_count_locations_pt_20230809', 
 																						'STYLES': 'a_point_blue',
 																						'TRANSPARENT': 'true'
 																			  }
