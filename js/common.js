@@ -3,7 +3,7 @@
 // Many of these pertain to the OpenLayers map used in each page.
 
 // Data source: count data
-var countsURL = 'data/csv/bp_counts_080923.csv'; // TEMP, for now
+var countsURL = 'data/csv/bp_counts.csv';
 
 // Data source: count locations 
 var countlocsURL = 'data/json/ctps_bp_count_locations_pt.geo.json';
