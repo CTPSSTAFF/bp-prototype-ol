@@ -186,7 +186,7 @@ function get_uniqe_years_from_counts(counts) {
 // return an array of unique towns sorted in alphabetical order
 function get_unique_towns_from_counts(counts) {
 	var towns, towns_uniq;
-	towns =  _.map(counts, function(count) { return count.municipality; });
+	towns =  _.map(counts, function(count) { return count.town; });
 	towns_uniq = _.uniq(towns);
 	towns_uniq = towns_uniq.sort();	
 	return towns_uniq;
@@ -259,7 +259,7 @@ function town_pick_list_handler(e) {
 		$("#select_year option[value='" + year + "']").attr('selected', 'selected');
 	} else {
 		// A specific town has been selected 
-		filter_func = function(count) { return count.municipality == town; };
+		filter_func = function(count) { return count.town == town; };
 		selected_counts = _.filter(all_counts, filter_func);
 		// If a specific year is selected, further filter selected_counts on its value
 		if (year != 'Any' && year != 'All Applicable') {
@@ -337,7 +337,7 @@ function year_pick_list_handler(e) {
 		// value in the 'town' <select> control.
 		// Filter data, but using the selection in the _other_ <select> control,
 		// i.e., the 'town' <select> control.
-		filter_func = function(count) { return count.municipality == town; };
+		filter_func = function(count) { return count.town == town; };
 		selected_counts = _.filter(all_counts, filter_func);
 		initialize_town_pick_list(all_counts);
 		// Set the 'selected' value in the towns <select> list to the 
@@ -349,7 +349,7 @@ function year_pick_list_handler(e) {
 		selected_counts = _.filter(all_counts, filter_func);
 		// If a specific town is selected, further filter selected_counts on its value
 		if (town != 'Any' && town != 'All Applicable') {
-			filter_func = function(count) { return count.municipality == town; };
+			filter_func = function(count) { return count.town == town; };
 			selected_counts = _.filter(selected_counts, filter_func);
 		} else {
 			// Populate 'town' <select> control
@@ -383,16 +383,16 @@ function clear_filters_handler(e) {
 
 // initialize_town_pick_list - helper function for initialize_pick_lists
 function initialize_town_pick_list(counts) {
-	var munis, munis_uniq;
+	var towns, towns_uniq;
 	
-	munis = _.map(counts, function(c) { return c.municipality; });
-	munis_uniq = _.uniq(munis);
-	munnis_uniq = munis_uniq.sort(); // Alphabetize list of towns!
+	towns = _.map(counts, function(c) { return c.town; });
+	towns_uniq = _.uniq(towns);
+	towns_uniq = towns_uniq.sort(); // Alphabetize list of towns!
 	
 	$('#select_town').empty();
 	$('#select_town').append(new Option("Any", "Any"));
-	munis_uniq.forEach(function(muni) {
-		$('#select_town').append(new Option(muni, muni));
+	towns_uniq.forEach(function(town) {
+		$('#select_town').append(new Option(town, town));
 	});
 }
 

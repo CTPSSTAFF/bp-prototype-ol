@@ -218,7 +218,7 @@ function count_type(code) {
 //
 // Note that there is some data that is common to ALL count-records for
 // a given count_id; 'hoist' this data and put it in a header for the count.
-function generate_report_for_count_id(count_id, count_recs) {
+function generate_report_for_count_id(this_countloc, count_id, count_recs) {
 	var count1, html, count_div_id;
 	
 	count_div_id = 'count_' + count_id + '_report';
@@ -230,9 +230,16 @@ function generate_report_for_count_id(count_id, count_recs) {
 	count1 = count_recs[0]; // 1st record should be as good as any one
 	html += '<span class="report_header_date">Date: ' + count1.count_date.substr(0,10) + '</span>';
 	html += '</br>';
-	html += '<span class="report_header_date">Town: ' + count1.municipality + '</span>';
+	html += '<span class="report_header_date">Town: ' + count1.town + '</span>';
 	html += '</br>';
-	html += '<span class="report_header_facility_info">' + count1.facility_name + ' ' + count1.facility_type + '</span>';
+	html += '<span class="report_header_facility_info">';
+	if (this_countloc.properties.facility_name != null) { 
+		html += this_countloc.properties.facility_name + ' ';
+	}
+	if (this_countloc.properties.facility_type != null) {
+		html += this_countloc.properties.facility_type;
+	}
+	html += '</span>';
 	html += '</br>';
 	html += '<span class="report_header_weather_info">';
 	// Handle special case of no temperature data in record; CSV reader will set null value here to 0
@@ -296,9 +303,8 @@ function generate_report_for_count_id(count_id, count_recs) {
 // Format the array of data in 'counts' as CSV and download it
 function download_data(counts) {
 	var s; // string into which data to be downloaded in CSV format will be accumulated
-	var header = "id,bp_loc_id,count_id,municipality,facility_name,";
-		header += "street_1,street_2,street_3,street_4,street_5,street_6,";
-		header += "description,temperature,sky,facility_type,count_type,";
+	var header = "id,bp_loc_id,count_id,town,";
+		header += "description,temperature,sky,count_type,";
 		header += "from_st_name,from_st_dir,to_st_name,to_st_dir,count_date,count_dow,";
 		header += "cnt_0630,cnt_0645,";
 		header += "cnt_0700,cnt_0715,cnt_0730,cnt_0745,cnt_0800,cnt_0815,cnt_0830,cnt_0845,cnt_0900,cnt_0915,cnt_0930,cnt_0945,";
@@ -313,18 +319,10 @@ function download_data(counts) {
             s += c.id + ',';
             s += c.bp_loc_id + ',';
             s += c.count_id + ',';
-            s += c.municipality + ',';
-            s += c.facility_name + ',';
-            s += c.street_1 + ',';
-            s += c.street_2 + ',';
-            s += c.street_3 + ',';
-            s += c.street_4 + ',';
-            s += c.street_5 + ',';
-            s += c.street_6 + ',';
+            s += c.town + ',';
             s += '"' + c.description + '",';
             s += c.temperature + ',';
             s += c.sky + ',';
-            s += c.facility_type + ',';
             s += c.count_type + ',';
             s += c.from_st_name + ',';
             s += c.from_st_dir + ',';
@@ -573,7 +571,7 @@ function initialize() {
 				// Generate a 'report' for each count, by iterating over the selected count_ids
 				count_ids.forEach(function(this_count_id) {
 					countrecs_for_this_count_id = _.filter(counts_data, function(rec) { return rec.count_id == this_count_id; });
-					generate_report_for_count_id(this_count_id, countrecs_for_this_count_id);
+					generate_report_for_count_id(this_countloc, this_count_id, countrecs_for_this_count_id);
 				});
 			}));
 			// Arm event handler for 'download' button
