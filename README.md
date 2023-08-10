@@ -94,6 +94,56 @@ At the time of writing, __jquery__, __lodash__, and  __d3__ are loaded from a Co
 Delivery Network (CDN); the others are loaded locally. In production, all libraries will
 probably be loaded from local files.
 
+## Organization of this Repository
+The top-level of this repository contains the HTML files for the 'main' and 'detail' pages:
+* index.html - HTML file for the 'main' a.k.a. 'search' page
+* countlocDetail.html - HTML file for the 'count location detail' page
+
+The remaining conents of the repository are found in the followign subdirectories:
+* css - CSS styling rules
+* data - data files read by the application
+* js - JavaScript code for the application itself
+* libs - JavaScript support libraries
+* sld - styled layer descriptors (SLDs) for WMS layers used by the application
+* sql - SQL scripts to create database tables for data used in the application
+
+### 'css' Directory
+This directory contains the following files:
+* prototype2.css - CSS rules for styling the 'main' page
+* countlocDetail.css - CSS rules for styling the 'count location detail' page
+
+### 'data' Directory
+
+### 'js' Directory
+This directory contains the following files:
+* prototype2.js - JavaScript code for the application 'main' page
+* countlodDetail.js - JavaScript code for the 'count location detail' page
+* common.js -- Common JavaScript data declarations used by both pages of the application
+* utils.js -- Miscellaneous JavaScript utility functions
+
+### 'libs' Directory
+This directory contains the following files:
+* csv/
+  * bp_counts.csv
+* json/
+  * ctps_bp_count_locations_pt.geo.json
+
+### 'sld' Directory
+This directory contains the following files:
+* a_point_blue.sld - SLD to style WMS layer of bike-ped count Locations
+* lrse_bikes_on_road_bike_lane.sld - SLD to style subset of features in 'LRSE_Bikes' WMS layer for on-road bike lanes
+* lrse_bikes_protected_bike_lane.sld - SLD to style subset of features in 'LRSE_Bikes' WMS layer for protected bike lanes
+* lrse_bikes_shared_use_path.sld -- SLD to style subset of features in 'LRSE_Bikes' WMS layer for shared use paths
+* lrse_bikes_bp_priority_roadway.sld - SLD to style subset of features in 'LRSE_Bikes' WMS layer for bicycle/pedestrian priority roadways
+
+### 'sql' Directory
+This directory contains the following files:
+* create_ctps_bp_count_locations_pt.sql - SQL to create the bike-ped count locations spatial table in PostGIS/PostgreSQL
+* create_bp_counts.sql -- SQL to create the bike-ped counts table in PostgreSQL
+* create_ctps_ma_wo_prmpo_poly.sql - SQL to create the spatial table for a polygon layer representing
+the parts of Massachusetts outside the Boston Region MPO area
+* create_lrse_bikes_2023_0804.sql - SQL to create the spatial table for MassDOT's 'bike facilities' layer in PostGIS/PostgreSQL
+
 ## Colophon
 Author: B. Krepp  
 Date: 4 August 2023  
