@@ -244,7 +244,7 @@ function generate_report_for_count_id(this_countloc, count_id, count_recs) {
 	html += '<span class="report_header_weather_info">';
 	// Handle special case of no temperature data in record; CSV reader will set null value here to 0
 	if (count1.temperature != 0) {
-		html += count1.temperature + '&deg;';
+		html += count1.temperature + '&deg;F';
 	} else {
 		html += 'Temperature not recorded';
 	}
