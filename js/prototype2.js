@@ -530,14 +530,17 @@ function initialize_map() {
 						});
 		
 		// Add layer switcher add-on conrol
+		var toc = document.getElementById('layers');
 		var layerSwitcher = new ol.control.LayerSwitcher({ tipLabel: 'Legend', // Optional label for button
                                                            groupSelectStyle: 'children', // Can be 'children' [default], 'group' or 'none'
 														   activationMode: 'click',
-                                                           startActive: true,
+                                                           startActive: true, 
 														   reverse: false // List layers in order they were added to the map
                                                          });
-		ol_map.addControl(layerSwitcher);
-						
+		// Do NOT add the LayerSwitcher control TO the OpenLayers map; it resides outside the OpenLayers map in the "layers" <div>.
+		// ol_map.addControl(layerSwitcher);
+		ol.control.LayerSwitcher.renderPanel(ol_map, toc);
+		
 		// Bind on-click event handler for OpenLayers map: interrogates selected_countlocs_layer
 		ol_map.on('click', function(evt) { onclick_handler(evt); });
 
