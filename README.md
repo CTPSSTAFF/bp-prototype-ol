@@ -21,7 +21,7 @@ In addition:
 * Work on the Railo project was suspended sometime in the late 2010s; the project is
 no longer supported, and it is no longer possible to even obtain an 'install image' for it
 * Code in the web client was written in 'early 2000s style' JavaScript: for example, it makes
-no use of JavaScript support libraries, even libraries such as __jQery__ which are regarded
+no use of JavaScript support libraries, even libraries such as __jQuery__ which are regarded
 as fundamental.
 * Several user-interface/user-experience issues were reported with the application
 which would have been very difficult to address in the existing architecture.
@@ -49,7 +49,7 @@ than 300 features. When convereted to GeoJSON format, only about 100 KB is requi
 * The current bike-ped traffic counts table is also quite small. When converted to CSV format, only 
 around 1.4 MB is required to store it.
 
-### Approach Taken
+### The Approach Taken
 With these points in mind, the decision was taken in early July 2023 to implement an 
 updated bike-ped traffic counts application __for the Federal Fiscal Year ending Septebmer 30, 2023__
 using the following approach:
