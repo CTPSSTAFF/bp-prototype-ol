@@ -1,6 +1,76 @@
 # bp-prototype-ol
 Next-gen bicycle / pedestrian traffic count web application.
 
+## Motivation and Rationale
+### Motivation
+The __motivation__ for the application in this repository was the funding of Boston Region MPO 
+UPWP project 13803 for Federal Fiscal Year 2023: 'Update Bicycle/Pedestrian Count Database'.
+While the bike-ped count database was in need of some internal reorganiation and 'cleaning'
+of vestigial records that had crept into the data, the primary motivation was to update 
+the bike-ped traffic counts _web application_. 
+
+The bike-ped traffic count application was first written in 2008-2009. It employs an 
+arcitecture which may have been relatively up-to-date at that time, but antiquated
+by current /(2023\) standards. In particular:
+* It uses Cold Fusion Markup Language \(__CFML__\) as the 'middleware' or 'glue' between
+the client code running in a web browser and the backing database 
+* It uses the Google Maps API to implement the 'mapping' functionality in the web client
+In addition:
+* Since some time in the mid-2010s CTPS has used __Railo__ as its CFML 'engine'.
+* Railo is an open-source implementation of CFML 
+* Work on the Railo project was suspended sometime in the late 2010s; the project is
+no longer supported, and it is no longer possible to even obtain an 'install image' for it
+* Code in the web client was written in 'early 2000s style' JavaScript: for example, it makes
+no use of JavaScript support libraries, even libraries such as __jQery__ which are regarded
+as fundamental.
+* Several user-interface/user-experience issues were reported with the application
+which would have been very difficult to address in the existing architecture.
+
+### Rationale
+The __rationale__ for the approach taken here was as follows:
+* Delivery of an updated version of the application was required by the end of 
+Federal Fiscal Year 2023, i.e., September 30, 2023.
+* Work on this project was begun in late June 2023.
+* Ideally, a new version of the app would implement improvements in both the 'middleware'
+software and the client-side software.
+* In particular, the 'middleware' would be implemented afresh using a more modern 
+'middleware' language such as PHP, or perhaps Ruby.
+* However, CTPS has only minimal in-house expertise in PHP and none whatsoever in Ruby.
+* The client-side code would be implemented using a more modern and more flexible 'mapping'
+library than Google Maps, either leaflet.js or OpenLayers.
+* The client-side code would use JavaScript libraries to streamline the code, such as, 
+for example __jQuery__ to streamlne access to the DOM.
+* CTPS has some in-house expertise with OpenLayers and leaflet.js.
+* Prototyping has revealed some performance issues with the frequent addition and removal
+of leaflet.js 'marker' objects, as is the case when bike-ped traffic count locations 
+are queried in the client.
+* The current bike-ped traffic count locations spatial table is quite small; it contains fewer
+than 300 features. When convereted to GeoJSON format, only about 100 KB is required to store it.
+* The current bike-ped traffic counts table is also quite small. When converted to CSV format, only 
+around 1.4 MB is required to store it.
+
+### Approach Taken
+With these points in mind, the decision was taken in early July 2023 to implement an 
+updated bike-ped traffic counts application __for the Federal Fiscal Year ending Septebmer 30, 2023__
+using the following approach:
+* The application will run entirely in the client. A backing database will not be used; 
+consequently no 'middleware' code will be needed.
+* The application will load all data from local files: a GeoJSON file containing the 
+bike-ped traffic count location data, and a CSV file containing the bike-ped traffic counts.
+* 'Mapping' functionality will be impelemted in the client using the OpenLayers library.
+* Other JavaScript support libraries, such as __jQuery__ and __lodash__ will be used to
+streamline implementation of the client-side code.
+
+### The Future
+The approach taken for this version of the application is admitedly an interim one,
+it is a 'placeholder' that will serve for September 30, 2023 and the immediatly following weeks and months.
+The intention is that in Federal Fiscal Year 2024 work on the application will resume,
+focused on making it __scalable__ to many more count locations, and a vastly 
+larger table of bike-ped counts \(including automated counts.\) This will entail 
+some restructuring of the client-side code in order to implement a 'middleware' layer 
+between the client and a backing database. The choice of implementaiton lanaguage for 
+the 'middleware' layer is currently TBD, but PHP is a likely candidate.
+
 ## Data Sources
 The data sources for this application are:
 * CTPS's database of bicycle / pedestrian traffic Counts
