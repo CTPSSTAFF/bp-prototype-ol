@@ -102,6 +102,7 @@ The top-level of this repository contains the HTML files for the 'main' and 'det
 The remaining conents of the repository are found in the followign subdirectories:
 * css - CSS styling rules
 * data - data files read by the application
+* img - PNG file for CTPS 'branding'
 * js - JavaScript code for the application itself
 * libs - JavaScript support libraries
 * sld - styled layer descriptors (SLDs) for WMS layers used by the application
