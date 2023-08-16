@@ -173,7 +173,7 @@ function make_popup_content(feature) {
 	var props, loc_id, counts, 
 	    oldest_count_date, newest_count_date, 
 	    newest_counts = [], newest_count_summary = {}, 
-	    am_peak = 0,  pm_peak = 0;
+	    am_peak = 0,  pm_peak = 0, a_tag;
 		
 	props = feature.getProperties().properties;
 	loc_id = props.loc_id;
@@ -201,7 +201,11 @@ function make_popup_content(feature) {
 	content += 'Most recent count : ' + newest_count_date + '</br>';
 	content += 'Total volume AM peak : ' + am_peak + '</br>';
 	content += 'Total volume PM peak : ' + pm_peak + '</br>';
-	content += 'Oldest count : ' + oldest_count_date + '</br>';		
+	content += 'Oldest count : ' + oldest_count_date + '</br>';	
+	
+	a_tag = '<a href=countlocDetail.html?loc_id=' + props.loc_id;
+	a_tag += ' target="_blank">Open detail page</a>';	
+    content += a_tag;
 	
 	return content;
 } // make_popup_content
