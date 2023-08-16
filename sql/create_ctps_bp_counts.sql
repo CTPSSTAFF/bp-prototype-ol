@@ -1,8 +1,8 @@
--- Table: public.ctps_bp_counts_20230809
+-- Table: public.ctps_bp_counts_20230816
 
--- DROP TABLE IF EXISTS public.ctps_bp_counts_20230809;
+-- DROP TABLE IF EXISTS public.ctps_bp_counts_20230816;
 
-CREATE TABLE IF NOT EXISTS public.ctps_bp_counts_20230809
+CREATE TABLE IF NOT EXISTS public.ctps_bp_counts_20230816
 (
     objectid integer NOT NULL,
     id integer,
@@ -81,18 +81,18 @@ CREATE TABLE IF NOT EXISTS public.ctps_bp_counts_20230809
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public.ctps_bp_counts_20230809
+ALTER TABLE IF EXISTS public.ctps_bp_counts_20230816
     OWNER to gisadmin;
 
-GRANT SELECT ON TABLE public.ctps_bp_counts_20230809 TO gispublisher;
+GRANT SELECT ON TABLE public.ctps_bp_counts_20230816 TO gispublisher;
 
-GRANT ALL ON TABLE public.ctps_bp_counts_20230809 TO gisadmin;
+GRANT ALL ON TABLE public.ctps_bp_counts_20230816 TO gisadmin;
 -- Index: r2222_sde_rowid_uk
 
 -- DROP INDEX IF EXISTS public.r2222_sde_rowid_uk;
 
 CREATE UNIQUE INDEX IF NOT EXISTS r2222_sde_rowid_uk
-    ON public.ctps_bp_counts_20230809 USING btree
+    ON public.ctps_bp_counts_20230816 USING btree
     (objectid ASC NULLS LAST)
     WITH (FILLFACTOR=75)
     TABLESPACE pg_default;
