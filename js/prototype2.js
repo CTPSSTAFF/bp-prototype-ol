@@ -49,7 +49,10 @@ function update_map(selected_countlocs) {
 	} else {
 	    // Get extent of selected countlocs, and pan/zoom map to it
 	    extent = vSource.getExtent();
-	    ol_map.getView().fit(extent, { size: ol_map.getSize(), duration: 1500 });
+		// Fitting the map's view precisely to the extent of the vector feature layer
+		// causes some features to be placed exactly on the border of the visible map.
+		// Add 50 pixels of padding 'around the edges' to make things look better.
+	    ol_map.getView().fit(extent, { size: ol_map.getSize(), duration: 1500, padding: [50, 50, 50, 50] });
 	}
 } // update_map
 
