@@ -1,4 +1,4 @@
-// Prototype # of next-gen bike-ped counts web application
+// Main page of next-gen bike-ped counts web application
 //
 // Data: 'all count locations' map image tiles 'data' from WMS service
 //       'selected count locations' - OpenLayers vector layer
@@ -57,14 +57,10 @@ function update_map(selected_countlocs) {
 } // update_map
 
 // Update the jsGrid table with info about each selected count location
-// NOTE: It would appear that jsGrid has a bug/feature such that it does
-//       not render the first (i.e., index == 0) element in the data_array
-//       passed to it. This was stumbled upon empirically.
 //
 function update_table(countlocs) {
 	var i, cl, data_array = [];
-	// Insert dummy 0th element into data_array, per comment above
-	data_array.push({'countloc' : '', 'town' : '' });
+	
 	// Populate 'data' array with info about the selected count locations
 	for (i = 0; i < countlocs.length; i++) {
 		cl = countlocs[i];
@@ -75,7 +71,7 @@ function update_table(countlocs) {
 	}
 		
 	$("#output_table").jsGrid({
-			height: "30%",
+			height: "auto",
 			width: "80%", 
 			sorting: true,
 			paging: true,
@@ -423,8 +419,6 @@ function initialize_pick_lists(counts) {
 	initialize_town_pick_list(counts);
 	initialize_year_pick_list(counts);
 } // initialize_pick_lists
-
-
 
 
 function initialize_map() {
