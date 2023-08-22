@@ -13,13 +13,12 @@ The bike-ped traffic count application was first written in 2008-2009. It employ
 arcitecture which may have been relatively up-to-date at that time, but antiquated
 by current /(2023\) standards. In particular:
 * It uses Cold Fusion Markup Language \(__CFML__\) as the 'middleware' or 'glue' between
-the client code running in a web browser and the backing database 
-* It uses the Google Maps API to implement the 'mapping' functionality in the web client
-In addition:
+the client code running in a web browser and the backing database running on a server
 * Since some time in the mid-2010s CTPS has used __Railo__ as its CFML 'engine'.
 * Railo is an open-source implementation of CFML 
 * Work on the Railo project was suspended sometime in the late 2010s; the project is
 no longer supported, and it is no longer possible to even obtain an 'install image' for it
+* It uses the Google Maps API to implement the 'mapping' functionality in the web client
 * Code in the web client was written in 'early 2000s style' JavaScript: for example, it makes
 no use of JavaScript support libraries, even libraries such as __jQuery__ which are regarded
 as fundamental.
@@ -38,16 +37,16 @@ software and the client-side software.
 * However, CTPS has only minimal in-house expertise in PHP and none whatsoever in Ruby.
 * The client-side code would be implemented using a more modern and more flexible 'mapping'
 library than Google Maps, either leaflet.js or OpenLayers.
-* The client-side code would use JavaScript libraries to streamline the code, such as, 
-for example __jQuery__ to streamlne access to the DOM.
+* The client-side code would use JavaScript libraries to streamline the code, such as
+__jQuery__ to streamlne access to the DOM.
 * CTPS has some in-house expertise with OpenLayers and leaflet.js.
 * Prototyping has revealed some performance issues with the frequent addition and removal
-of leaflet.js 'marker' objects, as is the case when bike-ped traffic count locations 
+of 'marker' objects in leaflet.js, as is the case when bike-ped traffic count locations 
 are queried in the client.
 * The current bike-ped traffic count locations spatial table is quite small; it contains fewer
 than 300 features. When convereted to GeoJSON format, only about 100 KB is required to store it.
-* The current bike-ped traffic counts table is also quite small. When converted to CSV format, only 
-around 1.4 MB is required to store it.
+* The current bike-ped traffic counts table is also quite small; it contains fewwer
+than 9,000 records. When converted to CSV format, only about 1.6 MB is required to store it.
 
 ### The Approach Taken
 With these points in mind, the decision was taken in early July 2023 to implement an 
@@ -141,11 +140,11 @@ features of 'lrse_bikes' with a particular facility type, i.e., __fac\_type__:
 ## Application Structure
 The application consists of two 'single-page apps':
 * a 'main' or 'search' page, __index.html__
-* a 'count-location' detail page, __countlocDetail.html__
+* a 'count-location detail' page, __countlocDetail.html__
 
-Logic common to both pages is found in __js\/common.js__. 
-A  variety of'utility' functions are found in __js\/utils.js__.  
-Logic for the 'main' page is \(currently\) found in __js\/prototype2.js__; logic for the 'detail' page is found in __js\/countlocDetail.js__.
+Data structures and functions common to both pages is found in __js\/common.js__.   
+Data structures and functions specific to 'main' page is found in __js\/prototype2.js__.
+Data structures and fuctnions specific to the 'count-location detail' is found in __js\/countlocDetail.js__.
 
 ## Software Dependencies
 These single-page apps depend upon the following software libraries:  
@@ -217,5 +216,5 @@ the parts of Massachusetts outside the Boston Region MPO area
 
 ## Colophon
 Author: B. Krepp  
-Date: 4 August 2023  
+Date: 4-22 August 2023  
 Location: cyberspace  
