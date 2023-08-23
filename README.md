@@ -182,7 +182,12 @@ This directory contains the following files:
 * bike_ped_app.css - CSS rules for styling the 'main' page and 'count location detail' page
 
 ### 'data' Directory
-
+This directory contains the following files:
+* csv/
+  * bp_counts.csv
+* json/
+  * ctps_bp_count_locations_pt.geo.json
+  
 ### 'js' Directory
 This directory contains the following files:
 * prototype2.js - JavaScript code for the application 'main' page
@@ -190,11 +195,13 @@ This directory contains the following files:
 * common.js -- JavaScript data structures and functions used by both pages of the application
 
 ### 'libs' Directory
-This directory contains the following files:
-* csv/
-  * bp_counts.csv
-* json/
-  * ctps_bp_count_locations_pt.geo.json
+* download.js - JavaScript library supporting 'download data' functionality
+* download.min.js - JavaScript library supporting 'download data' functionality \(minified form\)
+* ol-layerswitcher.js - JavaScript library supporting OpenLayers 'layer switcher' add-on control
+* ol-layerswitcher.css - CSS for OpenLayers 'layer switcher' control
+* openlayers-6.14.1-ol.js - JavaScript OpenLayers library, version 6.14.1
+* openlayers-6.14.1-ol-css - CSS for OpenLayers library, version 6.14.1
+* plotly-2.24.1.min.js - JavaScript 'Plotly' data-viz library \(minified form\)
 
 ### 'sld' Directory
 This directory contains the following files:
