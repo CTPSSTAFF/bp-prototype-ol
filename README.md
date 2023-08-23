@@ -179,8 +179,7 @@ The remaining conents of the repository are found in the followign subdirectorie
 
 ### 'css' Directory
 This directory contains the following files:
-* prototype2.css - CSS rules for styling the 'main' page
-* countlocDetail.css - CSS rules for styling the 'count location detail' page
+* bike_ped_app.css - CSS rules for styling the 'main' page and 'count location detail' page
 
 ### 'data' Directory
 
@@ -188,8 +187,7 @@ This directory contains the following files:
 This directory contains the following files:
 * prototype2.js - JavaScript code for the application 'main' page
 * countlodDetail.js - JavaScript code for the 'count location detail' page
-* common.js -- Common JavaScript data declarations used by both pages of the application
-* utils.js -- Miscellaneous JavaScript utility functions
+* common.js -- JavaScript data structures and functions used by both pages of the application
 
 ### 'libs' Directory
 This directory contains the following files:
@@ -216,5 +214,5 @@ the parts of Massachusetts outside the Boston Region MPO area
 
 ## Colophon
 Author: B. Krepp  
-Date: 4-22 August 2023  
+Date: 4-23 August 2023  
 Location: cyberspace  
