@@ -40,15 +40,18 @@ library than Google Maps, either leaflet.js or OpenLayers.
 * The client-side code would use JavaScript libraries to streamline the code, such as
 __jQuery__ to streamlne access to the DOM.
 * CTPS has some in-house expertise with OpenLayers and leaflet.js.
-* Prototyping has revealed some performance issues with the frequent addition and removal
-of 'marker' objects in leaflet.js, as is the case when bike-ped traffic count locations 
-are queried in the client.
+* Prototyping revealed performance and memory consumption issues with the frequent addition and removal
+of 'marker' objects in leaflet.js, as happens when multiple queries are run on the underlying data.
+Leaflet.js does not support toggling the visibility of 'marker' objects on-and-off, for example 
+depending upon whether they satisfy the critieria of a query. The only means available is to 
+create-and-remove 'marker' objects afresh after each query. This operation was observed to 
+cause a dramatic amount of RAM consumption in a browser running the client application.
 * The current bike-ped traffic count locations spatial table is quite small; it contains fewer
 than 300 features. When convereted to GeoJSON format, only about 100 KB is required to store it.
 * The current bike-ped traffic counts table is also quite small; it contains fewwer
 than 9,000 records. When converted to CSV format, only about 1.6 MB is required to store it.
 
-### The Approach Taken
+### The Approach Taken in the Near-term
 With these points in mind, the decision was taken in early July 2023 to implement an 
 updated bike-ped traffic counts application __for the Federal Fiscal Year ending Septebmer 30, 2023__
 using the following approach:
@@ -69,6 +72,17 @@ larger table of bike-ped counts \(including automated counts.\) This will entail
 some restructuring of the client-side code in order to implement a 'middleware' layer 
 between the client and a backing database. The choice of implementaiton lanaguage for 
 the 'middleware' layer is currently TBD, but PHP is a likely candidate.
+
+Even though this implementation stores all data in-core, querying the underlying data has been
+isloated in a few functions to facilitate migrating the application to a client-server 
+architecture with a 'middleware' layer in between. These functions are:
+* initialize_town_pick_list
+* initialize_year_pick_list
+* town_pick_list_handler
+* year_pick_list_handler
+and the _initialize_ function.
+When the application is converted to use a 'middleware' layer to mediate between the client 
+and a backing database, these functions will require reworking.
 
 ## Data Sources
 The data sources for this application are:
