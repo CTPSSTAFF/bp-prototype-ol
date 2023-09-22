@@ -80,6 +80,7 @@ architecture with a 'middleware' layer in between. These functions are:
 * initialize_year_pick_list
 * town_pick_list_handler
 * year_pick_list_handler
+
 and the _initialize_ function.
 When the application is converted to use a 'middleware' layer to mediate between the client 
 and a backing database, these functions will require reworking.
