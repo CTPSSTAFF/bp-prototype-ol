@@ -11,14 +11,14 @@ the bike-ped traffic counts _web application_.
 
 The bike-ped traffic count application was first written in 2008-2009. It employs an 
 arcitecture which may have been relatively up-to-date at that time, but antiquated
-by current /(2023\) standards. In particular:
-* It uses Cold Fusion Markup Language \(__CFML__\) as the 'middleware' or 'glue' between
+by current /(2023/) standards. In particular:
+* The application uses Cold Fusion Markup Language \(__CFML__\) as the 'middleware' or 'glue' between
 the client code running in a web browser and the backing database running on a server
-* Since some time in the mid-2010s CTPS has used __Railo__ as its CFML 'engine'.
+* Since some time in the mid-2010s, CTPS has used __Railo__ as its CFML 'engine'.
 * Railo is an open-source implementation of CFML 
 * Work on the Railo project was suspended sometime in the late 2010s; the project is
 no longer supported, and it is no longer possible to even obtain an 'install image' for it
-* It uses the Google Maps API to implement the 'mapping' functionality in the web client
+* The application uses the __Google Maps API__ to implement the 'mapping' functionality in the web client
 * Code in the web client was written in 'early 2000s style' JavaScript: for example, it makes
 no use of JavaScript support libraries, even libraries such as __jQuery__ which are regarded
 as fundamental.
@@ -27,7 +27,7 @@ which would have been very difficult to address in the existing architecture.
 
 ### Rationale
 The __rationale__ for the approach taken here was as follows:
-* Delivery of an updated version of the application was required by the end of 
+* Delivery of an updated version of the application is required by the end of 
 Federal Fiscal Year 2023, i.e., September 30, 2023.
 * Work on this project was begun in late June 2023.
 * Ideally, a new version of the app would implement improvements in both the 'middleware'
@@ -36,7 +36,7 @@ software and the client-side software.
 'middleware' language such as PHP, or perhaps Ruby.
 * However, CTPS has only minimal in-house expertise in PHP and none whatsoever in Ruby.
 * The client-side code would be implemented using a more modern and more flexible 'mapping'
-library than Google Maps, either leaflet.js or OpenLayers.
+library than Google Maps, either __leaflet.js__ or __OpenLayers__.
 * The client-side code would use JavaScript libraries to streamline the code, such as
 __jQuery__ to streamlne access to the DOM.
 * CTPS has some in-house expertise with OpenLayers and leaflet.js.
