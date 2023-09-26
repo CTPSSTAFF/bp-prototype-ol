@@ -158,7 +158,7 @@ The application consists of two 'single-page apps':
 * a 'count-location detail' page, __countlocDetail.html__
 
 Data structures and functions common to both pages is found in __js\/common.js__.   
-Data structures and functions specific to 'main' page is found in __js\/prototype2.js__.
+Data structures and functions specific to 'main' page is found in __js\/main.js__.
 Data structures and fuctnions specific to the 'count-location detail' is found in __js\/countlocDetail.js__.
 
 ## Software Dependencies
@@ -203,7 +203,7 @@ This directory contains the following files:
   
 ### 'js' Directory
 This directory contains the following files:
-* prototype2.js - JavaScript code for the application 'main' page
+* main.js - JavaScript code for the application 'main' page
 * countlodDetail.js - JavaScript code for the 'count location detail' page
 * common.js -- JavaScript data structures and functions used by both pages of the application
 
