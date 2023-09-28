@@ -270,25 +270,15 @@ function generate_report_for_count_id(this_countloc, count_id, count_recs) {
 		caption_div_id = 'count_' + count_id + '_rec_' + rec_id + '_caption';
 		viz_div_id = 'count_' + count_id + '_rec_' + rec_id + '_viz';
 		
-		// Create and append a <div> for the caption of the viz for this count record
-	/*
-		html = '<div ' + 'id=' + caption_div_id + '>';
-		html += '</br>';
-		html += '<span>Data for count record ID #' + rec.id + '</span>';
-		html += '</br>';
-		html += '<span>';
-		html += '<strong>From:</strong> ' + rec.from_st_name + '&nbsp;' + rec.from_st_dir + '&nbsp;&nbsp;';
-		html += '<strong>To: </strong>' + rec.to_st_name + '&nbsp;' + rec.to_st_dir + '&nbsp;&nbsp;';
-		html += 'Traffic count type: <strong>&nbsp;' + count_type(rec.count_type) + '</strong>';
-		html += '</span>';
-		html += '</div>';
-		$('#report_div').append(html);
-	*/
-		
 		var plot_title = 'Record ID #' + rec.id + '&nbsp;&nbsp;';
 		plot_title += 'From:&nbsp;' + rec.from_st_name + '&nbsp;' + rec.from_st_dir + '&nbsp;&nbsp;';
 		plot_title += 'To:&nbsp;' + rec.to_st_name + '&nbsp;' + rec.to_st_dir + '&nbsp;&nbsp;';
 		plot_title +=  'Traffic count type:&nbsp;' + count_type(rec.count_type);
+		
+		// If a 'description' is present, add it as a 2nd line of the plot title
+		if (rec.description != '') {
+			plot_title += '<br>' + rec.description + '</br>';
+		}
 		
 		// Create and append a <div> for the visualization itself.
 		html = '<div ' + 'id=' + viz_div_id + '>';
