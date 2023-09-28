@@ -549,8 +549,8 @@ function initialize() {
 			// Use local file for now, WFS request in production
 			// For WFS request - remember to reproject to EPSG:4326!
 			$.when(getJson(countlocsURL).done(function(bp_countlocs) {
-				var ok, temp, this_countloc, count_ids, count_id,
-				    i, this_count_id, countrecs_for_this_count_id;
+				var ok, temp, this_countloc, count_ids, count_ids_uniq, 
+				    count_id, i, this_count_id, countrecs_for_this_count_id;
 					
 				ok = arguments[1] === 'success'; 
 				if (ok === false) {
@@ -564,12 +564,12 @@ function initialize() {
 				counts4countloc = _.filter(counts_data, function(rec) { return rec.bp_loc_id == loc_id; });
 				// Get list of unique count_id's of these counts
 				count_ids = _.map(counts4countloc, function(rec) { return rec.count_id; });
-				count_ids = _.uniqBy(count_ids, 'count_id');
+				count_ids_uniq = _.uniqBy(count_ids);
 				
 				initialize_map(this_countloc);
 				
 				// Generate a 'report' for each count, by iterating over the selected count_ids
-				count_ids.forEach(function(this_count_id) {
+				count_ids_uniq.forEach(function(this_count_id) {
 					countrecs_for_this_count_id = _.filter(counts_data, function(rec) { return rec.count_id == this_count_id; });
 					generate_report_for_count_id(this_countloc, this_count_id, countrecs_for_this_count_id);
 				});
