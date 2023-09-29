@@ -1,0 +1,335 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Bicycle/Pedestrian Traffic Count Metadata</title>
+
+<style type="text/css">
+
+#bigbox {
+    border: 3px ridge #b22400; 
+    padding: 25px;
+    margins: 1px;
+}
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+h2 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.2em;
+	color: #1d52c2;
+	width: 600px;
+	margin: 0 40px 0 0;	
+}
+h3 {
+    color: #b22400;
+    border-bottom: 1px solid #1d52c2;
+	overflow: hidden;
+}
+p {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: .9em;
+	color: #000000;
+}
+a {
+    text-decoration: none;
+}
+a.button {    
+    border: solid 1px #1d52c2;
+    background-color: #1d52c2;
+    padding: 2px 2px 2px 2px;
+    color: #fff;
+    
+}
+a.button:hover {
+    background-color: #fff;
+    color: #1d52c2;
+}
+</style>
+
+<script TYPE="text/javascript">
+function targetopener(mylink, closeme, closeonly)
+{
+if (! (window.focus && window.opener))return true;
+window.opener.focus();
+if (! closeonly)window.opener.location.href=mylink.href;
+if (closeme)window.close();
+return false;
+}
+</script>
+</head>
+
+<body>
+<div id="bigbox">
+<div id="closeLink2">
+	<a href="index.html" class="button"
+	onclick="return targetopener(this,true,true)">Close metadata window</a>   
+</div>			<!--   END OF CLOSELINK  -->
+
+<h3>Bicycle/Pedestrian Traffic Count Metadata </h3>
+<p>
+The following table defines the meaning of the columns in the downloadable bicycle/pedestrian count data CSV file:
+</p>
+
+<table>
+<thead>
+	<tr>
+		<td>Column name</td>
+		<td>Contents</td>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>id</td>
+		<td>Unique identification number for a specific count (assigned by MPO)</td>
+	</tr>
+	<tr>
+		<td>bp_loc_id</td>
+		<td>Identification number of the location at which a count was taken (assigned by MPO)</td>
+	</tr>
+	<tr>
+		<td>count_id</td>
+		<td>Identification number of all the counts collected at one location during the same time period (assigned by MPO)</td>
+	</tr>
+	<tr>
+		<td>town</td>
+		<td>The municipality (city or town) in which the counts were collected</td>
+	</tr>
+	<tr>
+		<td>facility_name</td>
+		<td>The name of the facility (trail) at which the counts were collected, if applicable</td>
+	</tr>
+	<tr>
+		<td>description</td>
+		<td>Any details about conditions, observations, or the count itself</td>
+	</tr>
+	<tr>
+		<td>temperature</td>
+		<td>Temperature, Mmeasured in degrees Fahrenheit</td>
+	</tr>
+	<tr>
+		<td>sky</td><td>1 = Sunny; 2 = Partly Cloudy; 3 = Overcast; 4 = Precipitation; -99 = Nothing Recorded</td>
+	</tr>
+	<tr>
+		<td>facility_type</td>
+		<td>Trail Intersection; Trail Segment; Street Intersection; Street Segment</td>
+	</tr>
+	<tr>
+		<td>count_type</td>
+		<td>C = Child in Carrier; B = Bicyclist (count 2 if in tandem); J = Jogger; S = Roller Blader/Skater; P = Pedestrian/Walker; W = Wheel Chair User; O = Others</td>
+	</tr>
+	<tr>
+		<td>from_st_name</td>
+		<td>Name of the street from which the counted group approached the screen line</td>
+	</tr>
+	<tr>
+		<td>from_st_dir</td>
+		<td>Direction from which the counted group approached the screen line: NB = Northbound; EB = Eastbound; SB = Southbound; WB = Westbound; All = All directions recorded together</td>
+	</tr>
+	<tr>
+		<td>to_st_name</td>
+		<td>Name of the street toward which the counted group traveled after passing the screen line</td>
+	</tr>
+	<tr>
+		<td>to_st_dir</td>
+		<td>Direction toward which the counted group traveled after passing the screen line: NB = Northbound; EB = Eastbound; SB = Southbound; WB = Westbound; All = All directions recorded together</td>
+	</tr>
+	<tr>
+		<td>count_date</td>
+		<td>Date of the count (Format: Month/Day/Year)</td>
+	</tr>
+	<tr>
+		<td>count_dow</td>
+		<td>Day of the week on which the count was collected: Mon = Monday; Tue = Tuesday; Wed = Wednesday; Thu = Thursday; Fri = Friday; Sat = Saturday; Sun = Sunday</td>
+	</tr>
+	<tr>
+		<td>cnt_0630</td><td>Number of individuals from the counted group that passed the screen line from 6:30 AM to 6:45 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_0645</td><td>Number of individuals from the counted group that passed the screen line from 6:45 AM to 7:00 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_0700</td><td>Number of individuals from the counted group that passed the screen line from 7:00 AM to 7:15 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_0715</td><td>Number of individuals from the counted group that passed the screen line from 7:15 AM to 7:30 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_0730</td><td>Number of individuals from the counted group that passed the screen line from 7:30 AM to 7:45 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_0745</td><td>Number of individuals from the counted group that passed the screen line from 7:45 AM to 8:00 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_0800</td><td>Number of individuals from the counted group that passed the screen line from 8:00 AM to 8:15 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_0815</td><td>Number of individuals from the counted group that passed the screen line from 8:15 AM to 8:30 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_0830</td><td>Number of individuals from the counted group that passed the screen line from 8:30 AM to 8:45 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_0845</td><td>Number of individuals from the counted group that passed the screen line from 8:45 AM to 9:00 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_0900</td><td>Number of individuals from the counted group that passed the screen line from 9:00 AM to 9:15 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_0915</td><td>Number of individuals from the counted group that passed the screen line from 9:15 AM to 9:30 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_0930</td><td>Number of individuals from the counted group that passed the screen line from 9:30 AM to 9:45 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_0945</td><td>Number of individuals from the counted group that passed the screen line from 9:45 AM to 10:00 AM</td>
+	<tr>
+	</tr>
+		<td>cnt_1000</td><td>Number of individuals from the counted group that passed the screen line from 10:00 AM to 10:15 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_1015</td><td>Number of individuals from the counted group that passed the screen line from 10:15 AM to 10:30 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_1030</td><td>Number of individuals from the counted group that passed the screen line from 10:30 AM to 10:45 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_1045</td><td>Number of individuals from the counted group that passed the screen line from 10:45 AM to 11:00 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_1100</td><td>Number of individuals from the counted group that passed the screen line from 11:00 AM to 11:15 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_1115</td><td>Number of individuals from the counted group that passed the screen line from 11:15 AM to11:30 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_1130</td><td>Number of individuals from the counted group that passed the screen line from 11:30 AM to 11:45 AM</td>
+	</tr>
+	<tr>
+		<td>cnt_1145</td><td>Number of individuals from the counted group that passed the screen line from 11:45 AM to 12:00 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1200</td><td>Number of individuals from the counted group that passed the screen line from 12:00 PM to 12:15 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1215</td><td>Number of individuals from the counted group that passed the screen line from 12:15 PM to 12:30 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1230</td><td>Number of individuals from the counted group that passed the screen line from 12:30 PM to 12:45 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1245</td><td>Number of individuals from the counted group that passed the screen line from 12:45 PM to 1:00 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1300</td><td>Number of individuals from the counted group that passed the screen line from 1:00 PM to 1:15 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1315</td><td>Number of individuals from the counted group that passed the screen line from 1:15 PM to 1:30 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1330</td><td>Number of individuals from the counted group that passed the screen line from 1:30 PM to 1:45 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1345</td><td>Number of individuals from the counted group that passed the screen line from 1:45 PM to 2:00 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1400</td><td>Number of individuals from the counted group that passed the screen line from 2:00 PM to 2:15 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1415</td><td>Number of individuals from the counted group that passed the screen line from 2:15 PM to 2:30 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1430</td><td>Number of individuals from the counted group that passed the screen line from 2:30 PM to 2:45 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1445</td><td>Number of individuals from the counted group that passed the screen line from 2:45 PM to 3:00 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1500</td><td>Number of individuals from the counted group that passed the screen line from 3:00 PM to 3:15 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1515</td><td>Number of individuals from the counted group that passed the screen line from 3:15 PM to 3:30 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1530</td><td>Number of individuals from the counted group that passed the screen line from 3:30 PM to 3:45 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1545</td><td>Number of individuals from the counted group that passed the screen line from 3:45 PM to 4:00 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1600</td><td>Number of individuals from the counted group that passed the screen line from 4:00 PM to 4:15 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1615</td><td>Number of individuals from the counted group that passed the screen line from 4:15 PM to 4:30 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1630</td><td>Number of individuals from the counted group that passed the screen line from 4:30 PM to 4:45 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1645</td><td>Number of individuals from the counted group that passed the screen line from 4:45 PM to 5:00 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1700</td><td>Number of individuals from the counted group that passed the screen line from 5:00 PM to 5:15 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1715</td><td>Number of individuals from the counted group that passed the screen line from 5:15 PM to 5:30 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1730</td><td>Number of individuals from the counted group that passed the screen line from 5:30 PM to 5:45 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1745</td><td>Number of individuals from the counted group that passed the screen line from 5:45 PM to 6:00 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1800</td><td>Number of individuals from the counted group that passed the screen line from 6:00 PM to 6:15 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1815</td><td>Number of individuals from the counted group that passed the screen line from 6:15 PM to 6:30 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1830</td><td>Number of individuals from the counted group that passed the screen line from 6:30 PM to 6:45 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1845</td><td>Number of individuals from the counted group that passed the screen line from 6:45 PM to 7:00 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1900</td><td>Number of individuals from the counted group that passed the screen line from 7:00 PM to 7:15 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1915</td><td>Number of individuals from the counted group that passed the screen line from 7:15 PM to 7:30 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1930</td><td>Number of individuals from the counted group that passed the screen line from 7:30 PM to 7:45 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_1945</td><td>Number of individuals from the counted group that passed the screen line from 7:45 PM to 7:00 PM</td>
+	<tr>
+	</tr>
+		<td>cnt_2000</td><td>Number of individuals from the counted group that passed the screen line from 8:00 PM to 8:15 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_2015</td><td>Number of individuals from the counted group that passed the screen line from 8:15 PM to 8:30 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_2030</td><td>Number of individuals from the counted group that passed the screen line from 8:30 PM to 8:45 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_2045</td><td>Number of individuals from the counted group that passed the screen line from 8:45 PM to 9:00 PM</td>
+	</tr>
+	<tr>
+		<td>cnt_total</td><td>Total number of individuals from the counted group that passed the screen line during the count period</td>
+	</tr>
+	</tbody>
+</table>
+
+<br/>
+
+<div id="closeLink">
+	<a href="index.html" class="button"
+	onclick="return targetopener(this,true,true)" >Close metadata window</a>   
+</div>			<!--   END OF CLOSELINK  -->
+
+</div>          <!--   END OF BIGBOX    -->
+
+</body>
+</html>
