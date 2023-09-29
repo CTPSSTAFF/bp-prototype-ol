@@ -496,3 +496,12 @@ function summarize_set_of_counts_by_year_range(c, start_year, end_year) {
 	}
 	return retval;
 } // summarize_set_of_counts_by_year_range
+
+// Stuff for opening metadata page
+function popup(url) {
+    var popupWindow = window.open(url,'popUpWindow','height=700,width=800,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,directories=no,status=yes')
+} // popup
+
+displayMetadata = function() {
+	popup('metadata.html');
+}; // displayMetadata
