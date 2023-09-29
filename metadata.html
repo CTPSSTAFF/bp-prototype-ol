@@ -45,6 +45,35 @@ a.button:hover {
     background-color: #fff;
     color: #1d52c2;
 }
+
+p {
+	font-size: 16px;
+}
+
+table {
+	border: 1px solid;
+	border-collapse: collapse;
+}
+
+thead {
+	text-align: center;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #eee;
+}
+
+th, td {
+	border: 1px solid;
+	border-collapse: collapse;
+	padding: 8px;
+}
+
+
 </style>
 
 <script TYPE="text/javascript">
@@ -74,8 +103,8 @@ The following table defines the meaning of the columns in the downloadable bicyc
 <table>
 <thead>
 	<tr>
-		<td>Column name</td>
-		<td>Contents</td>
+		<td><strong>Column name</strong></td>
+		<td><strong>Contents<strong></td>
 	</tr>
 </thead>
 <tbody>
@@ -105,7 +134,7 @@ The following table defines the meaning of the columns in the downloadable bicyc
 	</tr>
 	<tr>
 		<td>temperature</td>
-		<td>Temperature, Mmeasured in degrees Fahrenheit</td>
+		<td>Temperature, measured in degrees Fahrenheit</td>
 	</tr>
 	<tr>
 		<td>sky</td><td>1 = Sunny; 2 = Partly Cloudy; 3 = Overcast; 4 = Precipitation; -99 = Nothing Recorded</td>
