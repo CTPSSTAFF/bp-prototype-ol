@@ -566,5 +566,7 @@ function initialize() {
 			}));
 			// Arm event handler for 'download' button
 			$('#download_selected').on('click', function(e) { download_data(counts4countloc); });
+			// Bind on-click event handler for 'metadata' button
+			$('#metadata').bind('click', displayMetadata);
 	});
 } // initialize
