@@ -565,6 +565,8 @@ function initialize() {
 				$('#select_year').on('change', year_pick_list_handler);
 				// Bind on-change event handler for 'clear_filters' button 
 				$('#clear_filters').on('click', clear_filters_handler);
+				// Bind on-click event handler for 'metadata' button
+				$('#metadata').bind('click', displayMetadata);
 				initialize_map();
 				initialize_pick_lists(all_counts);
 			}));
