@@ -41,12 +41,6 @@ var osm_basemap_layer = new ol.layer.Tile({ source: new ol.source.OSM(),
 											title: 'Open Street Map',
 											visible: false }); 
 
-// OpenLayers layer for Stamen basemap layer
-var stamen_basemap_layer = new ol.layer.Tile({ source: new ol.source.Stamen({layer: 'toner-lite',
-		                                                                     url: "https://stamen-tiles.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png" }), 
-											   type: 'base',
-											   title: 'Stamen',
-											   visible: false });
 											   
 // Varioius things for WMS and WFS layers
 // First, folderol to allow the app to run on appsrvr3 as well as "in the wild"

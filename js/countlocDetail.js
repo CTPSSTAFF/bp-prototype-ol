@@ -4,7 +4,7 @@
 //       'selected count locations' - OpenLayers vector layer
 //		 'counts' data - CSV file
 // Mapping platform: OpenLayers
-// Basemaps: MassGIS, Open Street Map, Stamen
+// Basemaps: MassGIS, Open Street Map
 //
 // Author: Ben Krepp, bkrepp@ctps.org
 
@@ -385,8 +385,7 @@ function initialize_map(this_countloc) {
 		
 		var basemap_layer_group = new ol.layer.Group( { title: 'Basemaps',
 														layers: [ mgis_basemap_layer_group,
-														          osm_basemap_layer,
-																  stamen_basemap_layer ] });
+														          osm_basemap_layer ] });
 		
 		var mapCenter = ol.proj.fromLonLat([this_countloc.properties.longitude, this_countloc.properties.latitude]);
 		var mapZoom = 17; // Best guess, for now
