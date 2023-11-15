@@ -189,22 +189,22 @@ function count_type(code) {
 	retval = 'Unknown';
 	switch (code) {
 	case 'B':
-		retval = 'Bicycle';
+		retval = 'Person Bicycling';
 		break;
 	case 'P':
-		retval = 'Pedestrian';
+		retval = 'Person Walking';
 		break;
 	case 'J':
-		retval = 'Jogger';
+		retval = 'Person Jogging';
 		break;
 	case 'S':
-		retval = 'Skateboarder, rollerblader';
+		retval = 'Person Skating';
 		break;
 	case 'C':
-		retval = 'Baby carriage';
+		retval = 'Child in Carrier';
 		break;
 	case 'W':
-		retval = 'Wheelchair';
+		retval = 'Person using Wheelchair';
 		break;
 	case 'O':
 		retval = 'Other';
