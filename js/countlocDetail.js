@@ -406,8 +406,9 @@ function initialize_map(this_countloc) {
 		ol_map = new ol.Map({ layers: [	basemap_layer_group,
 										ma_wo_brmpo_poly_wms,
 										bike_layer_group,
-										bp_countlocs_wms,
-										selected_countlocs_layer	// this is an OL Vector layer
+										// bp_countlocs_wms,
+										selected_countlocs_layer,   // this is an OL vector layer
+										unselected_countlocs_layer	// this is an OL vector layer
 									],
 						   target: 'map',
 						   view:   mapView,
