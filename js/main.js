@@ -20,15 +20,23 @@ var initMapExtent = []; // populated in initialize_map
 
 // update_map:
 // 		1. clear out vector layer for 'selected' countlocs
-// 		2. add selected count locs to vector layer, and render it
-// 		3. set extent of map based on bounding box of the selected countlocs
-// parameter 'countlocs' is the array of GeoJSON features for the selected countlocs
-function update_map(selected_countlocs) {
-	var vSource, i, cur_countloc, feature, geom, props, extent, center, zoom, view;
+//      2. clear out vector layer for 'unselected' countlocs
+// 		3. add selected countlocs to vector layer for it, and render it
+//      4. add unselected countlocs to vector layer for it, and render it
+// 		5. set extent of map based on bounding box of the _selected_ countlocs
+// parametes:
+//      1. 'selected_countlocs' is the array of GeoJSON features for the selected countlocs
+//      2. 'unselected_countlocs' is the array of GeoJSON feature for the 'unselected' countlocs
+function update_map(selected_countlocs, unselected_countlocs) {
+	var vSource, vSource2, i, cur_countloc, feature, geom, props, extent, center, zoom, view;
 	
+	// Steps 1 and 2
 	vSource = selected_countlocs_layer.getSource();
 	vSource.clear();
+	vSource2 = unselected_countlocs_layer.getSource();
+	vSource2.clear();
 	
+	// Step 3
 	for (i = 0; i < selected_countlocs.length; i++) {
 		geom = {}, props = {};
 		cur_countloc = selected_countlocs[i];
@@ -38,7 +46,19 @@ function update_map(selected_countlocs) {
 		vSource.addFeature(feature);
 	}
 	selected_countlocs_layer.setSource(vSource);
+
+	// Step 4
+	for (i = 0; i < unselected_countlocs.length; i++) {
+		geom = {}, props = {};
+		cur_countloc = unselected_countlocs[i];
+		geom =  new ol.geom.Point(ol.proj.fromLonLat([cur_countloc.geometry.coordinates[0], cur_countloc.geometry.coordinates[1]]));
+		props = JSON.parse(JSON.stringify(cur_countloc.properties));
+		feature = new ol.Feature({geometry: geom, properties: props});
+		vSource2.addFeature(feature);
+	}
+	unselected_countlocs_layer.setSource(vSource2);	
 	
+	// Step 5
 	// Pan/zoom map to extent of selected count locations
 	// Handle special case of 1 countloc
 	if (selected_countlocs.length == 1) {
@@ -67,7 +87,7 @@ function update_table(countlocs) {
 		// NOTE: cl.properties.loc_id has the B-P count location ID
 		var a_tag = '<a href=countlocDetail.html?loc_id=' + cl.properties.loc_id;
 		a_tag += ' target="_blank">' + cl.properties.description +'</a>';
-		data_array.push({'countloc' : a_tag, 'town' : cl.properties.town});
+		data_array.push({'countloc' : a_tag, 'town' : cl.properties.town, 'mpo' : cl.properties.mpo});
 	}
 		
 	$("#output_table").jsGrid({
@@ -78,7 +98,8 @@ function update_table(countlocs) {
 			data: data_array,
 			fields: [
 				{ name: "countloc", title: "Count Location", type: "text", width: 300 },
-				{ name: "town", title: "Town", type: "text", width: 100 }
+				{ name: "town", title: "Town", type: "text", width: 100 },
+                { name: "mpo", title: "MPO", type: "text", width: 100 }
 			]
 	});
 	$('#output_table').show();
@@ -276,7 +297,7 @@ function town_pick_list_handler(e) {
 	// Sanity check to handle the fact that currently, there are some (non-) towns 
 	// with no associated count locations, e.g., 'Auburndale'.
 	if (otemp.selected.length != 0) {
-		update_map(otemp.selected);
+		update_map(otemp.selected, otemp.unselected);
 		update_table(otemp.selected);	 
 	} else {
 		alert('No counts found for town = ' + town);
@@ -359,7 +380,7 @@ function year_pick_list_handler(e) {
 	}
 	
 	otemp = counts_to_selected_countlocs(selected_counts);
-	update_map(otemp.selected);
+	update_map(otemp.selected, otemp.unselected);
 	update_table(otemp.selected);		
 } // year_pick_list_handler
 
@@ -517,8 +538,9 @@ function initialize_map() {
 		ol_map = new ol.Map({ layers: [	basemap_layer_group,
 										ma_wo_brmpo_poly_wms,
 										bike_layer_group,
-										bp_countlocs_wms,
-										selected_countlocs_layer	// this is an OL Vector layer
+										// bp_countlocs_wms,
+										selected_countlocs_layer, // this is an OL vector layer
+										unselected_countlocs_layer	// this is an OL vector layer
 									],
 							target: 'map',
 							view:   initMapView,
