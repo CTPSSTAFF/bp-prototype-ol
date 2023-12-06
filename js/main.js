@@ -27,7 +27,8 @@ var initMapExtent = []; // populated in initialize_map
 // parametes:
 //      1. 'selected_countlocs' is the array of GeoJSON features for the selected countlocs
 //      2. 'unselected_countlocs' is the array of GeoJSON feature for the 'unselected' countlocs
-function update_map(selected_countlocs, unselected_countlocs) {
+//      3. 'set_extent' - boolean flag indicating if map exent should be set using the selectec countlocs
+function update_map(selected_countlocs, unselected_countlocs, set_extent) {
 	var vSource, vSource2, i, cur_countloc, feature, geom, props, extent, center, zoom, view;
 	
 	// Steps 1 and 2
@@ -59,21 +60,24 @@ function update_map(selected_countlocs, unselected_countlocs) {
 	unselected_countlocs_layer.setSource(vSource2);	
 	
 	// Step 5
-	// Pan/zoom map to extent of selected count locations
-	// Handle special case of 1 countloc
-	if (selected_countlocs.length == 1) {
-		center = ol.proj.fromLonLat([selected_countlocs[0].geometry.coordinates[0], selected_countlocs[0].geometry.coordinates[1]]);
-		zoom = 12; // Arbitrary choice, for now
-		view = new ol.View({center: center, zoom: zoom});
-		ol_map.setView(view);
-	} else {
-	    // Get extent of selected countlocs, and pan/zoom map to it
-	    extent = vSource.getExtent();
-		// Fitting the map's view precisely to the extent of the vector feature layer
-		// causes some features to be placed exactly on the border of the visible map.
-		// Add 50 pixels of padding 'around the edges' to make things look better.
-	    ol_map.getView().fit(extent, { size: ol_map.getSize(), duration: 1500, padding: [50, 50, 50, 50] });
+	// Pan/zoom map to extent of selected count locations IF 'set_extent' parameter is True.
+	if (set_extent) {
+		// Take care to handle special case of 1 countloc
+		if (selected_countlocs.length == 1) {
+			center = ol.proj.fromLonLat([selected_countlocs[0].geometry.coordinates[0], selected_countlocs[0].geometry.coordinates[1]]);
+			zoom = 12; // Arbitrary choice, for now
+			view = new ol.View({center: center, zoom: zoom});
+			ol_map.setView(view);
+		} else {
+			// Get extent of selected countlocs, and pan/zoom map to it
+			extent = vSource.getExtent();
+			// Fitting the map's view precisely to the extent of the vector feature layer
+			// causes some features to be placed exactly on the border of the visible map.
+			// Add 50 pixels of padding 'around the edges' to make things look better.
+			ol_map.getView().fit(extent, { size: ol_map.getSize(), duration: 1500, padding: [50, 50, 50, 50] });
+		}
 	}
+	return;
 } // update_map
 
 // Update the jsGrid table with info about each selected count location
@@ -297,7 +301,7 @@ function town_pick_list_handler(e) {
 	// Sanity check to handle the fact that currently, there are some (non-) towns 
 	// with no associated count locations, e.g., 'Auburndale'.
 	if (otemp.selected.length != 0) {
-		update_map(otemp.selected, otemp.unselected);
+		update_map(otemp.selected, otemp.unselected, true);
 		update_table(otemp.selected);	 
 	} else {
 		alert('No counts found for town = ' + town);
@@ -380,7 +384,7 @@ function year_pick_list_handler(e) {
 	}
 	
 	otemp = counts_to_selected_countlocs(selected_counts);
-	update_map(otemp.selected, otemp.unselected);
+	update_map(otemp.selected, otemp.unselected, true);
 	update_table(otemp.selected);		
 } // year_pick_list_handler
 
@@ -442,7 +446,7 @@ function initialize_pick_lists(counts) {
 } // initialize_pick_lists
 
 
-function initialize_map() {
+function initialize_map(all_countlocs){
     $.ajax({ url: mgis_serviceUrls['topo_features'], jsonp: 'callback', dataType: 'jsonp', data: { f: 'json' }, 
              success: function(config) {     
         // Body of "success" handler starts here.
@@ -556,8 +560,12 @@ function initialize_map() {
                                                          });
 		ol_map.addControl(layerSwitcher);
 						
-		// Bind on-click event handler for OpenLayers map: interrogates selected_countlocs_layer
+		// Bind on-click event handler for OpenLayers map: interrogates selected_countlocs and unselected_countlocs layers
 		ol_map.on('click', function(evt) { onclick_handler(evt); });
+		
+		// Populate map with all count locations - currently all count locations are 'un-selected'.
+		// The last parameter (false) directs update_map to _not_ set the map extent; that was set in the ol.Map constructor, above.
+		update_map([], all_countlocs, false)
 
 		// Cache initial map extent for use in 'clear_filters_handler'
 		var v = ol_map.getView();
@@ -590,7 +598,7 @@ function initialize() {
 				$('#download_all').on('click', function(e) { download_data(all_counts); });
 				// Bind on-click event handler for 'metadata' button
 				$('#metadata').bind('click', displayMetadata);
-				initialize_map();
+				initialize_map(all_countlocs);
 				initialize_pick_lists(all_counts);
 			}));
 		});
