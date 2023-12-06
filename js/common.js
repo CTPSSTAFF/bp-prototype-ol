@@ -128,16 +128,29 @@ var bp_countlocs_wms = new ol.layer.Tile({	source: new ol.source.TileWMS({ url		
 											visible: true
 										});	
 
-// Vector point layer for selected count locations
+// Vector point layer for selected count locations, and associated style
 var selected_countlocs_style = new ol.style.Style({ image: new ol.style.Circle({ radius: 7.0,
-                                                                                 fill: new ol.style.Fill({color: 'gold'}),
+                                                                                 fill:   new ol.style.Fill({color: 'gold'}),
 																				 stroke: new ol.style.Stroke({color: 'black', width: 1.0})
 																				}) 
                                                                              });
 var selected_countlocs_layer = new ol.layer.Vector({ title: 'Selected Count Locations',
-								                     source	: new ol.source.Vector({ wrapX: false }),
+								                     source: new ol.source.Vector({ wrapX: false }),
 								                     style: selected_countlocs_style
 								                   });
+												   
+// Vector point layer for 'un-selected' count locations, and associated style
+var unselected_countlocs_style = new ol.style.Style({ image: new ol.style.RegularShape({ radius:   7.0,
+                                                                                         points:   4,
+																						 rotation: Math.PI/4,
+                                                                                         fill:     new ol.style.Fill({color: 'blue'}),
+																				         stroke:   new ol.style.Stroke({color: 'black', width: 0.5})
+																				      }) 
+                                                                             });	
+var unselected_countlocs_layer = new ol.layer.Vector({ title: 'Other Count Locations',
+								                       source: new ol.source.Vector({ wrapX: false }),
+								                       style: unselected_countlocs_style
+								                    });																			 
 
 // OpenLayers 'map' object:
 var ol_map = null;
