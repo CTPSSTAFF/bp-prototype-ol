@@ -140,11 +140,12 @@ var selected_countlocs_layer = new ol.layer.Vector({ title: 'Selected Count Loca
 								                   });
 												   
 // Vector point layer for 'un-selected' count locations, and associated style
-var unselected_countlocs_style = new ol.style.Style({ image: new ol.style.RegularShape({ radius:   7.0,
+var unselected_countlocs_style = new ol.style.Style({ image: new ol.style.RegularShape({ radius:   4.0,
                                                                                          points:   4,
 																						 rotation: Math.PI/4,
                                                                                          fill:     new ol.style.Fill({color: 'blue'}),
-																				         stroke:   new ol.style.Stroke({color: 'black', width: 0.5})
+																				         stroke:   new ol.style.Stroke({color: 'black', width: 0.1
+																						 })
 																				      }) 
                                                                              });	
 var unselected_countlocs_layer = new ol.layer.Vector({ title: 'Other Count Locations',
