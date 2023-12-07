@@ -1,5 +1,5 @@
 # bp-prototype-ol
-Next-gen bicycle / pedestrian traffic count web application.
+First version of next-gen bicycle / pedestrian traffic count web application.
 
 ## Motivation and Rationale
 ### Motivation
@@ -10,23 +10,23 @@ of vestigial records that had crept into the data, the primary motivation was to
 the bike-ped traffic counts _web application_. 
 
 The bike-ped traffic count application was first written in 2008-2009. It employs an 
-arcitecture which may have been relatively up-to-date at that time, but antiquated
+arcitecture which may have been relatively up-to-date at that time, but is antiquated
 by current /(2023/) standards. In particular:
 * The application uses Cold Fusion Markup Language \(__CFML__\) as the 'middleware' or 'glue' between
-the client code running in a web browser and the backing database running on a server
+the client code running in a web browser and the backing database running on a server.
 * Since some time in the mid-2010s, CTPS has used __Railo__ as its CFML 'engine'.
-* Railo is an open-source implementation of CFML 
+* Railo is an open-source implementation of CFML.
 * Work on the Railo project was suspended sometime in the late 2010s; the project is
-no longer supported, and it is no longer possible to even obtain an 'install image' for it
-* The application uses the __Google Maps API__ to implement the 'mapping' functionality in the web client
+no longer supported, and it is no longer possible to even obtain an 'install image' for it.
+* The application uses the __Google Maps API__ to implement the 'mapping' functionality in the web client.
 * Code in the web client was written in 'early 2000s style' JavaScript: for example, it makes
 no use of JavaScript support libraries, even libraries such as __jQuery__ which are regarded
 as fundamental.
 * Several user-interface/user-experience issues were reported with the application
-which would have been very difficult to address in the existing architecture.
+which would have been very difficult and/or costly to address in the old architecture.
 
 ### Rationale
-The __rationale__ for the approach taken here was as follows:
+The __rationale__ for the approach taken by this first version of a next-gen app is as follows:
 * Delivery of an updated version of the application is required by the end of 
 Federal Fiscal Year 2023, i.e., September 30, 2023.
 * Work on this project was begun in late June 2023.
@@ -56,7 +56,7 @@ With these points in mind, the decision was taken in early July 2023 to implemen
 updated bike-ped traffic counts application __for the Federal Fiscal Year ending Septebmer 30, 2023__
 using the following approach:
 * The application will run entirely in the client. A backing database will not be used; 
-consequently no 'middleware' code will be needed.
+consequently no 'middleware' code will be employed.
 * The application will load all data from local files: a GeoJSON file containing the 
 bike-ped traffic count location data, and a CSV file containing the bike-ped traffic counts.
 * 'Mapping' functionality will be impelemted in the client using the OpenLayers library.
@@ -64,7 +64,7 @@ bike-ped traffic count location data, and a CSV file containing the bike-ped tra
 streamline implementation of the client-side code.
 
 ### The Future
-The approach taken for this version of the application is admitedly an interim one,
+The approach taken for this version of the application is admitedly an interim one;
 it is a 'placeholder' that will serve for September 30, 2023 and the immediatly following weeks and months.
 The intention is that in Federal Fiscal Year 2024 work on the application will resume,
 focused on making it __scalable__ to many more count locations, and a vastly 
@@ -134,14 +134,12 @@ webserver, and published by the GeoServer running there as the
 layer named 'postgis:ctps_ma_wo_brmpo_poly'.
 
 ## WMS Layers and Their Symbolization
-This application uses 3 WMS layers published by the CTPS GeoServer:
+This application uses 2 WMS layers published by the CTPS GeoServer:
 | Layer | Contents |
 | postgis:ctps_ma_wo_brmpo_poly | Area outside the Boston Reion MPO area |
-| postgis:ctps_bp_count_locations_pt | CTPS bike-ped traffic count locations |
 | postgis:massdot_lrse_bikes_20230804 | MassDOT bike facilities layer |
 
 The 'area outside the MPO region' layer is symbolized by the SLD __polygon\_gray\_for\_non\_mpo.sld__.
-The 'bike-ped count locations' layer is symbolized by the SLD __a\_point\_blue.sld__.
 
 The 'lrse_bikes' layer is rendered by __four__ OpenLayers layers, each symbolizing only those
 features of 'lrse_bikes' with a particular facility type, i.e., __fac\_type__:
@@ -151,6 +149,20 @@ features of 'lrse_bikes' with a particular facility type, i.e., __fac\_type__:
 | 2 | lrse_bikes_protected_bike_lane.sld |
 | 5 | lrse_bikes_shared_use_path.sld |
 | 7 | lrse_bikes_bp_priority_roadway.sld |
+
+A previous version of this app also used the WMS layer:
+| Layer | Contents |
+| postgis:ctps_bp_count_locations_pt | CTPS bike-ped traffic count locations |
+
+This was removed in early December 2023, when the decision was made to render all
+count locations \(both selected and un-selected\) using OpenLayer vector layers,
+because our 'customer' wanted all such locations to be 'clickable'. The alternative
+would have been to handle on-click events in the maps in via a round-trip to 
+the __WFS__ \(_not_ WMS\) layer for the count locations on the server using 
+an asynchronous WFS GetFeature request. This seemed to be an excessive complication
+for this version of the app, which was intended to be an interim placeholder.
+
+Should it be needed again in future, a SLD is available to symbolize the 'bike-ped count locations' WMS layer: __a\_point\_blue.sld__.
 
 ## Application Structure
 The application consists of two 'single-page apps':
@@ -166,7 +178,7 @@ These single-page apps depend upon the following software libraries:
 | Library | Function |
 | --------| -------- |
 | jquery | DOM management |
-| lodash | functional programming library |
+| lodash | functional programming support |
 | Open Layers | web mapping |
 | Open Layers layer switcher | extension to Open Layers |
 | D3 | CSV loader |
@@ -223,7 +235,7 @@ This directory contains the following files:
 
 ### 'sld' Directory
 This directory contains the following files:
-* a_point_blue.sld - SLD to style WMS layer of bike-ped count Locations
+* a_point_blue.sld - SLD to style WMS layer of bike-ped count Locations \(unused as of December, 2023\)
 * lrse_bikes_on_road_bike_lane.sld - SLD to style subset of features in 'LRSE_Bikes' WMS layer for on-road bike lanes
 * lrse_bikes_protected_bike_lane.sld - SLD to style subset of features in 'LRSE_Bikes' WMS layer for protected bike lanes
 * lrse_bikes_shared_use_path.sld -- SLD to style subset of features in 'LRSE_Bikes' WMS layer for shared use paths
@@ -238,6 +250,6 @@ the parts of Massachusetts outside the Boston Region MPO area
 * create_lrse_bikes_2023_0804.sql - SQL to create the spatial table for MassDOT's 'bike facilities' layer in PostGIS/PostgreSQL
 
 ## Colophon
-Author: B. Krepp  
-Date: 4-23 August 2023  
+Author: B. Krepp (bkrepp@ctps.org) 
+Date: 4-23 August 2023, updated 7 December 2023  
 Location: cyberspace  
