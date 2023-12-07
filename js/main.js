@@ -8,7 +8,7 @@
 //
 // Author: Ben Krepp, bkrepp@ctps.org
 
-var bDebug = true; // Debug/diagnostics toggle
+var bDebug = false; // Debug/diagnostics toggle
 
 
 // Initial map parameters, specific to 'main' page
