@@ -1,8 +1,10 @@
 // Main page of next-gen bike-ped counts web application
 //
-// Data: 'all count locations' map image tiles 'data' from WMS service
-//       'selected count locations' - OpenLayers vector layer
-//		 'counts' data - CSV file
+// Data: 1. GeoJSON for all count locations (geometry and attributes)
+//		 2. 'counts' data - CSV file
+//       3. 'selected count locations' - OpenLayers vector layer, derived from (1)
+//       4. 'un-selectec count locations' - OpenLayers vectro layer, derived from (2)
+
 // Mapping platform: OpenLayers
 // Basemaps: MassGIS, Open Street Map
 //
