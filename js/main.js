@@ -62,17 +62,34 @@ function update_map(selected_countlocs, unselected_countlocs, set_extent) {
 	unselected_countlocs_layer.setSource(vSource2);	
 	
 	// Step 5
-	// Pan/zoom map to extent of selected count locations IF 'set_extent' parameter is True.
+	// IF the 'set_extent' parameter is true, 
+	// pan/zoom map to extent of selected count locations *within the Boston MPO area*.
+	// The 'set_extent' parameter will only be false when the map is being initialized.
 	if (set_extent) {
-		// Take care to handle special case of 1 countloc
+		// Take care to handle special case of 1 countloc - as best I can tell, such a case is always within the BRMPO area
 		if (selected_countlocs.length == 1) {
 			center = ol.proj.fromLonLat([selected_countlocs[0].geometry.coordinates[0], selected_countlocs[0].geometry.coordinates[1]]);
 			zoom = 12; // Arbitrary choice, for now
 			view = new ol.View({center: center, zoom: zoom});
 			ol_map.setView(view);
 		} else {
-			// Get extent of selected countlocs, and pan/zoom map to it
-			extent = vSource.getExtent();
+			// Get extent of selected countlocs WITHIN THE BOSTON MPO AREA, and pan/zoom map to it.
+			// Create a dummy (invisible, non-rendered) vector layer to contain these countlocs, and get its extent.
+			var filter_func = function(countloc) { return countloc.properties.mpo == 'Boston Region'; };
+			var selected_countlocs_brmpo = _.filter(selected_countlocs, filter_func);
+		    var selected_countlocs_brmpo_layer = new ol.layer.Vector({ source: new ol.source.Vector({ wrapX: false }) });
+			var vSource3 = selected_countlocs_brmpo_layer.getSource();
+			vSource3.clear(); // Just to be sure		
+			for (i = 0; i < selected_countlocs_brmpo.length; i++) {
+				geom = {}, props = {};
+				cur_countloc = selected_countlocs_brmpo[i];
+				geom =  new ol.geom.Point(ol.proj.fromLonLat([cur_countloc.geometry.coordinates[0], cur_countloc.geometry.coordinates[1]]));
+				props = JSON.parse(JSON.stringify(cur_countloc.properties));
+				feature = new ol.Feature({geometry: geom, properties: props});
+				vSource3.addFeature(feature);
+			}
+			selected_countlocs_brmpo_layer.setSource(vSource3);
+			extent = vSource3.getExtent();
 			// Fitting the map's view precisely to the extent of the vector feature layer
 			// causes some features to be placed exactly on the border of the visible map.
 			// Add 50 pixels of padding 'around the edges' to make things look better.
