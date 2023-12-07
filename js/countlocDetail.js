@@ -8,7 +8,7 @@
 //
 // Author: Ben Krepp, bkrepp@ctps.org
 
-var bDebug = true; // Debug/diagnostics toggle
+var bDebug = false; // Debug/diagnostics toggle
 
 var counts4countloc = []	// counts for current count location
     count_ids =       [];	// count_id's for these counts
@@ -254,7 +254,7 @@ function generate_report_for_count_id(this_countloc, count_id, count_recs) {
 	$('#report_div').append(html);
 	
 	// Generate a report for each 'count record' associated with the given count_id
-	console.log('Generating report for count_id ' + count_id);
+	if (bDebug) { console.log('Generating report for count_id ' + count_id); }
 	count_recs.forEach(function(rec) {
 		var rec_id, count_xy_values, caption_div_id, viz_div_id, html;
 		
@@ -262,11 +262,11 @@ function generate_report_for_count_id(this_countloc, count_id, count_recs) {
 		count_xy_values = prepare_data_for_quarter_hour_viz(rec);
 		// If all values in the count record are zero, do not generate report.
 		if (count_xy_values.counts.every(item => item === 0)) {
-			console.log('	No report for ' + rec.id + ' generated: all values are 0.');
+			if (bDebug) { console.log('	No report for ' + rec.id + ' generated: all values are 0.'); }
 			return;
 		}
-		console.log('    Generating report for record id ' + rec.id);
 		
+		if (bDebug) { console.log('    Generating report for record id ' + rec.id); }
 		caption_div_id = 'count_' + count_id + '_rec_' + rec_id + '_caption';
 		viz_div_id = 'count_' + count_id + '_rec_' + rec_id + '_viz';
 		
