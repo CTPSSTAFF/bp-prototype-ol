@@ -250,6 +250,6 @@ the parts of Massachusetts outside the Boston Region MPO area
 * create_lrse_bikes_2023_0804.sql - SQL to create the spatial table for MassDOT's 'bike facilities' layer in PostGIS/PostgreSQL
 
 ## Colophon
-Author: B. Krepp (bkrepp@ctps.org) 
+Author: B. Krepp (bkrepp@ctps.org)   
 Date: 4-23 August 2023, updated 7 December 2023  
 Location: cyberspace  
