@@ -3,7 +3,7 @@
 // Data: 1. GeoJSON for all count locations (geometry and attributes)
 //		 2. 'counts' data - CSV file
 //       3. 'selected count locations' - OpenLayers vector layer, derived from (1)
-//       4. 'un-selectec count locations' - OpenLayers vectro layer, derived from (2)
+//       4. 'un-selectec count locations' - OpenLayers vectro layer, derived from (1)
 
 // Mapping platform: OpenLayers
 // Basemaps: MassGIS, Open Street Map
