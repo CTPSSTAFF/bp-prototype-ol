@@ -1,10 +1,10 @@
 // Bike-ped counts web application 'detail page' logic
 //
-// Data: 'all count locations' map data from WMS service
-//       'selected count locations' - OpenLayers vector layer
-//		 'counts' data - CSV file
 // Mapping platform: OpenLayers
-// Basemaps: MassGIS, Open Street Map
+// Basemaps: MassGIS, Open Street Ma// Data: 1. GeoJSON for all count locations (geometry and attributes)
+//		 2. 'counts' data - CSV file
+//       3. 'selected count locations' - OpenLayers vector layer, derived from (1)
+//       4. 'un-selectec count locations' - OpenLayers vectro layer, derived from (1)p
 //
 // Author: Ben Krepp, bkrepp@ctps.org
 
@@ -291,9 +291,11 @@ function generate_report_for_count_id(this_countloc, count_id, count_recs) {
 
 
 // initialize_map
-// parameter: this_countloc  - record for count location
+// parameters: 
+//     selected_countloc - record for selected count location
+//     unselected_countlocs - records for non-selected count locations
 //
-function initialize_map(this_countloc) {
+function initialize_map(selected_countloc, unselected_countlocs) {
     $.ajax({ url: mgis_serviceUrls['topo_features'], jsonp: 'callback', dataType: 'jsonp', data: { f: 'json' }, 
              success: function(config) {     
         // Body of "success" handler starts here.
@@ -387,21 +389,35 @@ function initialize_map(this_countloc) {
 														layers: [ mgis_basemap_layer_group,
 														          osm_basemap_layer ] });
 		
-		var mapCenter = ol.proj.fromLonLat([this_countloc.properties.longitude, this_countloc.properties.latitude]);
+		var mapCenter = ol.proj.fromLonLat([selected_countloc.properties.longitude, selected_countloc.properties.latitude]);
 		var mapZoom = 17; // Best guess, for now
 		var mapView =  new ol.View({ center: mapCenter, zoom:  mapZoom });
 		
-		var vSource, feature, geom, props;
+		var vSource, vSource2, feature, geom, props, cur_countloc;
 		
+		// The single countloc for which this detail page was generated
 		vSource = selected_countlocs_layer.getSource();
 		vSource.clear();
 		geom = {};
 		props = {}; 
-		geom =  new ol.geom.Point(ol.proj.fromLonLat([this_countloc.properties.longitude, this_countloc.properties.latitude]));
-		props = JSON.parse(JSON.stringify(this_countloc.properties));
+		geom =  new ol.geom.Point(ol.proj.fromLonLat([selected_countloc.properties.longitude, selected_countloc.properties.latitude]));
+		props = JSON.parse(JSON.stringify(selected_countloc.properties));
 		feature = new ol.Feature({geometry: geom, properties: props});
 		vSource.addFeature(feature);
 		selected_countlocs_layer.setSource(vSource);
+		
+		// The non-selected countlocsURL
+		vSource2 = unselected_countlocs_layer.getSource();
+		vSource2.clear();
+		for (i = 0; i < unselected_countlocs.length; i++) {
+			geom = {}, props = {};
+			cur_countloc = unselected_countlocs[i];
+			geom =  new ol.geom.Point(ol.proj.fromLonLat([cur_countloc.geometry.coordinates[0], cur_countloc.geometry.coordinates[1]]));
+			props = JSON.parse(JSON.stringify(cur_countloc.properties));
+			feature = new ol.Feature({geometry: geom, properties: props});
+			vSource2.addFeature(feature);
+		}
+		unselected_countlocs_layer.setSource(vSource2);		
 		
 		ol_map = new ol.Map({ layers: [	basemap_layer_group,
 										ma_wo_brmpo_poly_wms,
@@ -443,8 +459,9 @@ function initialize() {
 			// Use local file for now, WFS request in production
 			// For WFS request - remember to reproject to EPSG:4326!
 			$.when(getJson(countlocsURL).done(function(bp_countlocs) {
-				var ok, temp, this_countloc, count_ids, count_ids_uniq, 
-				    count_id, i, this_count_id, countrecs_for_this_count_id;
+				var ok, temp, selected_countloc, count_ids, count_ids_uniq, 
+				    count_id, i, this_count_id, countrecs_for_this_count_id,
+					unselected_countlocs;
 					
 				ok = arguments[1] === 'success'; 
 				if (ok === false) {
@@ -452,7 +469,7 @@ function initialize() {
 					return; 
 				} 
 				temp = _.filter(bp_countlocs.features, function(rec) { return rec.properties.loc_id == loc_id; });
-				this_countloc = temp[0];
+				selected_countloc = temp[0];
 				
 				// Extract the counts for the current countloc
 				counts4countloc = _.filter(counts_data, function(rec) { return rec.bp_loc_id == loc_id; });
@@ -460,12 +477,15 @@ function initialize() {
 				count_ids = _.map(counts4countloc, function(rec) { return rec.count_id; });
 				count_ids_uniq = _.uniqBy(count_ids);
 				
-				initialize_map(this_countloc);
+				// Get all the other countlocs
+				unselected_countlocs = _.filter(bp_countlocs.features, function(rec) { return rec.properties.loc_id != loc_id; });
 				
-				// Generate a 'report' for each count, by iterating over the selected count_ids
+				initialize_map(selected_countloc, unselected_countlocs);
+				
+				// Generate a 'report' for each count for the selected countloc, by iterating over the selected count_ids
 				count_ids_uniq.forEach(function(this_count_id) {
 					countrecs_for_this_count_id = _.filter(counts_data, function(rec) { return rec.count_id == this_count_id; });
-					generate_report_for_count_id(this_countloc, this_count_id, countrecs_for_this_count_id);
+					generate_report_for_count_id(selected_countloc, this_count_id, countrecs_for_this_count_id);
 				});
 			}));
 			// Bind event handler for 'download' button
