@@ -556,7 +556,8 @@ function initialize_map(all_countlocs){
 		
 		var basemap_layer_group = new ol.layer.Group( { title: 'Basemaps',
 														layers: [ mgis_basemap_layer_group,
-														          osm_basemap_layer ] });
+														          osm_basemap_layer,
+																  mgis_imagery_layer ] });
 		
 		ol_map = new ol.Map({ layers: [	basemap_layer_group,
 										ma_wo_brmpo_poly_wms,
