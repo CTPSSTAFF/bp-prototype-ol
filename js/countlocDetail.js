@@ -387,7 +387,8 @@ function initialize_map(selected_countloc, unselected_countlocs) {
 		
 		var basemap_layer_group = new ol.layer.Group( { title: 'Basemaps',
 														layers: [ mgis_basemap_layer_group,
-														          osm_basemap_layer ] });
+														          osm_basemap_layer,
+																  mgis_imagery_layer ] });
 		
 		var mapCenter = ol.proj.fromLonLat([selected_countloc.properties.longitude, selected_countloc.properties.latitude]);
 		var mapZoom = 17; // Best guess, for now
