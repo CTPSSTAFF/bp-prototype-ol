@@ -70,7 +70,7 @@ var lrse_bikes_shared_use_wms = new ol.layer.Tile({ source: new ol.source.TileWM
 												});
 
 var lrse_bikes_protected_lane_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
-																					    params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_202300804', 
+																					    params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230804', 
 																									'STYLES': 'lrse_bikes_protected_bike_lane',
 																									'TRANSPARENT': 'true'
 																			  }
@@ -80,7 +80,7 @@ var lrse_bikes_protected_lane_wms = new ol.layer.Tile({ source: new ol.source.Ti
 												});	
 
 var lrse_bikes_on_road_lane_wms = new ol.layer.Tile({ source: new ol.source.TileWMS({ url		: szWMSserverRoot,
-																					  params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_202300804', 
+																					  params	: { 'LAYERS': 'postgis:massdot_lrse_bikes_20230804', 
 																									'STYLES': 'lrse_bikes_on_road_bike_lane',
 																									'TRANSPARENT': 'true'
 																			  }
