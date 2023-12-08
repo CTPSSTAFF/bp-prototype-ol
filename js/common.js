@@ -65,7 +65,7 @@ var lrse_bikes_shared_use_wms = new ol.layer.Tile({ source: new ol.source.TileWM
 																								'TRANSPARENT': 'true'
 																			  }
 															}),
-													title: 'Shared Use Bicycle Paths',	
+													title: 'Shared-Use Paths',	
 													visible: true
 												});
 
@@ -75,7 +75,7 @@ var lrse_bikes_protected_lane_wms = new ol.layer.Tile({ source: new ol.source.Ti
 																									'TRANSPARENT': 'true'
 																			  }
 																}),
-														title: 'On-road Protected Bicycle Lanes',	
+														title: 'On-Road Protected Bike Lanes',	
 													visible: true
 												});	
 
@@ -85,7 +85,7 @@ var lrse_bikes_on_road_lane_wms = new ol.layer.Tile({ source: new ol.source.Tile
 																									'TRANSPARENT': 'true'
 																			  }
 																}),
-													title: 'On-road Unprotected Bicycle Lanes',	
+													title: 'On-Road Unprotected Bike Lanes',	
 													visible: true
 												});
 												
@@ -95,11 +95,11 @@ var lrse_bikes_bp_priority_roadway_wms = new ol.layer.Tile({ source: new ol.sour
 																									'TRANSPARENT': 'true'
 																			  }
 																}),
-													title: 'Bicycle/Pedestrian Priority Roadway',	
+													title: 'Bicycle and Pedestrian Priority Roadway',	
 													visible: true
 												});
 
-var bike_layer_group = new ol.layer.Group({ title: 'Bicycle Facilities (MassDOT)', 
+var bike_layer_group = new ol.layer.Group({ title: 'Bicycle Facilities', 
 											fold: 'open',
 											layers: [lrse_bikes_shared_use_wms,
 													 lrse_bikes_protected_lane_wms,
@@ -114,7 +114,7 @@ var ma_wo_brmpo_poly_wms = new ol.layer.Tile({	source: new ol.source.TileWMS({ u
 																						   'TRANSPARENT': 'true'
 																			  }
 																}),
-												title: 'Area Outside Boston Region MPO',	
+												title: 'Boston Region MPO Boundary',	
 												visible: true
 											});
 
@@ -124,7 +124,7 @@ var bp_countlocs_wms = new ol.layer.Tile({	source: new ol.source.TileWMS({ url		
 																						'TRANSPARENT': 'true'
 																			  }
 																}),
-											title: 'Bike-Ped Count Locations',	
+											title: 'Bike and Pedestrian Count Locations',	
 											visible: true
 										});	
 
