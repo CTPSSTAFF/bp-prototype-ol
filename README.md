@@ -150,7 +150,7 @@ features of 'lrse_bikes' with a particular facility type, i.e., __fac\_type__:
 | 5 | lrse_bikes_shared_use_path.sld |
 | 7 | lrse_bikes_bp_priority_roadway.sld |
 
-A previous version of this app also used the WMS layer:
+A previous version of this app also used the WMS layer:  
 | Layer | Contents |
 | postgis:ctps_bp_count_locations_pt | CTPS bike-ped traffic count locations |
 
