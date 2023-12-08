@@ -245,11 +245,11 @@ This directory contains the following files:
 This directory contains the following files:
 * create_ctps_bp_count_locations_pt.sql - SQL to create the bike-ped count locations spatial table in PostGIS/PostgreSQL
 * create_bp_counts.sql -- SQL to create the bike-ped counts table in PostgreSQL
-* create_ctps_ma_wo_prmpo_poly.sql - SQL to create the spatial table for a polygon layer representing
+* create_ctps_ma_wo_brmpo_poly.sql - SQL to create the spatial table for a polygon layer representing
 the parts of Massachusetts outside the Boston Region MPO area
 * create_lrse_bikes_2023_0804.sql - SQL to create the spatial table for MassDOT's 'bike facilities' layer in PostGIS/PostgreSQL
 
 ## Colophon
-Author: B. Krepp (bkrepp@ctps.org)   
+Author: Ben Krepp \(bkrepp@ctps.org\)   
 Date: 4-23 August 2023, updated 7-8 December 2023  
 Location: cyberspace  
