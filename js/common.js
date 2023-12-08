@@ -41,6 +41,13 @@ var osm_basemap_layer = new ol.layer.Tile({ source: new ol.source.OSM(),
 											title: 'Open Street Map',
 											visible: false }); 
 
+var mgis_imagery_layer = new ol.layer.Tile({ source: new ol.source.XYZ({ attributions: ['MassGIS'],
+                                                                         url: 'https://tiles.arcgis.com/tiles/hGdibHYSPO59RG1h/arcgis/rest/services/orthos2021/MapServer/tile/{z}/{y}/{x}'
+                                                     }),
+										     type: 'base',
+											 title: 'MassGIS Aerial Imagery 2021',
+                                             visible: false });
+
 											   
 // Varioius things for WMS and WFS layers
 // First, folderol to allow the app to run on appsrvr3 as well as "in the wild"
