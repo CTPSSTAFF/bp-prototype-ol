@@ -227,12 +227,12 @@ This directory contains the following files:
 * jquery-3.7.0.min.js - [jQuery JavaScript library](https://jquery.com/) version 3.7.0, used for DOM management \(minified form\)
 * jsgrid-1.5.3.min.js - [jsGrid JavaScript library](http://js-grid.com/) version 1.5.3, used to display tabular output \(minified form\)
 * jsgrid-1.5.3.min.css and jsgrid-1.5.3-jsgrid-theme.min.css - minified CSS files for use with jsGrid library
-* lodash-4.17.21.js - [lodash JavaScript library[(https://lodash.com/) version 4.17.21, a functional programming library in JS
+* lodash-4.17.21.js - [lodash JavaScript library](https://lodash.com/) version 4.17.21, a functional programming library in JS
 * ol-layerswitcher.js - [Matt Walker's OpenLayers 'layer switcher' add-on control](https://github.com/walkermatt/ol-layerswitcher)
 * ol-layerswitcher.css - CSS for OpenLayers 'layer switcher' control
 * openlayers-6.14.1-ol.js - [OpenLayers library](https://openlayers.org/) version 6.14.1
 * openlayers-6.14.1-ol-css - CSS for OpenLayers library, version 6.14.1
-* plotly-2.24.1.min.js - [Plotly JavaScript] data-visualization library](https://plotly.com/javascript/) version 2.24.1 \(minified form\)
+* plotly-2.24.1.min.js - [Plotly JavaScript data-visualization library](https://plotly.com/javascript/) version 2.24.1 \(minified form\)
 
 ### 'sld' Directory
 This directory contains the following files:
