@@ -287,7 +287,7 @@ var rowConverter = function(d) {
 		town:			d.town,
 		description:	d.description,
 		temperature:	+d.temperature,
-		sky:			d.sky,
+		sky:			+d.sky, // 'sky condition' is encoded as an integer
 		count_type:		d.count_type,
 		from_st_name:	d.from_st_name,
 		from_st_dir:	d.from_st_dir,
