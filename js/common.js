@@ -182,7 +182,7 @@ var overlay = new ol.Overlay({ element: container,
 
 
 function make_popup_content(feature) {
-	var props, loc_id, counts, 
+	var props, loc_id, counts, count_ids = [], uniq_count_ids = [], num_uniq_count_ids,
 	    oldest_count_date, newest_count_date, 
 	    newest_counts = [], newest_count_summary = {}, 
 	    am_peak = 0,  pm_peak = 0, a_tag;
@@ -199,6 +199,10 @@ function make_popup_content(feature) {
 	}
 	
 	counts = _.sortBy(counts, [function(o) { return o.count_date.substr(0,10); }]);
+	count_ids = _.map(counts, function(o) { return o.count_id; });
+	uniq_count_ids = _.uniq(count_ids);
+	num_uniq_count_ids = uniq_count_ids.length;
+	
 	oldest_count_date = counts[0].count_date.substr(0,10);
 	newest_count_date = counts[counts.length-1].count_date.substr(0,10);
 	newest_counts = _.filter(counts, function(c) { return c.count_date.substr(0,10) == newest_count_date; });
@@ -210,6 +214,7 @@ function make_popup_content(feature) {
 		  
 	content = 'Location ID ' + loc_id + '</br>';
     content += props.description + '</br>';
+	content += num_uniq_count_ids + ' count sessions</br>';
 	content += 'Most recent count : ' + newest_count_date + '</br>';
 	content += 'Total volume AM peak : ' + am_peak + '</br>';
 	content += 'Total volume PM peak : ' + pm_peak + '</br>';
