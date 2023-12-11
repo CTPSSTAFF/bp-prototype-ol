@@ -184,7 +184,7 @@ function sky_condition(code) {
 	return retval;
 }
 
-// Return string for encoded value of 'count_type
+// Return string for encoded value of 'count_type'
 function count_type(code) {
 	retval = 'Unknown';
 	switch (code) {
@@ -230,7 +230,7 @@ function generate_report_for_count_id(this_countloc, count_id, count_recs) {
 	count1 = count_recs[0]; // 1st record should be as good as any one
 	html += '<span class="report_header_date">Date: ' + count1.count_date.substr(0,10) + '</span>';
 	html += '</br>';
-	html += '<span class="report_header_date">Town: ' + count1.town + '</span>';
+	html += '<span class="report_header_date">Municipality: ' + count1.town + '</span>';
 	html += '</br>';
 	html += '<span class="report_header_facility_info">';
 	if (this_countloc.properties.facility_name != null) { 
@@ -474,6 +474,10 @@ function initialize() {
 				
 				// Extract the counts for the current countloc
 				counts4countloc = _.filter(counts_data, function(rec) { return rec.bp_loc_id == loc_id; });
+				// Sort these in reverse chronological order: newest at the top.
+				// Note: It might be possible to accomplish this also by reverse sorting on the count_id.
+				counts4countloc = counts4countloc.sort(function(a, b) { return a.count_date < b.count_date ? 1 : -1; });
+				
 				// Get list of unique count_id's of these counts
 				count_ids = _.map(counts4countloc, function(rec) { return rec.count_id; });
 				count_ids_uniq = _.uniqBy(count_ids);
